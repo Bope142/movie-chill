@@ -1,0 +1,64 @@
+/*Export fonts */
+@font-face {
+  font-family: "ClashGrotesk-Bold";
+  src: url("../fonts/ClashGrotesk-Bold.otf");
+}
+@font-face {
+  font-family: "ClashGrotesk-Semibold";
+  src: url("../fonts/ClashGrotesk-Semibold.otf");
+}
+@font-face {
+  font-family: "ClashGrotesk-Medium";
+  src: url("../fonts/ClashGrotesk-Medium.otf");
+}
+@font-face {
+  font-family: "ClashGrotesk-Regular";
+  src: url("../fonts/ClashGrotesk-Regular.otf");
+}
+@font-face {
+  font-family: "ClashGrotesk-Light";
+  src: url("../fonts/ClashGrotesk-Light.otf");
+}
+@font-face {
+  font-family: "ClashGrotesk-Extralight";
+  src: url("../fonts/ClashGrotesk-Extralight.otf");
+}
+
+/* Fonts */
+
+$fontSemiBold: "ClashGrotesk-Semibold", sans-serif;
+$fontBold: "ClashGrotesk-Bold", sans-serif;
+$fontMedium: "ClashGrotesk-Medium", sans-serif;
+$fontRegular: "ClashGrotesk-Regular", sans-serif;
+$fontLight: "ClashGrotesk-Light", sans-serif;
+$fontExtraLight: "ClashGrotesk-ExtraLight", sans-serif;
+
+/* color */
+
+//primary color
+
+$colorPrimaryBase: #ffac00;
+$colorPrimary100: #ffdfc4;
+$colorPrimary200: #ffac00;
+$colorPrimary700: #1b0f00;
+
+//secondery color
+
+$colorSecondaryBase: #cc8a00;
+$colorSecondary100: #ffe0c6;
+$colorSecondary200: #ffad00;
+$colorSecondary700: #1c0f00;
+
+//neutral color
+
+$colorNeutral1: #000000;
+$colorNeutral2: #ffffff;
+$colorNeutral3: #302f2e;
+$colorNeutral4: #e6e4e3;
+$colorNeutral5: #121110;
+
+/* raduis border */
+$raduis: 15px;
+
+/* padding section */
+$paddingSection: 80px;

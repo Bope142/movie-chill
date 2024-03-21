@@ -1,0 +1,38 @@
+@import "./variable.scss";
+@import "./reset.scss";
+html {
+  scroll-behavior: smooth;
+  user-select: none;
+  overflow-x: hidden;
+}
+
+* {
+  scroll-behavior: smooth !important;
+}
+
+body {
+  position: relative;
+  font-family: $fontRegular;
+  background: $colorNeutral1;
+  color: $colorNeutral2;
+}
+
+.Toastify__toast-container {
+  & * {
+    font-family: $fontRegular !important;
+    font-size: 0.8rem;
+    line-height: 1.2rem;
+  }
+}
+
+.Toastify__progress-bar {
+  background: $colorPrimaryBase !important;
+}
+.Toastify__progress-bar--info {
+  background: $colorPrimaryBase !important;
+}
+
+.Toastify__toast-icon svg * {
+  color: $colorPrimaryBase !important;
+  fill: $colorPrimaryBase !important;
+}
