@@ -14,6 +14,7 @@ import {
 } from "../card/card";
 import { InputBoxForm } from "../form/form";
 import { TitleSection } from "../titleSection/titleSection";
+import Footer from "../footer/footer";
 
 const HeaderProfilUser = () => {
   return (
@@ -104,6 +105,7 @@ const HeaderProfilUser = () => {
         title="FILM POPULAIRE"
         linkMore="/dd"
       />
+      <Footer />
     </div>
   );
 };

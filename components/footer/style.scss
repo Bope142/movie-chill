@@ -1,0 +1,36 @@
+@import "../../public/style/variable.scss";
+
+.footer__page {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px $paddingSection;
+  background: #0c0b0b;
+  & p {
+    font-family: $fontLight;
+    font-size: 0.9rem;
+    & .logo {
+      color: $colorPrimaryBase;
+      & span {
+        color: #cc8900;
+      }
+    }
+    a {
+      text-decoration: none;
+      color: $colorPrimaryBase;
+    }
+  }
+
+  & .social__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    & a svg {
+      color: $colorPrimaryBase;
+      height: 1.5rem;
+      width: 1.5rem;
+      flex: none;
+    }
+  }
+}
