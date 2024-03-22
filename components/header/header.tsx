@@ -12,6 +12,7 @@ import {
   CardMovie,
   CardMovieFavorite,
 } from "../card/card";
+import { InputBoxForm } from "../form/form";
 
 const HeaderProfilUser = () => {
   return (
@@ -83,6 +84,13 @@ const HeaderProfilUser = () => {
       <CardFAQ
         title="1. Qu'est-ce que Movie Chill?"
         response="Movie Chill est une plateforme en ligne dédiée à la découverte, au partage et à la sauvegarde de films et de séries. Notre objectif est de fournir une expérience de divertissement cinématographique enrichissante en mettant à disposition une vaste collection de contenus, ainsi qu'en encourageant l'interaction sociale entre les utilisateurs."
+      />
+      <InputBoxForm
+        label="Email"
+        placeholder="Entrez votre adresse email ici"
+        typeInput="email"
+        nameInput="emailUser"
+        required={true}
       />
     </div>
   );

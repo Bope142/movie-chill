@@ -1,0 +1,64 @@
+@import "../../public/style/variable.scss";
+
+.box-form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+.input_box_form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  transition: all 0.3s linear;
+
+  & label {
+    font-family: $fontRegular;
+    opacity: 1;
+    font-size: 1.4rem;
+    color: $colorNeutral2;
+  }
+  & .input__form__box {
+    outline: none;
+    border: none;
+    font-family: $fontRegular;
+    font-size: 1rem;
+    opacity: 1;
+    padding: 20px;
+    background-color: $colorNeutral1;
+    border-radius: 0.5rem;
+    border: 2px solid #ffaa004f;
+    transition: all 0.3s linear;
+    box-shadow: 0 0 2px 5px #ffaa0000;
+    color: $colorNeutral2;
+    &:focus {
+      border: 2px solid #ffaa00c7;
+      box-shadow: 0 0 2px 5px #ffaa0038;
+    }
+  }
+}
+
+.input_box_form:has(:user-invalid) {
+  & .input__form__box {
+    border: 1px solid #ff3c38 !important;
+    box-shadow: 0 0 2px 5px #ff3b3849;
+  }
+}
+.invalid-data {
+  & .input__form__box {
+    border: 1px solid #ff3c38 !important;
+    box-shadow: 0 0 2px 5px #ff3b3849;
+  }
+}
+.error-message {
+  font-family: $fontRegular;
+  color: #ff3c38;
+  font-size: 0.9rem;
+  padding: 5px 20px;
+  opacity: 0;
+  transition: all 0.3s linear;
+  line-height: 1.2rem;
+}
+
+.show-error-msg {
+  opacity: 1;
+}
