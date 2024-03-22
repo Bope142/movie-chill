@@ -13,6 +13,7 @@ import {
   CardMovieFavorite,
 } from "../card/card";
 import { InputBoxForm } from "../form/form";
+import { TitleSection } from "../titleSection/titleSection";
 
 const HeaderProfilUser = () => {
   return (
@@ -91,6 +92,17 @@ const HeaderProfilUser = () => {
         typeInput="email"
         nameInput="emailUser"
         required={true}
+      />
+      <TitleSection variant="title-large" title="FILM POPULAIRE" />
+      <TitleSection
+        variant="title-large"
+        title="FILM POPULAIRE"
+        linkMore="/dd"
+      />
+      <TitleSection
+        variant="title-small"
+        title="FILM POPULAIRE"
+        linkMore="/dd"
       />
     </div>
   );
