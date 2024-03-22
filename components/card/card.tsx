@@ -7,7 +7,14 @@ import { MdStarRate } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { BsInfoCircleFill } from "react-icons/bs";
 import Link from "next/link";
-
+import { FaPlus } from "react-icons/fa6";
+import { FaTimes } from "react-icons/fa";
+interface CardFaq {
+  title: string;
+  response: string;
+  isOpen?: boolean;
+  onClick?: () => void;
+}
 interface CardAbout {
   title: string;
   icons: React.ReactNode;
@@ -38,6 +45,23 @@ interface CardFavoriteMovieProps {
   isLoading?: boolean;
   onClick?: () => void;
 }
+
+export const CardFAQ: React.FC<CardFaq> = ({
+  title,
+  response,
+  isOpen,
+  onClick,
+}) => {
+  return (
+    <div className="card__faq">
+      <div className="faq__header">
+        <span className="qst__faq">{title}</span>
+        <div className="action-faq">{isOpen ? <FaPlus /> : <FaTimes />}</div>
+      </div>
+      <p className="response__faq">{response}</p>
+    </div>
+  );
+};
 
 export const CardAbout: React.FC<CardAbout> = ({ title, icons, overview }) => {
   return (

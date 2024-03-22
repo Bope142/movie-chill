@@ -388,3 +388,57 @@
     transition: all 0.8s linear !important;
   }
 }
+
+// CARD  FAQ PAGE
+//----------------------------------------------------------------
+
+.card__faq {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: $colorPrimaryBase;
+  height: 50px;
+  transition: all 0.3s linear;
+  & .faq__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    & .qst__faq {
+      font-family: $fontSemiBold;
+      font-size: 1.8rem;
+      line-height: 2rem;
+      text-align: center;
+      z-index: 10;
+      color: $colorNeutral1;
+    }
+    & .action-faq {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      background-color: $colorNeutral1;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+  }
+  & .response__faq {
+    text-align: justify;
+    font-family: $fontRegular;
+    font-size: 1.3rem;
+    z-index: 10;
+    color: $colorNeutral1;
+    line-height: 1.4rem;
+    opacity: 0;
+    height: 0;
+  }
+  &:hover {
+    & .response__faq {
+      opacity: 1;
+      height: 100%;
+    }
+  }
+}

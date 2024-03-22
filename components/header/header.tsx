@@ -8,6 +8,7 @@ import { FaPlay } from "react-icons/fa";
 import {
   CardAbout,
   CardCategorie,
+  CardFAQ,
   CardMovie,
   CardMovieFavorite,
 } from "../card/card";
@@ -78,6 +79,10 @@ const HeaderProfilUser = () => {
         title="Exploration sans fin"
         overview="Explorez une vaste bibliothèque de films et de séries provenant de la base de données de The Movie Database (TMDb). Que vous recherchiez des classiques intemporels, des blockbusters récents ou des pépites méconnues, nous avons quelque chose pour tout le monde."
         icons={<FaPlay />}
+      />
+      <CardFAQ
+        title="1. Qu'est-ce que Movie Chill?"
+        response="Movie Chill est une plateforme en ligne dédiée à la découverte, au partage et à la sauvegarde de films et de séries. Notre objectif est de fournir une expérience de divertissement cinématographique enrichissante en mettant à disposition une vaste collection de contenus, ainsi qu'en encourageant l'interaction sociale entre les utilisateurs."
       />
     </div>
   );
