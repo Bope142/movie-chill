@@ -5,7 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button, ButtonIcon } from "../button/button";
 import { FaPlay } from "react-icons/fa";
-import { CardMovie } from "../card/card";
+import {
+  CardAbout,
+  CardCategorie,
+  CardMovie,
+  CardMovieFavorite,
+} from "../card/card";
 
 const HeaderProfilUser = () => {
   return (
@@ -59,6 +64,20 @@ const HeaderProfilUser = () => {
         title="La démoiselle et le dragon"
         poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
         isLoading={true}
+      />
+      <CardMovieFavorite
+        title="La démoiselle et le dragon"
+        poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
+        detailsMovie="2024 | English,French,Spanish"
+        rating={4}
+      />
+      <CardMovieFavorite isLoading={true} />
+      <CardCategorie variant="primary" title="Action" />
+      <CardCategorie variant="simple" title="Action" />
+      <CardAbout
+        title="Exploration sans fin"
+        overview="Explorez une vaste bibliothèque de films et de séries provenant de la base de données de The Movie Database (TMDb). Que vous recherchiez des classiques intemporels, des blockbusters récents ou des pépites méconnues, nous avons quelque chose pour tout le monde."
+        icons={<FaPlay />}
       />
     </div>
   );
