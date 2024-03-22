@@ -3,17 +3,63 @@ import React from "react";
 import "./style.scss";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button, ButtonIcon } from "./button/button";
+import { Button, ButtonIcon } from "../button/button";
 import { FaPlay } from "react-icons/fa";
+import { CardMovie } from "../card/card";
+
 const HeaderProfilUser = () => {
   return (
     <div className="profil__user_header">
       <Button variant="primary">Se connecter primary</Button>
       <Button variant="secondary">Se connecter secondary</Button>
-      <Button variant="danger">Se connecter danger</Button>
+      <Button variant="danger">
+        Se connecter danger <FaPlay />
+      </Button>
       <ButtonIcon variant="primary">
         <FaPlay />
       </ButtonIcon>
+      <CardMovie
+        variant="primary"
+        id={15}
+        title="La démoiselle et le dragon"
+        poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
+        isLoading={true}
+      />
+      <CardMovie
+        variant="primary"
+        id={15}
+        title="La démoiselle et le dragon"
+        poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
+        isLoading={false}
+      />
+      <CardMovie
+        variant="popular"
+        id={15}
+        title="La démoiselle et le dragon"
+        poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
+        isLoading={false}
+      />
+      <CardMovie
+        variant="popular"
+        id={15}
+        title="La démoiselle et le dragon"
+        poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
+        isLoading={true}
+      />
+      <CardMovie
+        variant="simple"
+        id={15}
+        title="La démoiselle et le dragon"
+        poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
+        isLoading={false}
+      />
+      <CardMovie
+        variant="simple"
+        id={15}
+        title="La démoiselle et le dragon"
+        poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
+        isLoading={true}
+      />
     </div>
   );
 };

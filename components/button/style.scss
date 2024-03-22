@@ -1,16 +1,20 @@
-@import "../../../public/style/variable.scss";
+@import "../../public/style/variable.scss";
 
 .btn {
   border: none;
   outline: none;
   font-family: $fontRegular;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 0px 35px;
   height: 60px;
   border-radius: $raduisBtn;
   border: 2px solid $colorPrimaryBase;
   position: relative;
   transition: all 0.3s linear !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 10px;
 }
 .btn-icon {
   padding: 13px 20px;
@@ -146,4 +150,12 @@
   to {
     transform: rotate(100deg);
   }
+}
+
+.btn-link {
+  text-decoration: none;
+  padding: 0 20px;
+  border-radius: $raduisBtn;
+  display: flex;
+  height: 40px;
 }

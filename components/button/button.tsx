@@ -67,7 +67,7 @@ export const ButtonLink: React.FC<LinkButtonProps> = ({
   href,
 }) => {
   return (
-    <Link href={href} className={`btn btn-${variant}`}>
+    <Link href={href} className={`btn btn-link btn-${variant}`}>
       {children}
     </Link>
   );
