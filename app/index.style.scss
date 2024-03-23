@@ -135,7 +135,9 @@
 
 #film__recentes,
 #random_one,
-#random_two {
+#random_two,
+#tv__movies,
+#favorites__movies {
   @include flexbox(column, flex-start, flex-start);
   row-gap: 20px;
   padding-bottom: $paddingSection;
