@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import "./style.scss";
 import { IoLogoLinkedin } from "react-icons/io";
@@ -8,13 +9,13 @@ import { FaGithub } from "react-icons/fa";
 function Footer() {
   return (
     <footer className="footer__page">
-      <p>
+      <div className="text-footer">
         © 2024{" "}
         <div className="logo">
           Movie <span>Chill</span>
         </div>
         . Designed with ❤️ for you by <a href="">Norbert Yemuang</a>
-      </p>
+      </div>
       <div className="social__media">
         <a href="">
           {" "}

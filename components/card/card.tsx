@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
+"use client";
 import React from "react";
 import "./style.scss";
 import Image from "next/image";
@@ -31,8 +32,9 @@ interface CardProps {
   variant: "primary" | "popular" | "simple";
   id?: number;
   title?: string;
-  poster: string;
+  poster?: string;
   isLoading?: boolean;
+  isSelected?: boolean;
   onClick?: () => void;
 }
 
@@ -152,6 +154,7 @@ export const CardMovie: React.FC<CardProps> = ({
   title,
   poster,
   isLoading,
+  isSelected,
   onClick,
 }) => {
   const skeletonLoadingClass = isLoading ? variant + "-skeleton-loading" : "";
@@ -163,13 +166,16 @@ export const CardMovie: React.FC<CardProps> = ({
             <div className="skeleton-loading"></div>
           ) : (
             <>
-              <Image
-                src={poster}
-                alt={`poster movie ${title}`}
-                className="img-fluid poster-movie"
-                width={100}
-                height={100}
-              />
+              {poster && (
+                <Image
+                  src={poster}
+                  alt={`poster movie ${title}`}
+                  className="img-fluid poster-movie"
+                  width={100}
+                  height={100}
+                />
+              )}
+
               <div className="overview__container">
                 <div className="content">
                   <span className="movie__title">{title}</span>
@@ -186,39 +192,47 @@ export const CardMovie: React.FC<CardProps> = ({
     case "popular":
       return (
         <div
-          className={`card_movie_popular ${skeletonLoadingClass}`}
-          onClick={(e) => {
-            //console.log(e);
-            onClick;
-          }}
+          className={`card_movie_popular ${skeletonLoadingClass}   ${
+            isSelected ? "card_movie_popular_selected" : ""
+          }`}
+          onClick={onClick}
         >
           {isLoading ? (
             <div className="skeleton-loading"></div>
           ) : (
-            <Image
-              src={poster}
-              alt={`poster movie ${title}`}
-              className="img-fluid poster-movie"
-              width={100}
-              height={100}
-            />
+            poster && (
+              <Image
+                src={poster}
+                alt={`poster movie ${title}`}
+                className="img-fluid poster-movie"
+                width={100}
+                height={100}
+              />
+            )
           )}
         </div>
       );
 
     case "simple":
       return (
-        <div className={`card_movie_simple ${skeletonLoadingClass}`}>
+        <div
+          className={`card_movie_simple ${skeletonLoadingClass}  ${
+            isSelected ? "card_movie_simple_selected" : ""
+          }`}
+          onClick={!isLoading ? onClick : undefined}
+        >
           {isLoading ? (
             <div className="skeleton-loading"></div>
           ) : (
-            <Image
-              src={poster}
-              alt={`poster movie ${title}`}
-              className="img-fluid poster-movie"
-              width={100}
-              height={100}
-            />
+            poster && (
+              <Image
+                src={poster}
+                alt={`poster movie ${title}`}
+                className="img-fluid poster-movie"
+                width={100}
+                height={100}
+              />
+            )
           )}
         </div>
       );

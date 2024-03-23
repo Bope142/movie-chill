@@ -1,9 +1,9 @@
 @import "./variable.scss";
 @import "./reset.scss";
+@import "./mixin.scss";
 html {
   scroll-behavior: smooth;
   user-select: none;
-  overflow-x: hidden;
 }
 
 * {
@@ -11,12 +11,15 @@ html {
 }
 
 body {
-  position: relative;
+  // position: relative;
   font-family: $fontRegular;
   background: $colorNeutral1;
   color: $colorNeutral2;
 }
 
+.container__page {
+  overflow: hidden;
+}
 .Toastify__toast-container {
   & * {
     font-family: $fontRegular !important;
@@ -40,5 +43,30 @@ body {
 .img-fluid {
   height: 100%;
   width: 100%;
-  object-fit: cover;
+  object-fit: cover !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-button {
+  background-color: #000000;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $colorPrimaryBase;
+  opacity: 0.7;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #333;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: $colorPrimaryBase;
 }

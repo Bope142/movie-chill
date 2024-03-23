@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import "./style.scss";
 import Link from "next/link";
