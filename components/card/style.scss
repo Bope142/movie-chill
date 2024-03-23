@@ -1,0 +1,450 @@
+@import "../../public/style/variable.scss";
+
+//PRIMARY CARD MOVIES
+//----------------------------------------------------------------
+.card_movie_primary {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  height: 300px;
+  width: 200px;
+  flex: none;
+  border-radius: 0.5rem;
+  border: 4px solid transparent;
+  transition: all 0.3s linear;
+  cursor: pointer;
+  & * {
+    transition: all 0.3s linear;
+  }
+  &:hover {
+    border: 4px solid $colorPrimaryBase;
+    transform: scale(1.1);
+    & .poster-movie {
+      transform: scale(1.3);
+    }
+    & .overview__container {
+      opacity: 1;
+      height: 100%;
+      bottom: 0%;
+    }
+  }
+  & .overview__container {
+    position: absolute;
+    transition: all 0.4s linear;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.12),
+      rgba(0, 0, 0, 0.87),
+      rgb(0, 0, 0)
+    );
+    width: 100%;
+    height: 0%;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    bottom: -100%;
+    & .content {
+      margin-top: auto;
+      width: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.068),
+        rgb(0, 0, 0)
+      );
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      gap: 15px;
+      flex-wrap: wrap;
+      padding-top: 5px;
+      & .movie__title {
+        font-family: $fontBold;
+        font-size: 1.3rem;
+
+        line-height: 1.48rem;
+      }
+      & .btn-link {
+        text-decoration: none;
+        padding: 0 15px !important;
+        border-radius: $raduisBtn;
+        display: flex;
+        height: 30px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+.primary-skeleton-loading {
+  background: $colorPrimaryBase;
+  border-color: transparent !important;
+  padding: 0 !important;
+  cursor: not-allowed !important;
+  background: rgba($colorPrimaryBase, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  &:hover {
+    border-color: transparent !important;
+    transform: none !important;
+  }
+}
+.primary-skeleton-loading::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: $colorPrimaryBase;
+  animation: pulseskeletonPrimary 1.5s infinite alternate;
+}
+
+@keyframes pulseskeletonPrimary {
+  from {
+    opacity: 0.1;
+  }
+  to {
+    opacity: 0.85;
+  }
+}
+
+//POPULAR CARD MOVIES
+//----------------------------------------------------------------
+
+.card_movie_popular {
+  display: flex;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  height: 120px;
+  width: 200px;
+  flex: none;
+  border-radius: 0.5rem;
+  border: 4px solid transparent;
+  transition: all 0.3s linear;
+  cursor: pointer;
+  &:hover {
+    border: 4px solid $colorPrimaryBase;
+  }
+}
+
+.popular-skeleton-loading {
+  background: $colorPrimaryBase;
+  border-color: transparent !important;
+  padding: 0 !important;
+  cursor: not-allowed !important;
+  background: rgba($colorPrimaryBase, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  &:hover {
+    border-color: transparent !important;
+    transform: none !important;
+  }
+}
+.popular-skeleton-loading::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: $colorPrimaryBase;
+  animation: pulseskeletonPrimary 1.5s infinite alternate;
+}
+
+//SIMPLE CARD MOVIES
+//----------------------------------------------------------------
+.card_movie_simple {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  height: 300px;
+  width: 200px;
+  flex: none;
+  border-radius: 0.5rem;
+  border: 4px solid transparent;
+  transition: all 0.3s linear;
+  cursor: pointer;
+  & * {
+    transition: all 0.3s linear;
+  }
+  &:hover {
+    border: 4px solid $colorPrimaryBase;
+    transform: scale(1.1);
+    & .poster-movie {
+      transform: scale(1);
+    }
+  }
+}
+
+.simple-skeleton-loading {
+  background: $colorPrimaryBase;
+  border-color: transparent !important;
+  padding: 0 !important;
+  cursor: not-allowed !important;
+  background: rgba($colorPrimaryBase, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  &:hover {
+    border-color: transparent !important;
+    transform: none !important;
+  }
+}
+.simple-skeleton-loading::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: $colorPrimaryBase;
+  animation: pulseskeletonPrimary 1.5s infinite alternate;
+}
+
+@keyframes pulseskeletonPrimary {
+  from {
+    opacity: 0.1;
+  }
+  to {
+    opacity: 0.85;
+  }
+}
+
+// CARD  FAVORITES MOVIES
+//----------------------------------------------------------------
+
+.card_movie_favorite {
+  display: flex;
+  padding: 10px;
+  border-radius: 0.5rem;
+  background: #121110;
+  gap: 20px;
+  transition: all 0.3s linear;
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+
+  & .content__poster {
+    display: flex;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    width: 200px;
+    flex: none;
+    //height: 200px;
+  }
+  & .content__details {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    background: transparent;
+    justify-content: center;
+    padding-right: 15px;
+    & .movie__title {
+      font-family: $fontBold;
+      font-size: 1.3rem;
+
+      line-height: 1.48rem;
+    }
+    & .rating__count {
+      display: flex;
+      & svg {
+        color: $colorPrimaryBase;
+      }
+    }
+    & .detail {
+      font-family: $fontRegular;
+      font-size: 1rem;
+      color: #9a9693;
+    }
+    & .controll__btn {
+      display: flex;
+      margin-top: 10px;
+      gap: 15px;
+    }
+  }
+}
+
+.card-movie-skeleton-loading {
+  width: 500px;
+  cursor: not-allowed;
+  &:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.card-movie-skeleton-loading .skeleton-loading {
+  content: "";
+  display: block;
+  border-radius: 0.5rem;
+  width: 100%;
+  height: 100%;
+  background: rgba(#36353427, 1);
+  animation: pulseskeletonPrimary 1.5s infinite alternate;
+}
+
+// CARD  CATEGORIES MOVIES
+//----------------------------------------------------------------
+.card_categorie {
+  text-decoration: none;
+  outline: none;
+  border: 2px solid $colorPrimaryBase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: $colorNeutral2;
+  font-family: $fontLight;
+}
+
+.categorie_card_primary {
+  background: $colorNeutral1;
+  color: $colorNeutral2;
+}
+.categorie_card_simple {
+  transition: all 0.3s linear;
+  &:hover {
+    background: $colorPrimaryBase;
+  }
+}
+
+// CARD  ABOUT PAGE
+//----------------------------------------------------------------
+
+.card__about {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 15px;
+  padding: 25px;
+  border-radius: 0.5rem;
+  background: url("/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg") center/cover
+    fixed;
+  transition: all 0.3s linear;
+  & * {
+    transition: all 0.3s linear !important;
+  }
+  &:hover {
+    &::after {
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.068),
+        rgb(0, 0, 0, 0.7),
+        rgb(0, 0, 0)
+      );
+    }
+    & .icons__box {
+      background: $colorPrimaryBase;
+      & svg {
+        color: $colorNeutral1;
+      }
+    }
+    & .title {
+      color: $colorNeutral2;
+    }
+    & .overview {
+      color: $colorNeutral2;
+    }
+  }
+  & .icons__box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    padding: 25px;
+    z-index: 10;
+    border-radius: 0.5rem;
+    background: $colorNeutral1;
+    & svg {
+      height: 1.2rem;
+      width: 1.2rem;
+      color: $colorPrimaryBase;
+    }
+  }
+  & .title {
+    font-family: $fontSemiBold;
+    font-size: 1.8rem;
+    line-height: 2rem;
+    text-align: center;
+    z-index: 10;
+    color: $colorNeutral1;
+  }
+  & .overview {
+    text-align: center;
+    font-family: $fontRegular;
+    font-size: 1.2rem;
+    z-index: 10;
+    color: $colorNeutral1;
+    line-height: 1.4rem;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background: $colorPrimaryBase;
+    opacity: 1;
+    transition: all 0.8s linear !important;
+  }
+}
+
+// CARD  FAQ PAGE
+//----------------------------------------------------------------
+
+.card__faq {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: $colorPrimaryBase;
+  height: 50px;
+  transition: all 0.3s linear;
+  & .faq__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    & .qst__faq {
+      font-family: $fontSemiBold;
+      font-size: 1.8rem;
+      line-height: 2rem;
+      text-align: center;
+      z-index: 10;
+      color: $colorNeutral1;
+    }
+    & .action-faq {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      background-color: $colorNeutral1;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+  }
+  & .response__faq {
+    text-align: justify;
+    font-family: $fontRegular;
+    font-size: 1.3rem;
+    z-index: 10;
+    color: $colorNeutral1;
+    line-height: 1.4rem;
+    opacity: 0;
+    height: 0;
+  }
+  &:hover {
+    & .response__faq {
+      opacity: 1;
+      height: 100%;
+    }
+  }
+}

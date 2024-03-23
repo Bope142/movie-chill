@@ -1,0 +1,25 @@
+@import "../../public/style/variable.scss";
+
+.profil__session {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  & .profil {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+      rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    background: $colorPrimaryBase;
+    height: 55px;
+    width: 55px;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 5px solid $colorPrimaryBase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & p {
+      font-size: 1.5rem;
+      font-family: $fontSemiBold;
+    }
+  }
+}
