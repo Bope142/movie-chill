@@ -63,7 +63,8 @@
 }
 
 #popular__movie,
-#trending__movie {
+#trending__movie,
+#upcoming__movie {
   @include flexbox(column, flex-start, flex-start);
   row-gap: 20px;
   & .title__section {
@@ -72,7 +73,8 @@
 }
 
 #content__movie_popular,
-#content__movie_trending {
+#content__movie_trending,
+#content__movie_upcoming {
   @include flexbox(column, flex-start, flex-start);
   row-gap: 20px;
   padding: 100px $paddingSection;
@@ -156,7 +158,7 @@
 }
 
 .title__content {
-  padding: 25px $paddingSection;
+  padding: 50px $paddingSection;
 }
 
 .trending__movie {

@@ -301,6 +301,75 @@ const ConatinerRandomMovieTwo = () => {
     </section>
   );
 };
+
+const ContainerMovieUpcoming: React.FC<PropsMovieComponent> = ({ movie }) => {
+  const ratingCountIcons = (rating: number): React.ReactNode => {
+    let containerRating: React.ReactNode[] = [];
+    for (let index = 0; index < rating; index++) {
+      containerRating.push(<MdStarRate key={index} className="icons-start" />);
+    }
+    return containerRating;
+  };
+  return (
+    <section
+      className="section__page"
+      id="content__movie_upcoming"
+      style={{
+        background: `url("${movie.poster}") center/cover fixed`,
+      }}
+    >
+      <h1>{movie.title}</h1>
+      <div className="details__movie">
+        <div className="rating">{ratingCountIcons(movie.ratingCount)}</div>{" "}
+        <p className="rate_prct">{movie.ratingCount.toFixed(1)}</p>{" "}
+        <p className="years">{movie.releaseDate}</p>
+      </div>
+      <p className="overview">{movie.overview}</p>
+      <div className="controll-action-button">
+        <Button variant="primary">
+          Voir le trailer <FaPlay />
+        </Button>
+        <ButtonLink variant="secondary" href="/movies/12">
+          Plus d'infos
+        </ButtonLink>
+      </div>
+    </section>
+  );
+};
+
+const UpcomingMoviesSection = () => {
+  const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(2);
+  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+  const handleCardClick = (index: number) => {
+    setSelectedMovieIndex(index);
+  };
+  return (
+    <>
+      <div className="title__content">
+        <TitleSection
+          variant="title-large"
+          title="FILM AVENIR"
+          linkMore="/movies/popular"
+        />
+      </div>
+      <ContainerMovieUpcoming movie={data[selectedMovieIndex]} />
+      <section className="section__page trending__movie" id="upcoming__movie">
+        <ContainerScroll>
+          {data.map((movie, index) => (
+            <CardMovie
+              key={index}
+              variant="simple"
+              poster={movie.poster}
+              onClick={() => handleCardClick(index)}
+              isSelected={index === selectedMovieIndex}
+            />
+          ))}
+        </ContainerScroll>
+      </section>
+    </>
+  );
+};
+
 export default function Home() {
   return (
     <main className="container__page" id="homePage">
@@ -312,6 +381,7 @@ export default function Home() {
       <PlayingMoviesSection />
       <ConatinerRandomMovieOne />
       <ConatinerRandomMovieTwo />
+      <UpcomingMoviesSection />
       <Footer />
     </main>
   );
