@@ -128,3 +128,11 @@
     );
   }
 }
+
+#film__recentes {
+  @include flexbox(column, flex-start, flex-start);
+  row-gap: 20px;
+  & .title__section {
+    margin: 0 $paddingSection;
+  }
+}

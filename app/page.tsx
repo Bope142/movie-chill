@@ -142,13 +142,37 @@ const PopularMoviesSection = () => {
   );
 };
 
+const ContainerFilmsRecent = () => {
+  const data: Array<TypePopularMovie> = fakeDataPopularMovie;
+  return (
+    <section className="section__page" id="film__recentes">
+      <TitleSection
+        variant="title-large"
+        title="FILMS RECENTS"
+        linkMore="/movies/recents"
+      />
+      <ContainerScroll>
+        {data.map((movie, index) => (
+          <CardMovie
+            key={index}
+            variant="primary"
+            poster={movie.poster}
+            title={movie.title}
+            id={movie.id}
+          />
+        ))}
+      </ContainerScroll>
+    </section>
+  );
+};
+
 export default function Home() {
   return (
     <main className="container__page" id="homePage">
       <Header />
       <BannerHomePage />
       <PopularMoviesSection />
-
+      <ContainerFilmsRecent />
       <Footer />
     </main>
   );
