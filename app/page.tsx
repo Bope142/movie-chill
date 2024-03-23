@@ -254,7 +254,7 @@ const PlayingMoviesSection = () => {
   );
 };
 
-const ConatinerRandomMovieOne = () => {
+const ContainerRandomMovieOne = () => {
   const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
   return (
     <section className="section__page" id="random_one">
@@ -278,7 +278,7 @@ const ConatinerRandomMovieOne = () => {
   );
 };
 
-const ConatinerRandomMovieTwo = () => {
+const ContainerRandomMovieTwo = () => {
   const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
   return (
     <section className="section__page" id="random_two">
@@ -370,6 +370,30 @@ const UpcomingMoviesSection = () => {
   );
 };
 
+const ContainerTvMoivies = () => {
+  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+  return (
+    <section className="section__page" id="random_two">
+      <TitleSection
+        variant="title-large"
+        title="TV LIVES"
+        linkMore="/movies/recents"
+      />
+      <ContainerScroll>
+        {data.map((movie, index) => (
+          <CardMovie
+            key={index}
+            variant="primary"
+            poster={movie.poster}
+            title={movie.title}
+            id={movie.id}
+          />
+        ))}
+      </ContainerScroll>
+    </section>
+  );
+};
+
 export default function Home() {
   return (
     <main className="container__page" id="homePage">
@@ -379,9 +403,10 @@ export default function Home() {
       <ContainerFilmsRecent />
       <SectionCategoryMovies />
       <PlayingMoviesSection />
-      <ConatinerRandomMovieOne />
-      <ConatinerRandomMovieTwo />
+      <ContainerRandomMovieOne />
+      <ContainerRandomMovieTwo />
       <UpcomingMoviesSection />
+      <ContainerTvMoivies />
       <Footer />
     </main>
   );
