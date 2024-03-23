@@ -7,6 +7,9 @@
   padding: 25px $paddingSection;
   background: #0c0b0b;
   & p {
+    display: flex;
+    gap: 5px;
+    flex: none;
     font-family: $fontLight;
     font-size: 0.9rem;
     & .logo {

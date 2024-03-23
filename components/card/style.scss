@@ -230,7 +230,7 @@
     border-radius: 0.5rem;
     width: 200px;
     flex: none;
-    height: 200px;
+    //height: 200px;
   }
   & .content__details {
     display: flex;
@@ -244,6 +244,12 @@
       font-size: 1.3rem;
 
       line-height: 1.48rem;
+    }
+    & .rating__count {
+      display: flex;
+      & svg {
+        color: $colorPrimaryBase;
+      }
     }
     & .detail {
       font-family: $fontRegular;
