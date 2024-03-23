@@ -215,7 +215,12 @@ export const CardMovie: React.FC<CardProps> = ({
 
     case "simple":
       return (
-        <div className={`card_movie_simple ${skeletonLoadingClass}`}>
+        <div
+          className={`card_movie_simple ${skeletonLoadingClass}  ${
+            isSelected ? "card_movie_simple_selected" : ""
+          }`}
+          onClick={!isLoading ? onClick : undefined}
+        >
           {isLoading ? (
             <div className="skeleton-loading"></div>
           ) : (

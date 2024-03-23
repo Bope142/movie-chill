@@ -1,6 +1,6 @@
-import { TypePopularMovie } from "@/types/movie";
+import { TypeMovieOverview } from "@/types/movie";
 
-export const fakeDataPopularMovie: TypePopularMovie[] = [
+export const fakeDataPopularMovie: TypeMovieOverview[] = [
   {
     id: 1,
     poster: "/images/posters/poster1.jpg",

@@ -7,11 +7,13 @@ import { Button, ButtonLink } from "@/components/button/button";
 import { FaPlay } from "react-icons/fa";
 import { TitleSection } from "@/components/titleSection/titleSection";
 import { ContainerScroll } from "@/components/container/container";
-import { CardMovie } from "@/components/card/card";
+import { CardCategorie, CardMovie } from "@/components/card/card";
 import { MdStarRate } from "react-icons/md";
-import { TypePopularMovie } from "@/types/movie";
+import { TypeMovieOverview } from "@/types/movie";
 import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { useState } from "react";
+import { TypeGenreMMovies } from "@/types/categorie";
+import { dataGenreMovie } from "@/data/genreMovie";
 
 const BannerHomePage = () => {
   return (
@@ -70,13 +72,13 @@ const BannerHomePage = () => {
   );
 };
 
-interface ContainerCurrentPopularMovieProps {
-  movie: TypePopularMovie;
+interface PropsMovieComponent {
+  movie: TypeMovieOverview;
 }
 
-const ContainerCurrentPopularMovie: React.FC<
-  ContainerCurrentPopularMovieProps
-> = ({ movie }) => {
+const ContainerCurrentPopularMovie: React.FC<PropsMovieComponent> = ({
+  movie,
+}) => {
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
@@ -113,7 +115,7 @@ const ContainerCurrentPopularMovie: React.FC<
 
 const PopularMoviesSection = () => {
   const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0);
-  const data: Array<TypePopularMovie> = fakeDataPopularMovie;
+  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
   const handleCardClick = (index: number) => {
     setSelectedMovieIndex(index);
   };
@@ -143,7 +145,7 @@ const PopularMoviesSection = () => {
 };
 
 const ContainerFilmsRecent = () => {
-  const data: Array<TypePopularMovie> = fakeDataPopularMovie;
+  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
   return (
     <section className="section__page" id="film__recentes">
       <TitleSection
@@ -165,6 +167,92 @@ const ContainerFilmsRecent = () => {
     </section>
   );
 };
+const SectionCategoryMovies = () => {
+  const data: Array<TypeGenreMMovies> = dataGenreMovie;
+  return (
+    <section className="section__page" id="genre__films">
+      <TitleSection variant="title-large" title="GENRE DES FILMS" />
+      <div className="container__category">
+        {data.map((genre, index) => (
+          <CardCategorie
+            key={index}
+            variant="simple"
+            title={genre.name}
+            id={genre.id}
+          />
+        ))}
+      </div>
+    </section>
+  );
+};
+
+const ContainerMoviePlaying: React.FC<PropsMovieComponent> = ({ movie }) => {
+  const ratingCountIcons = (rating: number): React.ReactNode => {
+    let containerRating: React.ReactNode[] = [];
+    for (let index = 0; index < rating; index++) {
+      containerRating.push(<MdStarRate key={index} className="icons-start" />);
+    }
+    return containerRating;
+  };
+  return (
+    <section
+      className="section__page"
+      id="content__movie_popular"
+      style={{
+        background: `url("${movie.poster}") center/cover fixed`,
+      }}
+    >
+      <h1>{movie.title}</h1>
+      <div className="details__movie">
+        <div className="rating">{ratingCountIcons(movie.ratingCount)}</div>{" "}
+        <p className="rate_prct">{movie.ratingCount.toFixed(1)}</p>{" "}
+        <p className="years">{movie.releaseDate}</p>
+      </div>
+      <p className="overview">{movie.overview}</p>
+      <div className="controll-action-button">
+        <Button variant="primary">
+          Voir le trailer <FaPlay />
+        </Button>
+        <ButtonLink variant="secondary" href="/movies/12">
+          Plus d'infos
+        </ButtonLink>
+      </div>
+    </section>
+  );
+};
+
+const PlayingMoviesSection = () => {
+  const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(2);
+  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+  const handleCardClick = (index: number) => {
+    setSelectedMovieIndex(index);
+  };
+  return (
+    <>
+      <div className="title__content">
+        <TitleSection
+          variant="title-large"
+          title="EN TENDANCE"
+          linkMore="/movies/popular"
+        />
+      </div>
+      <ContainerMoviePlaying movie={data[selectedMovieIndex]} />
+      <section className="section__page" id="popular__movie">
+        <ContainerScroll>
+          {data.map((movie, index) => (
+            <CardMovie
+              key={index}
+              variant="simple"
+              poster={movie.poster}
+              onClick={() => handleCardClick(index)}
+              isSelected={index === selectedMovieIndex}
+            />
+          ))}
+        </ContainerScroll>
+      </section>
+    </>
+  );
+};
 
 export default function Home() {
   return (
@@ -173,6 +261,8 @@ export default function Home() {
       <BannerHomePage />
       <PopularMoviesSection />
       <ContainerFilmsRecent />
+      <SectionCategoryMovies />
+      <PlayingMoviesSection />
       <Footer />
     </main>
   );

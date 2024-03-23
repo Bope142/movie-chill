@@ -1,4 +1,4 @@
-export interface TypePopularMovie {
+export interface TypeMovieOverview {
   id: number;
   poster: string;
   title: string;

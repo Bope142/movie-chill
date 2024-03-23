@@ -132,7 +132,25 @@
 #film__recentes {
   @include flexbox(column, flex-start, flex-start);
   row-gap: 20px;
+
   & .title__section {
     margin: 0 $paddingSection;
   }
+}
+
+#genre__films {
+  @include flexbox(column, flex-start, flex-start);
+  row-gap: 20px;
+  padding: 50px $paddingSection;
+  background-color: #111111;
+  .container__category {
+    align-self: stretch;
+    @include flexbox(row, flex-start, flex-start);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+.title__content {
+  padding: 25px $paddingSection;
 }
