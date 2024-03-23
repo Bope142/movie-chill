@@ -36,9 +36,11 @@
     padding: 0 $paddingSection;
     @include flexbox(column, flex-start, flex-start);
     row-gap: 20px;
-    & span {
+    & .movie-title {
       font-family: $fontBold;
-      font-size: 5rem;
+      font-size: 3rem;
+      word-wrap: break-word;
+      word-break: break-all;
     }
     .detail {
       font-family: $fontRegular;
@@ -49,6 +51,7 @@
       opacity: 0.8;
       font-size: 1.2rem;
       line-height: 1.5rem;
+      max-width: 800px;
     }
   }
 
@@ -89,6 +92,7 @@
   .details__movie {
     display: flex;
     column-gap: 10px;
+    font-family: $fontRegular;
     z-index: 10;
     & .rating {
       @include flexbox(row, flex-start, flex-start);
@@ -103,6 +107,7 @@
     opacity: 0.8;
     font-size: 1.2rem;
     line-height: 1.5rem;
+    max-width: 800px;
   }
   .controll-action-button {
     @include flexbox(row, flex-start, flex-start);
@@ -165,4 +170,61 @@
 
 .trending__movie {
   padding-bottom: $paddingSection;
+}
+
+@media only screen and (max-width: 1070px) {
+  $paddingSection: 20px;
+  #banner_home {
+    padding: $paddingSection 0;
+    padding-top: 200px;
+
+    .random__movie_container {
+      padding: 0 $paddingSection;
+    }
+
+    .container__similar_movie {
+      & .title__section {
+        margin: 0 $paddingSection;
+      }
+    }
+  }
+
+  #film__recentes,
+  #random_one,
+  #random_two,
+  #tv__movies,
+  #favorites__movies {
+    @include flexbox(column, flex-start, flex-start);
+    padding-bottom: $paddingSection;
+    & .title__section {
+      margin: 0 $paddingSection;
+    }
+  }
+
+  #content__movie_popular,
+  #content__movie_trending,
+  #content__movie_upcoming {
+    @include flexbox(column, flex-start, flex-start);
+    padding: 100px $paddingSection;
+  }
+
+  .title__content {
+    padding: 50px $paddingSection;
+  }
+
+  .trending__movie {
+    padding-bottom: $paddingSection;
+  }
+
+  #genre__films {
+    padding: 50px $paddingSection;
+  }
+
+  #popular__movie,
+  #trending__movie,
+  #upcoming__movie {
+    & .title__section {
+      margin: 0 $paddingSection;
+    }
+  }
 }

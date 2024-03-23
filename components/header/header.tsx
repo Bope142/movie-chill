@@ -1,9 +1,38 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import "./style.scss";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProfilSession } from "../profilSession/profilSession";
+
+interface ButtonMenuMobileProps {
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  isActive: boolean;
+}
+
+const ButtonMenuMobile: React.FC<ButtonMenuMobileProps> = ({
+  setIsActive,
+  isActive,
+}) => {
+  const handleClick = () => {
+    setIsActive(!isActive);
+    const navMobile = document.querySelector(".nav__mobile");
+    if (navMobile) {
+      navMobile.classList.toggle("nav__mobile_show");
+    }
+  };
+
+  return (
+    <button
+      className={`btn btn-menu btn-clic-effect ${isActive && "active"}`}
+      onClick={handleClick}
+    >
+      <span className="line"></span>
+      <span className="line"></span>
+      <span className="line"></span>
+    </button>
+  );
+};
 
 const HeaderLogo = () => {
   return (
@@ -42,11 +71,17 @@ const HeaderNav = () => {
 };
 
 function Header() {
+  const [isNavMobileActive, setIsNavMobileActive] = useState(false);
+
   return (
     <header className="header__page">
       <HeaderLogo />
       <HeaderNav />
       <ProfilSession connected={false} nameUser="Norbert" />
+      <ButtonMenuMobile
+        setIsActive={setIsNavMobileActive}
+        isActive={isNavMobileActive}
+      />
     </header>
   );
 }

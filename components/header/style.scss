@@ -8,6 +8,7 @@
   position: -webkit-sticky;
   position: sticky;
   justify-content: space-between;
+  align-items: center;
   padding: 40px $paddingSection;
   background: $colorNeutral1;
   z-index: 85;
@@ -15,8 +16,8 @@
     rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
   & .logo-header {
     color: $colorPrimaryBase;
-    font-family: $fontSemiBold;
-    font-size: 2rem;
+    font-family: $fontBold;
+    font-size: 1.5rem;
     text-transform: uppercase;
     & span {
       color: #cc8900;
@@ -39,4 +40,75 @@
     }
   }
   position: fixed;
+}
+
+.btn-menu {
+  background: $colorPrimaryBase;
+  display: none !important;
+  flex-direction: column;
+  row-gap: 5px;
+  padding: 10px !important;
+  border-radius: 0.2rem !important;
+  & * {
+    border-radius: 0.2rem !important;
+  }
+  & .line {
+    height: 2px;
+    width: 25px;
+    background: white;
+    transition: transform 0.3s ease;
+  }
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    border-radius: 0.2rem !important;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all 0.5s linear;
+    box-shadow: 0 0 5px 10px #ffac00;
+  }
+  &:active:after {
+    box-shadow: 0 0 0 0 #ffac00;
+    position: absolute;
+    border-radius: 0.2rem !important;
+    left: 0;
+    top: 0;
+    background: rgba($colorPrimary100, 0.15);
+    opacity: 1;
+    transition: 0s;
+  }
+}
+
+.btn-menu.active .line:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.btn-menu.active .line:nth-child(2) {
+  opacity: 0;
+}
+
+.btn-menu.active .line:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+@media only screen and (max-width: 1070px) {
+  $paddingSection: 20px;
+  .header__page {
+    padding: 40px $paddingSection;
+  }
+}
+
+@media only screen and (max-width: 1010px) {
+  .header__page {
+    & .profil__session,
+    .header__nav {
+      display: none !important;
+    }
+  }
+  .btn-menu {
+    display: flex !important;
+  }
 }

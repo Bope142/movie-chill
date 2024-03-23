@@ -29,3 +29,10 @@
     }
   }
 }
+
+@media only screen and (max-width: 1070px) {
+  $paddingSection: 20px;
+  .container__scroll {
+    padding: 20px $paddingSection;
+  }
+}

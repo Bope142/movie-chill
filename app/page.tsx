@@ -1,12 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import Header from "@/components/header/header";
 import "./index.style.scss";
 import Footer from "@/components/footer/footer";
 import { Button, ButtonLink } from "@/components/button/button";
 import { FaPlay } from "react-icons/fa";
 import { TitleSection } from "@/components/titleSection/titleSection";
-import { ContainerScroll } from "@/components/container/container";
+import {
+  ContainerScroll,
+  HeaderContainer,
+} from "@/components/container/container";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { MdStarRate } from "react-icons/md";
 import { TypeMovieOverview } from "@/types/movie";
@@ -14,7 +16,8 @@ import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { useState } from "react";
 import { TypeGenreMMovies } from "@/types/categorie";
 import { dataGenreMovie } from "@/data/genreMovie";
-
+import LoaderPage from "@/components/loader/loader";
+import { Suspense } from "react";
 const BannerHomePage = () => {
   return (
     <section
@@ -25,7 +28,7 @@ const BannerHomePage = () => {
       }}
     >
       <div className="random__movie_container">
-        <span>MADAME WEB</span>
+        <p className="movie-title">MADAME WEB</p>
         <div className="detail">2024 | LANGUE : English</div>
         <p className="overview">
           « Pendant ce temps, dans un autre univers... » Dans une variation du
@@ -421,18 +424,20 @@ const ContainerFavoritesMoivies = () => {
 export default function Home() {
   return (
     <main className="container__page" id="homePage">
-      <Header />
-      <BannerHomePage />
-      <PopularMoviesSection />
-      <ContainerFilmsRecent />
-      <SectionCategoryMovies />
-      <PlayingMoviesSection />
-      <ContainerRandomMovieOne />
-      <ContainerRandomMovieTwo />
-      <UpcomingMoviesSection />
-      <ContainerTvMoivies />
-      <ContainerFavoritesMoivies />
-      <Footer />
+      <Suspense fallback={<LoaderPage />}>
+        <HeaderContainer />
+        <BannerHomePage />
+        <PopularMoviesSection />
+        <ContainerFilmsRecent />
+        <SectionCategoryMovies />
+        <PlayingMoviesSection />
+        <ContainerRandomMovieOne />
+        <ContainerRandomMovieTwo />
+        <UpcomingMoviesSection />
+        <ContainerTvMoivies />
+        <ContainerFavoritesMoivies />
+        <Footer />
+      </Suspense>
     </main>
   );
 }
