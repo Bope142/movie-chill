@@ -6,12 +6,16 @@
   justify-content: space-between;
   padding: 25px $paddingSection;
   background: #0c0b0b;
-  & p {
+  margin-top: auto;
+  flex-wrap: wrap;
+  gap: 25px;
+  & .text-footer {
     display: flex;
     gap: 5px;
-    flex: none;
+
     font-family: $fontLight;
     font-size: 0.9rem;
+    flex-wrap: wrap;
     & .logo {
       color: $colorPrimaryBase;
       & span {
@@ -35,5 +39,12 @@
       width: 1.5rem;
       flex: none;
     }
+  }
+}
+
+@media only screen and (max-width: 1070px) {
+  $paddingSection: 20px;
+  .footer__page {
+    padding: 25px $paddingSection;
   }
 }

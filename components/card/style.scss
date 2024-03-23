@@ -124,11 +124,14 @@
   border: 4px solid transparent;
   transition: all 0.3s linear;
   cursor: pointer;
-  &:hover {
-    border: 4px solid $colorPrimaryBase;
-  }
+  // &:hover {
+  //   border: 4px solid $colorPrimaryBase;
+  // }
 }
 
+.card_movie_popular_selected {
+  border: 4px solid $colorPrimaryBase;
+}
 .popular-skeleton-loading {
   background: $colorPrimaryBase;
   border-color: transparent !important;
@@ -168,15 +171,15 @@
   & * {
     transition: all 0.3s linear;
   }
-  &:hover {
-    border: 4px solid $colorPrimaryBase;
-    transform: scale(1.1);
-    & .poster-movie {
-      transform: scale(1);
-    }
-  }
 }
 
+.card_movie_simple_selected {
+  border: 4px solid $colorPrimaryBase;
+  transform: scale(1.1);
+  & .poster-movie {
+    transform: scale(1);
+  }
+}
 .simple-skeleton-loading {
   background: $colorPrimaryBase;
   border-color: transparent !important;
