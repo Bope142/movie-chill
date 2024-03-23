@@ -1,0 +1,24 @@
+@import "../../public/style/variable.scss";
+
+.title__section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  & .title-large {
+    font-size: 1.8rem;
+    color: $colorNeutral2;
+    font-family: $fontSemiBold;
+  }
+  & .title-small {
+    font-size: 1.2rem;
+    color: $colorNeutral2;
+    font-family: $fontSemiBold;
+  }
+  & a {
+    & svg {
+      height: 1.8rem;
+      width: 1.8rem;
+      color: $colorPrimaryBase;
+    }
+  }
+}
