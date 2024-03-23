@@ -124,11 +124,14 @@
   border: 4px solid transparent;
   transition: all 0.3s linear;
   cursor: pointer;
-  &:hover {
-    border: 4px solid $colorPrimaryBase;
-  }
+  // &:hover {
+  //   border: 4px solid $colorPrimaryBase;
+  // }
 }
 
+.card_movie_popular_selected {
+  border: 4px solid $colorPrimaryBase;
+}
 .popular-skeleton-loading {
   background: $colorPrimaryBase;
   border-color: transparent !important;

@@ -1,11 +1,14 @@
 @import "../../public/style/variable.scss";
 
 .header__page {
-  position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   display: flex;
+  position: -webkit-sticky;
+  position: sticky;
   justify-content: space-between;
-  padding: 50px $paddingSection;
+  padding: 40px $paddingSection;
   background: $colorNeutral1;
   z-index: 85;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
@@ -35,4 +38,5 @@
       opacity: 1;
     }
   }
+  position: fixed;
 }

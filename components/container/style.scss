@@ -1,0 +1,31 @@
+@import "../../public/style/variable.scss";
+
+.container__scroll {
+  display: flex;
+  column-gap: 10px;
+  padding: 20px $paddingSection;
+  position: relative;
+  overflow-y: hidden;
+  overflow-x: scroll !important;
+  align-self: stretch;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.container__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.controll-left {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  left: 0;
+  z-index: 12;
+  & .btn {
+    opacity: 0.5;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

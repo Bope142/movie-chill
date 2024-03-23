@@ -6,7 +6,8 @@
   justify-content: space-between;
   padding: 25px $paddingSection;
   background: #0c0b0b;
-  & p {
+  margin-top: auto;
+  & .text-footer {
     display: flex;
     gap: 5px;
     flex: none;

@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
+"use client";
 import React from "react";
 import "./style.scss";
 import Image from "next/image";
