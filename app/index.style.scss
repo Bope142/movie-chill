@@ -62,7 +62,8 @@
   }
 }
 
-#popular__movie {
+#popular__movie,
+#trending__movie {
   @include flexbox(column, flex-start, flex-start);
   row-gap: 20px;
   & .title__section {
@@ -70,7 +71,8 @@
   }
 }
 
-#content__movie_popular {
+#content__movie_popular,
+#content__movie_trending {
   @include flexbox(column, flex-start, flex-start);
   row-gap: 20px;
   padding: 100px $paddingSection;
@@ -129,10 +131,12 @@
   }
 }
 
-#film__recentes {
+#film__recentes,
+#random_one,
+#random_two {
   @include flexbox(column, flex-start, flex-start);
   row-gap: 20px;
-
+  padding-bottom: $paddingSection;
   & .title__section {
     margin: 0 $paddingSection;
   }
@@ -153,4 +157,8 @@
 
 .title__content {
   padding: 25px $paddingSection;
+}
+
+.trending__movie {
+  padding-bottom: $paddingSection;
 }

@@ -197,7 +197,7 @@ const ContainerMoviePlaying: React.FC<PropsMovieComponent> = ({ movie }) => {
   return (
     <section
       className="section__page"
-      id="content__movie_popular"
+      id="content__movie_trending"
       style={{
         background: `url("${movie.poster}") center/cover fixed`,
       }}
@@ -237,7 +237,7 @@ const PlayingMoviesSection = () => {
         />
       </div>
       <ContainerMoviePlaying movie={data[selectedMovieIndex]} />
-      <section className="section__page" id="popular__movie">
+      <section className="section__page trending__movie" id="trending__movie">
         <ContainerScroll>
           {data.map((movie, index) => (
             <CardMovie
@@ -254,6 +254,53 @@ const PlayingMoviesSection = () => {
   );
 };
 
+const ConatinerRandomMovieOne = () => {
+  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+  return (
+    <section className="section__page" id="random_one">
+      <TitleSection
+        variant="title-large"
+        title="FILMS ACTIONS"
+        linkMore="/movies/recents"
+      />
+      <ContainerScroll>
+        {data.map((movie, index) => (
+          <CardMovie
+            key={index}
+            variant="primary"
+            poster={movie.poster}
+            title={movie.title}
+            id={movie.id}
+          />
+        ))}
+      </ContainerScroll>
+    </section>
+  );
+};
+
+const ConatinerRandomMovieTwo = () => {
+  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+  return (
+    <section className="section__page" id="random_two">
+      <TitleSection
+        variant="title-large"
+        title="FILMS HORREUR"
+        linkMore="/movies/recents"
+      />
+      <ContainerScroll>
+        {data.map((movie, index) => (
+          <CardMovie
+            key={index}
+            variant="primary"
+            poster={movie.poster}
+            title={movie.title}
+            id={movie.id}
+          />
+        ))}
+      </ContainerScroll>
+    </section>
+  );
+};
 export default function Home() {
   return (
     <main className="container__page" id="homePage">
@@ -263,6 +310,8 @@ export default function Home() {
       <ContainerFilmsRecent />
       <SectionCategoryMovies />
       <PlayingMoviesSection />
+      <ConatinerRandomMovieOne />
+      <ConatinerRandomMovieTwo />
       <Footer />
     </main>
   );
