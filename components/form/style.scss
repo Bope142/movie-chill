@@ -8,20 +8,20 @@
 .input_box_form {
   display: flex;
   flex-direction: column;
-  row-gap: 10px;
+  row-gap: 12px;
   transition: all 0.3s linear;
 
   & label {
-    font-family: $fontRegular;
+    font-family: $fontMedium;
     opacity: 1;
-    font-size: 1.4rem;
+    font-size: 1rem;
     color: $colorNeutral2;
   }
   & .input__form__box {
     outline: none;
     border: none;
     font-family: $fontRegular;
-    font-size: 1rem;
+    font-size: 0.9rem;
     opacity: 1;
     padding: 20px;
     background-color: $colorNeutral1;

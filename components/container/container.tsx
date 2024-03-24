@@ -5,6 +5,7 @@ import { FaCircleChevronLeft } from "react-icons/fa6";
 import { FaCircleChevronRight } from "react-icons/fa6";
 import Header from "../header/header";
 import NavMobile from "../navMobile/NavMobile";
+import Footer from "../footer/footer";
 type typeProps = {
   children: React.ReactNode;
 };
@@ -18,6 +19,17 @@ export const HeaderContainer = () => {
     <>
       <Header />
       <NavMobile />
+    </>
+  );
+};
+
+export const PageContent: React.FC<typeProps> = ({ children }) => {
+  return (
+    <>
+      <Header />
+      <NavMobile />
+      {children}
+      <Footer />
     </>
   );
 };

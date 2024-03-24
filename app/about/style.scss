@@ -1,1 +1,75 @@
 @import "../../public/style/main.scss";
+
+.section__about {
+  display: flex;
+  flex-direction: column;
+  row-gap: 55px;
+  align-items: center;
+}
+
+.card__about_container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.text-about {
+  max-width: 800px;
+  font-size: 1.5rem;
+  line-height: 1.7rem;
+  font-family: $fontBold;
+  text-align: center;
+  & span {
+    color: $colorPrimaryBase;
+  }
+}
+
+.section__faq {
+  display: flex;
+  flex-direction: column;
+  row-gap: 25px;
+  .container__faq {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+  }
+}
+
+.section__share {
+  padding-bottom: 80px !important;
+  padding-top: 10px !important;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  .img-content {
+    display: flex;
+    align-items: center;
+  }
+
+  .text-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 25px;
+    & p {
+      font-family: $fontBold;
+      font-size: 2rem;
+      line-height: 2.3rem;
+
+      & span {
+        color: $colorPrimaryBase;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1020px) {
+  .section__share {
+    grid-template-columns: 1fr;
+  }
+  .card__about_container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+  }
+}

@@ -11,14 +11,16 @@ html {
 }
 
 body {
-  // position: relative;
   font-family: $fontRegular;
   background: $colorNeutral1;
   color: $colorNeutral2;
 }
 
 .container__page {
-  overflow: hidden;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .Toastify__toast-container {
   & * {
@@ -80,6 +82,135 @@ body {
   }
 }
 
+.banner__page {
+  padding: 180px $paddingSection;
+  padding-bottom: 80px;
+  align-self: stretch;
+  @include flexbox(column, flex-start, flex-start);
+  row-gap: 20px;
+  background: url("/images/cover/wallpaperflare.com_wallpaper.jpg");
+  font-family: $fontBold;
+
+  position: relative;
+  & p {
+    max-width: 800px;
+    font-size: 2rem;
+    line-height: 2.3rem;
+  }
+
+  z-index: 8;
+  & * {
+    z-index: 8;
+  }
+  & span {
+    color: $colorPrimaryBase;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    box-sizing: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.12),
+      rgba(0, 0, 0, 0.7),
+      rgba(0, 0, 0, 0.9),
+      rgb(0, 0, 0)
+    );
+  }
+}
+
+.container__padding {
+  padding: 20px $paddingSection;
+}
+
+.btn-share {
+  cursor: pointer;
+  display: flex;
+  border-radius: 1.8rem;
+  gap: 10px;
+  align-items: center;
+  flex: none;
+  border-radius: $raduisBtn;
+  transition: all 0.3s linear;
+  background: $colorPrimaryBase;
+  width: 180px;
+  padding: 5px;
+  overflow: hidden;
+  & * {
+    transition: all 0.3s linear;
+    font-size: 1.5rem !important;
+  }
+  &:hover {
+    background: $colorPrimary100;
+    .front {
+      width: 40px;
+      & p {
+        opacity: 0;
+      }
+      & svg {
+        margin-left: 10px;
+      }
+    }
+    .content-icons {
+      opacity: 1;
+    }
+  }
+  .content-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-right: 8px;
+    opacity: 0;
+    & a svg {
+      color: #222222;
+      height: 1.5rem;
+      width: 1.5rem;
+      flex: none;
+    }
+  }
+  .front {
+    flex: none;
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+    border-radius: $raduisBtn;
+    background: $colorPrimaryBase;
+    padding: 5px;
+    color: #222222;
+    overflow: hidden;
+    width: 100%;
+
+    & p {
+      align-self: center;
+      text-align: center;
+      font-size: 1.2rem !important;
+    }
+    & svg {
+      height: 1.3rem;
+      width: 1.3rem;
+      flex: none;
+    }
+  }
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  .forgot-pswd {
+    font-family: $fontMedium;
+    font-size: 0.9rem;
+    color: $colorPrimaryBase;
+    align-self: end;
+    transform: translateY(-20px);
+  }
+}
 @media only screen and (max-width: 1070px) {
   $paddingSection: 20px;
   .sections__movies {
@@ -87,5 +218,12 @@ body {
     & .title__section {
       margin: 0 $paddingSection;
     }
+  }
+  .banner__page {
+    padding: 180px $paddingSection;
+    padding-bottom: 80px;
+  }
+  .container__padding {
+    padding: 20px $paddingSection;
   }
 }

@@ -1,1 +1,104 @@
 @import "../../public/style/main.scss";
+
+#login__page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.container__form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  justify-content: center;
+  order: 0;
+  h1 {
+    font-family: $fontBold;
+    font-size: 2rem;
+    line-height: 2.3rem;
+    & span {
+      color: $colorPrimaryBase;
+    }
+  }
+  .text-form {
+    margin-bottom: 15px;
+    font-family: $fontRegular;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    line-height: 1.2rem;
+  }
+}
+.container__right {
+  background: url("/images/icons/bg.svg") center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 35px;
+  padding-bottom: 35px;
+  position: relative;
+  .box {
+    border-radius: 0.3rem;
+    padding: 30px 25px;
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2.5px);
+    -webkit-backdrop-filter: blur(2.5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 10;
+    p {
+      font-family: $fontBold;
+      font-size: 1.8rem;
+      line-height: 2rem;
+      & span {
+        color: $colorPrimaryBase;
+      }
+    }
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    box-sizing: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.8),
+      rgba(0, 0, 0, 0.95)
+    );
+  }
+}
+
+.bottom-text {
+  font-family: $fontRegular;
+  font-size: 0.9rem;
+  opacity: 1;
+  text-align: center;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2px;
+
+  a {
+    font-family: $fontMedium;
+    font-size: 0.9rem;
+    color: $colorPrimaryBase;
+    align-self: end;
+  }
+}
+
+@media only screen and (max-width: 1070px) {
+  #login__page {
+    display: flex;
+    flex-direction: column;
+  }
+  .container__form {
+    order: 1;
+  }
+}

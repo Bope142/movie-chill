@@ -1,0 +1,87 @@
+@import "../../../public/style/main.scss";
+
+.page__success {
+  display: flex;
+  flex-direction: column;
+  row-gap: 50px;
+}
+
+.hd {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  h1 {
+    font-family: $fontBold;
+    font-size: 2rem;
+    line-height: 2.3rem;
+    & span {
+      color: $colorPrimaryBase;
+    }
+  }
+}
+
+.indicator {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 50%;
+  gap: 5px;
+  .items {
+    border-radius: 0.3rem;
+    height: 5px;
+    background: $colorPrimary100;
+  }
+}
+
+.content {
+  display: flex !important;
+  flex-direction: column !important;
+  row-gap: 25px !important;
+}
+
+.title-slide {
+  font-family: $fontBold;
+  font-size: 1.2rem;
+  line-height: 1.5rem;
+}
+
+.box-profil {
+  position: relative;
+  //overflow: hidden;
+  height: 100px;
+  width: 100px;
+  padding: 0 !important;
+  border-radius: 50%;
+  background: $colorPrimaryBase;
+  flex: none;
+  border: 2px solid $colorPrimaryBase;
+  img {
+    height: 100% !important;
+    width: 100% !important;
+    flex: none !important;
+    object-fit: cover;
+  }
+}
+
+.btn-add-photo {
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: $colorSecondary700;
+  right: -25%;
+  top: 12%;
+}
+
+.controll__slide {
+  display: flex;
+  gap: 10px;
+}
+
+.box-categories-movie-app {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
