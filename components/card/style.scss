@@ -109,6 +109,114 @@
   }
 }
 
+//DEFAULT CARD MOVIES
+//----------------------------------------------------------------
+.card_movie_default {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  height: 300px;
+  width: 200px;
+  flex: none;
+  border-radius: 0.5rem;
+  border: 4px solid transparent;
+  transition: all 0.3s linear;
+  cursor: pointer;
+  & * {
+    transition: all 0.3s linear;
+  }
+  &:hover {
+    border: 4px solid $colorPrimaryBase;
+    & .poster-movie {
+      transform: scale(1.3);
+    }
+    & .overview__container {
+      opacity: 1;
+      height: 100%;
+      bottom: 0%;
+    }
+  }
+  & .overview__container {
+    position: absolute;
+    transition: all 0.4s linear;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.12),
+      rgba(0, 0, 0, 0.87),
+      rgb(0, 0, 0)
+    );
+    width: 100%;
+    height: 0%;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    bottom: -100%;
+    & .content {
+      margin-top: auto;
+      width: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.068),
+        rgb(0, 0, 0)
+      );
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      gap: 15px;
+      flex-wrap: wrap;
+      padding-top: 5px;
+      & .movie__title {
+        font-family: $fontBold;
+        font-size: 1.3rem;
+
+        line-height: 1.48rem;
+      }
+      & .btn-link {
+        text-decoration: none;
+        padding: 0 15px !important;
+        border-radius: $raduisBtn;
+        display: flex;
+        height: 30px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+.default-skeleton-loading {
+  background: $colorPrimaryBase;
+  border-color: transparent !important;
+  padding: 0 !important;
+  cursor: not-allowed !important;
+  background: rgba($colorPrimaryBase, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  &:hover {
+    border-color: transparent !important;
+    transform: none !important;
+  }
+}
+.default-skeleton-loading::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: $colorPrimaryBase;
+  animation: pulseskeletonPrimary 1.5s infinite alternate;
+}
+
+@keyframes pulseskeletonPrimary {
+  from {
+    opacity: 0.1;
+  }
+  to {
+    opacity: 0.85;
+  }
+}
+
 //POPULAR CARD MOVIES
 //----------------------------------------------------------------
 

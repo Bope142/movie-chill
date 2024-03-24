@@ -29,7 +29,7 @@ interface CardCategoryMovie {
   onClick?: () => void;
 }
 interface CardProps {
-  variant: "primary" | "popular" | "simple";
+  variant: "primary" | "popular" | "simple" | "default";
   id?: number;
   title?: string;
   poster?: string;
@@ -162,6 +162,36 @@ export const CardMovie: React.FC<CardProps> = ({
     case "primary":
       return (
         <div className={`card_movie_primary ${skeletonLoadingClass}`}>
+          {isLoading ? (
+            <div className="skeleton-loading"></div>
+          ) : (
+            <>
+              {poster && (
+                <Image
+                  src={poster}
+                  alt={`poster movie ${title}`}
+                  className="img-fluid poster-movie"
+                  width={100}
+                  height={100}
+                />
+              )}
+
+              <div className="overview__container">
+                <div className="content">
+                  <span className="movie__title">{title}</span>
+                  <ButtonLink variant="primary" href={`/movie/${id}`}>
+                    Voir
+                  </ButtonLink>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      );
+
+    case "default":
+      return (
+        <div className={`card_movie_default ${skeletonLoadingClass}`}>
           {isLoading ? (
             <div className="skeleton-loading"></div>
           ) : (

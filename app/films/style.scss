@@ -1,1 +1,80 @@
 @import "../../public/style/main.scss";
+
+#banner__movie {
+  @include flexbox(column, flex-start, flex-start);
+  row-gap: 20px;
+  padding: 180px $paddingSection;
+  position: relative;
+  transition: all 0.3s ease-in-out !important;
+  & h1 {
+    font-family: $fontBold;
+    font-size: 3rem;
+    z-index: 10;
+  }
+
+  .details__movie {
+    display: flex;
+    column-gap: 10px;
+    font-family: $fontRegular;
+    z-index: 10;
+    & .rating {
+      @include flexbox(row, flex-start, flex-start);
+      & * {
+        color: $colorPrimaryBase;
+      }
+    }
+  }
+  .overview {
+    z-index: 10;
+    font-family: $fontRegular;
+    opacity: 0.8;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+    max-width: 800px;
+  }
+  .controll-action-button {
+    @include flexbox(row, flex-start, flex-start);
+    z-index: 10;
+    column-gap: 15px;
+    & .btn {
+      height: 100% !important;
+      align-self: stretch;
+    }
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    box-sizing: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.12),
+      rgba(0, 0, 0, 0.7),
+      rgba(0, 0, 0, 0.9),
+      rgb(0, 0, 0)
+    );
+  }
+}
+
+#container__all_movie {
+  //@include flexbox(row, flex-start, flex-start);
+  padding: 50px $paddingSection;
+  gap: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transform: scale(0.6);
+}
+@media only screen and (max-width: 1070px) {
+  $paddingSection: 20px;
+  #banner__movie {
+    padding: 180px $paddingSection;
+  }
+  #container__all_movie {
+    padding: 50px 10px;
+  }
+}
