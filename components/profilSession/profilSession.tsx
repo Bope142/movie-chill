@@ -40,7 +40,7 @@ export const ProfilSession: React.FC<propsProfil> = ({
   } else {
     return (
       <div className="profil__session">
-        <ButtonLink variant="secondary" href="/login">
+        <ButtonLink variant="secondary" href="/signup">
           S'inscrire
         </ButtonLink>
         <ButtonLink variant="primary" href="/login">
