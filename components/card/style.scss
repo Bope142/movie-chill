@@ -410,6 +410,10 @@
   font-size: 1.2rem;
   color: $colorNeutral2;
   font-family: $fontLight;
+  transition: all 0.3s linear;
+  & * {
+    transition: all 0.3s linear;
+  }
 }
 
 .categorie_card_primary {
@@ -417,6 +421,10 @@
   color: $colorNeutral2;
 }
 
+.categorie_card_primary-active {
+  background: $colorPrimaryBase;
+  color: $colorNeutral1;
+}
 .categorie_card_default {
   background: $colorPrimaryBase;
   color: $colorNeutral2;

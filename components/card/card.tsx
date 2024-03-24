@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import "./style.scss";
 import Image from "next/image";
 import { Button, ButtonLink } from "../button/button";
@@ -83,9 +83,20 @@ export const CardCategorie: React.FC<CardCategoryMovie> = ({
   title,
   onClick,
 }) => {
+  const [isActive, setIsActive] = useState(false);
+  const handleClick = () => {
+    setIsActive(!isActive);
+  };
   if (variant === "primary") {
     return (
-      <div className={`card_categorie  categorie_card_primary `}>{title}</div>
+      <div
+        className={`card_categorie categorie_card_primary ${
+          isActive ? "categorie_card_primary-active" : ""
+        }`}
+        onClick={handleClick}
+      >
+        {title}
+      </div>
     );
   } else if (variant === "default") {
     return (
