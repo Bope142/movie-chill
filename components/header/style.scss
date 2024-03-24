@@ -55,7 +55,7 @@
   & .line {
     height: 2px;
     width: 25px;
-    background: white;
+    background: $colorNeutral1;
     transition: transform 0.3s ease;
   }
   &::after {

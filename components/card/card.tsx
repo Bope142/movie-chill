@@ -55,10 +55,12 @@ export const CardFAQ: React.FC<CardFaq> = ({
   onClick,
 }) => {
   return (
-    <div className="card__faq">
+    <div className={`card__faq ${isOpen ? "card__faq_active" : ""}`}>
       <div className="faq__header">
         <span className="qst__faq">{title}</span>
-        <div className="action-faq">{isOpen ? <FaPlus /> : <FaTimes />}</div>
+        <div className="action-faq" onClick={onClick}>
+          {isOpen ? <FaTimes /> : <FaPlus />}
+        </div>
       </div>
       <p className="response__faq">{response}</p>
     </div>
