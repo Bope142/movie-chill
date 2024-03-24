@@ -199,6 +199,18 @@ body {
     }
   }
 }
+.form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  .forgot-pswd {
+    font-family: $fontMedium;
+    font-size: 0.9rem;
+    color: $colorPrimaryBase;
+    align-self: end;
+    transform: translateY(-20px);
+  }
+}
 @media only screen and (max-width: 1070px) {
   $paddingSection: 20px;
   .sections__movies {
