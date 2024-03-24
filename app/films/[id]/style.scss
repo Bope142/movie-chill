@@ -1,0 +1,74 @@
+@import "../../../public/style/main.scss";
+
+#bannerMovie {
+  display: flex;
+  flex-direction: column;
+}
+
+.container__details__movies {
+  display: flex;
+  gap: 35px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  h2 {
+    font-family: $fontBold;
+    font-size: 3rem;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+  .category__movie__container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .details__other {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    .circle {
+      background: $colorPrimaryBase;
+      height: 10px;
+      flex: none;
+      width: 10px;
+      border-radius: 50%;
+    }
+    .rating {
+      display: flex;
+      align-items: center;
+      svg {
+        color: $colorPrimaryBase;
+      }
+    }
+    .years,
+    .langs {
+      font-family: $fontRegular;
+      font-size: 1rem;
+      color: $colorPrimaryBase;
+    }
+  }
+}
+
+.right {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-self: center;
+  margin-left: auto;
+}
+
+.overview-movie {
+  font-family: $fontRegular;
+  opacity: 0.8;
+  font-size: 1.2rem !important;
+  line-height: 1.5rem !important;
+  max-width: 800px;
+}

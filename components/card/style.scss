@@ -416,6 +416,13 @@
   background: $colorNeutral1;
   color: $colorNeutral2;
 }
+
+.categorie_card_default {
+  background: $colorPrimaryBase;
+  color: $colorNeutral2;
+  border-radius: 2.8rem;
+  font-size: 0.9rem;
+}
 .categorie_card_simple {
   transition: all 0.3s linear;
   &:hover {

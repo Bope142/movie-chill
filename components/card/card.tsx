@@ -23,7 +23,7 @@ interface CardAbout {
 }
 
 interface CardCategoryMovie {
-  variant: "primary" | "simple";
+  variant: "primary" | "simple" | "default";
   id?: number;
   title?: string;
   onClick?: () => void;
@@ -87,10 +87,14 @@ export const CardCategorie: React.FC<CardCategoryMovie> = ({
     return (
       <div className={`card_categorie  categorie_card_primary `}>{title}</div>
     );
+  } else if (variant === "default") {
+    return (
+      <div className={`card_categorie  categorie_card_default `}>{title}</div>
+    );
   } else {
     return (
       <Link
-        href={`/movies/categorie/${id}`}
+        href={`/films/categorie/${id}`}
         className={`card_categorie categorie_card_simple`}
       >
         {title}
@@ -137,7 +141,7 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
             <div className="rating__count">{ratingCountIcons(rating || 0)}</div>
             <p className="detail">{detailsMovie}</p>
             <div className="controll__btn">
-              <ButtonLink variant="primary" href={`/movie/${id}`}>
+              <ButtonLink variant="primary" href={`/films/${id}`}>
                 <BsInfoCircleFill />
               </ButtonLink>
               <Button variant="danger">
@@ -181,7 +185,7 @@ export const CardMovie: React.FC<CardProps> = ({
               <div className="overview__container">
                 <div className="content">
                   <span className="movie__title">{title}</span>
-                  <ButtonLink variant="primary" href={`/movie/${id}`}>
+                  <ButtonLink variant="primary" href={`/films/${id}`}>
                     Voir
                   </ButtonLink>
                 </div>
@@ -211,7 +215,7 @@ export const CardMovie: React.FC<CardProps> = ({
               <div className="overview__container">
                 <div className="content-mv">
                   <span className="movie__title">{title}</span>
-                  <ButtonLink variant="primary" href={`/movie/${id}`}>
+                  <ButtonLink variant="primary" href={`/films/${id}`}>
                     Voir
                   </ButtonLink>
                 </div>

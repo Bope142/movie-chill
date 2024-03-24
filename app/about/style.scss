@@ -63,68 +63,6 @@
   }
 }
 
-.btn-share {
-  cursor: pointer;
-  display: flex;
-  border-radius: 1.8rem;
-  gap: 10px;
-  align-items: center;
-  flex: none;
-  border-radius: 2.8rem;
-  transition: all 0.3s linear;
-  background: $colorPrimaryBase;
-  width: 210px;
-  padding: 10px;
-  overflow: hidden;
-  & * {
-    transition: all 0.3s linear;
-  }
-  &:hover {
-    background: $colorPrimary100;
-    .front {
-      width: 40px;
-      & p {
-        opacity: 0;
-      }
-    }
-    .content-icons {
-      opacity: 1;
-    }
-  }
-  .content-icons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    margin-right: 8px;
-    opacity: 0;
-    & a svg {
-      color: #222222;
-      height: 2rem;
-      width: 2rem;
-      flex: none;
-    }
-  }
-  .front {
-    flex: none;
-    display: flex;
-    align-items: center;
-    column-gap: 10px;
-    border-radius: 2.8rem;
-    background: $colorPrimaryBase;
-    padding: 10px;
-    color: #222222;
-    overflow: hidden;
-    width: 100%;
-
-    & svg {
-      height: 1.8rem;
-      width: 1.8rem;
-      flex: none;
-    }
-  }
-}
-
 @media only screen and (max-width: 1020px) {
   .section__share {
     grid-template-columns: 1fr;
