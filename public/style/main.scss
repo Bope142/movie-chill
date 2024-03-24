@@ -11,14 +11,16 @@ html {
 }
 
 body {
-  // position: relative;
   font-family: $fontRegular;
   background: $colorNeutral1;
   color: $colorNeutral2;
 }
 
 .container__page {
-  overflow: hidden;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .Toastify__toast-container {
   & * {
@@ -80,6 +82,15 @@ body {
   }
 }
 
+.banner__page {
+  padding: 180px $paddingSection;
+  padding-bottom: 80px;
+  align-self: stretch;
+}
+
+.container__padding {
+  padding: 20px $paddingSection;
+}
 @media only screen and (max-width: 1070px) {
   $paddingSection: 20px;
   .sections__movies {
@@ -87,5 +98,12 @@ body {
     & .title__section {
       margin: 0 $paddingSection;
     }
+  }
+  .banner__page {
+    padding: 180px $paddingSection;
+    padding-bottom: 80px;
+  }
+  .container__padding {
+    padding: 20px $paddingSection;
   }
 }

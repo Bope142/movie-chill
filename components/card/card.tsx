@@ -207,7 +207,7 @@ export const CardMovie: React.FC<CardProps> = ({
               )}
 
               <div className="overview__container">
-                <div className="content">
+                <div className="content-mv">
                   <span className="movie__title">{title}</span>
                   <ButtonLink variant="primary" href={`/movie/${id}`}>
                     Voir
