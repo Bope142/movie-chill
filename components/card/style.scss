@@ -326,7 +326,9 @@
   padding: 10px;
   border-radius: 0.5rem;
   background: #121110;
+  flex-direction: column;
   gap: 20px;
+  flex-wrap: wrap;
   transition: all 0.3s linear;
   &:hover {
     transform: scale(1.02);
@@ -337,7 +339,8 @@
     display: flex;
     overflow: hidden;
     border-radius: 0.5rem;
-    width: 200px;
+    width: 100%;
+    height: 180px;
     flex: none;
     //height: 200px;
   }
