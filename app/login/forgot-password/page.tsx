@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { InputBoxForm } from "@/components/form/form";
 import "./style.scss";
 import Link from "next/link";
@@ -9,33 +10,24 @@ const FormLogin = () => {
   return (
     <main className="container__form container__padding">
       <h1>
-        Bienvenue sur <span> Movie Chill</span> 👋
+        Mot de passe <span>Oublié</span> ?🤔
       </h1>
       <p className="text-form">
-        Connectez-vous pour accéder à votre compte Movie Chill.
+        Si vous avez oublié votre mot de passe, ne vous inquiétez pas. Vous
+        pouvez facilement le réinitialiser en suivant les étapes ci-dessous.
       </p>
-      <form action="" className="form__login form">
+      <form action="" className="form__reset__password form">
         <InputBoxForm
           label="Email"
           placeholder="Votre adresse email ici"
           typeInput="email"
           nameInput="emailUser"
         />
-        <InputBoxForm
-          label="Mot de Passe"
-          placeholder="Votre mot de passe ici"
-          typeInput="password"
-          nameInput="passwordUser"
-        />
-        <Link href={"/login/forgot-password"} className="forgot-pswd">
-          Mot de passe oublié ?
-        </Link>
-        <Button variant="primary">Se connecter</Button>
+        <Button variant="primary">Rénitialiser le mot de passe</Button>
       </form>
       <p className="bottom-text">
-        Pas encore de compte ? Vous pouvez
-        <Link href={"/signup"} className="">
-          créer un compte ici
+        <Link href={"/"} className="">
+          Retour à la page d'accueil
         </Link>
       </p>
     </main>
@@ -46,16 +38,18 @@ const RightContainer = () => {
     <main className="container__right container__padding">
       <div className="box">
         <p>
-          Connectez-vous pour accéder à une <span>expérience</span>{" "}
-          cinématographique <span>personnalisée</span>.🤩{" "}
+          Une fois que vous aurez reçu le lien de <span>réinitialisation</span>{" "}
+          par e-mail, suivez les instructions pour choisir un nouveau{" "}
+          <span>mot de passe</span> et accéder à votre <span>compte</span> en un
+          rien de temps.
         </p>
       </div>
     </main>
   );
 };
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   return (
-    <main className="container__page" id="login__page">
+    <main className="container__page" id="forgotpassword__page">
       <Suspense fallback={<LoaderPage />}>
         <FormLogin />
         <RightContainer />

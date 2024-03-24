@@ -3,7 +3,8 @@ import { InputBoxForm } from "@/components/form/form";
 import "./style.scss";
 import Link from "next/link";
 import { Button } from "@/components/button/button";
-
+import LoaderPage from "@/components/loader/loader";
+import { Suspense } from "react";
 const FormLogin = () => {
   return (
     <main className="container__form container__padding">
@@ -66,8 +67,10 @@ const RightContainer = () => {
 export default function SignupPage() {
   return (
     <main className="container__page" id="signup__page">
-      <FormLogin />
-      <RightContainer />
+      <Suspense fallback={<LoaderPage />}>
+        <FormLogin />
+        <RightContainer />
+      </Suspense>
     </main>
   );
 }
