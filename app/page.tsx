@@ -13,68 +13,14 @@ import { CardCategorie, CardMovie } from "@/components/card/card";
 import { MdStarRate } from "react-icons/md";
 import { TypeMovieOverview, TypeMovieDetails } from "@/types/movie";
 import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TypeGenreMMovies } from "@/types/categorie";
 import { dataGenreMovie } from "@/data/genreMovie";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
-import { useGetPopularMovie } from "@/hooks/useMovie";
-const BannerHomePage = () => {
-  return (
-    <section
-      className="section_page"
-      id="banner_home"
-      style={{
-        background: `url("/images/cover/wallpaperflare.com_wallpaper.jpg") center/cover fixed`,
-      }}
-    >
-      <div className="random__movie_container">
-        <p className="movie-title">MADAME WEB</p>
-        <div className="detail">2024 | LANGUE : English</div>
-        <p className="overview">
-          « Pendant ce temps, dans un autre univers... » Dans une variation du
-          genre classique, Madame Web raconte les origines de l'une des plus
-          énigmatiques héroïnes des bandes dessinées Marvel. Le suspense met en
-          vedette Dakota Johnson dans le rôle de Cassandra Webb, une
-          ambulancière de Manhattan ayant des dons de voyance. Contrainte de
-          faire face à des révélations sur son passé, elle
-        </p>
-        <ButtonLink variant="primary" href="/movie/545">
-          Voir Maintenant <FaPlay />
-        </ButtonLink>
-      </div>
-      <div className="container__similar_movie">
-        <TitleSection variant="title-small" title="FILM SIMILAIRE" />
-        <ContainerScroll>
-          <CardMovie
-            variant="primary"
-            poster="/images/cover/d0I7s9ysy5EEomq5Grvnxriak3v.jpg"
-            title="Madame Web"
-            id={52}
-          />
-          <CardMovie
-            variant="primary"
-            poster="/images/cover/gTANNf43FKKxN5bEGNGIhBF9Wg2.jpg"
-            title="Madame Web"
-            id={52}
-          />
-          <CardMovie
-            variant="primary"
-            poster="/images/cover/pwGmXVKUgKN13psUjlhC9zBcq1o.jpg"
-            title="Madame Web"
-            id={52}
-          />
-          <CardMovie
-            variant="primary"
-            poster="/images/cover/zTYdMdMeMxkPxzLtbkP44HThIAW.jpg"
-            title="Madame Web"
-            id={52}
-          />
-        </ContainerScroll>
-      </div>
-    </section>
-  );
-};
+import { useGetPopularMovie, useGetSimilarMovie } from "@/hooks/useMovie";
+import { useMutation } from "react-query";
+import axios from "axios";
 
 interface PropsMovieComponent {
   movie?: TypeMovieDetails;
@@ -84,6 +30,89 @@ interface PropsMovieComponent {
 interface PropsMovieComponent2 {
   movie: TypeMovieOverview;
 }
+
+const BannerHomePage = () => {
+  type SimilarMovies = TypeMovieDetails[];
+  const { data, isLoading, isError } = useGetPopularMovie(1);
+  const [loadeingSimilarMovie, setLoadeingSimilarMovie] =
+    useState<boolean>(true);
+  const [similarMovie, setSimilarMovie] = useState<SimilarMovies>([]);
+  const [currentPopularMovie, setCurrentPopularMovie] =
+    useState<TypeMovieDetails | null>(null);
+  const { mutate: getSemilarMovie, isLoading: loaded } = useMutation(
+    (id: number) => axios.get(`/api/movies/similar/${id}`),
+    {
+      onSuccess: async (response) => {
+        setSimilarMovie(response.data);
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+  useEffect(() => {
+    if (!isLoading && data !== null) {
+      const randomIndex: number = Math.floor(Math.random() * data.length - 1);
+      const randomMovieId: number = data[randomIndex].id;
+      getSemilarMovie(randomMovieId);
+      setCurrentPopularMovie(data[randomIndex]);
+      setLoadeingSimilarMovie(false);
+    }
+  }, [isLoading, data, getSemilarMovie]);
+
+  const displayContainer = loadeingSimilarMovie ? (
+    <section
+      className="banner-loading section__page loading__container"
+      id="content__movie_popular"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : (
+    <section
+      className="section_page"
+      id="banner_home"
+      style={{
+        background: `url("https://image.tmdb.org/t/p/original${
+          currentPopularMovie && currentPopularMovie.poster_path
+        }") center/cover fixed`,
+      }}
+    >
+      <div className="random__movie_container">
+        <p className="movie-title">
+          {currentPopularMovie && currentPopularMovie.title}
+        </p>
+        <div className="detail">
+          {currentPopularMovie && currentPopularMovie.release_date} | LANGUE :{" "}
+          {currentPopularMovie && currentPopularMovie.original_language}
+        </div>
+        <p className="overview">
+          {currentPopularMovie && currentPopularMovie.overview}
+        </p>
+        <ButtonLink
+          variant="primary"
+          href={`/movies/${currentPopularMovie && currentPopularMovie.id}`}
+        >
+          Voir Maintenant <FaPlay />
+        </ButtonLink>
+      </div>
+      <div className="container__similar_movie">
+        <TitleSection variant="title-small" title="FILM SIMILAIRE" />
+        <ContainerScroll>
+          {similarMovie.slice(0, 10).map((movie) => (
+            <CardMovie
+              key={movie.id}
+              variant="primary"
+              poster={movie.poster_path}
+              title={movie.title}
+              id={movie.id}
+            />
+          ))}
+        </ContainerScroll>
+      </div>
+    </section>
+  );
+  return displayContainer;
+};
 
 const ContainerCurrentPopularMovie: React.FC<PropsMovieComponent> = ({
   movie,
@@ -133,7 +162,7 @@ const ContainerCurrentPopularMovie: React.FC<PropsMovieComponent> = ({
         <Button variant="primary">
           Voir le trailer <FaPlay />
         </Button>
-        <ButtonLink variant="secondary" href="/movies/12">
+        <ButtonLink variant="secondary" href={`/movies/${movie?.id}`}>
           Plus d'infos
         </ButtonLink>
       </div>
@@ -166,7 +195,7 @@ const PopularMoviesSection = () => {
             ? loadingCardMovies
             : moviesPopular.map((movie: TypeMovieDetails, index: number) => (
                 <CardMovie
-                  key={index}
+                  key={movie.id}
                   variant="popular"
                   poster={movie.poster_path}
                   onClick={() => handleCardClick(index)}

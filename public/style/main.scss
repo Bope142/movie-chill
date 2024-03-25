@@ -239,7 +239,9 @@ body {
     opacity: 0.85;
   }
 }
-
+.banner-loading {
+  margin-top: 150px !important;
+}
 @media only screen and (max-width: 1070px) {
   $paddingSection: 20px;
   .sections__movies {

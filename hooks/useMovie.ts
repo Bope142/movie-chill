@@ -19,3 +19,21 @@ export const useGetPopularMovie = (page: number) => {
     queryFn: () => getPopularMovie(page),
   });
 };
+
+const getSimilarMovie = async (id: number) => {
+  try {
+    const { data } = await axios.get(`/api/movies/similar/${id}`);
+    return data;
+  } catch (error) {
+    console.error("Error while fetching popular movies", error);
+    throw error;
+  }
+};
+
+export const useGetSimilarMovie = (id: number) => {
+  return useQuery({
+    queryKey: ["similar-movie", id],
+
+    queryFn: () => getSimilarMovie(id),
+  });
+};

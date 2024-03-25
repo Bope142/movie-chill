@@ -1,14 +1,16 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (req: NextRequest) => {
+export const GET = async (
+  req: NextRequest,
+  { params }: { params: Record<string, string> }
+) => {
   try {
-    const url = new URL(req.url);
-    const page = url.searchParams.get("page");
-    if (!page)
+    const { id } = params;
+    if (!id)
       return NextResponse.json(
         {
-          error: "parameters page not specified for GET request ",
+          error: "parameters not specified for GET request ",
         },
         {
           status: 403,
@@ -16,7 +18,7 @@ export const GET = async (req: NextRequest) => {
       );
 
     const response = await axios.get(
-      `${process.env.BASE_URL_API}discover/movie?sort_by=popularity.desc&api_key=${process.env.API_KEY}&language=fr&page=${page}`
+      `${process.env.BASE_URL_API}movie/${id}/similar?api_key=${process.env.API_KEY}&language=fr&page=1`
     );
 
     if (response.status === 200) {
