@@ -216,7 +216,7 @@ export const CardMovie: React.FC<CardProps> = ({
             <>
               {poster && (
                 <Image
-                  src={poster}
+                  src={`https://image.tmdb.org/t/p/original${poster}`}
                   alt={`poster movie ${title}`}
                   className="img-fluid poster-movie"
                   width={100}
@@ -274,7 +274,7 @@ export const CardMovie: React.FC<CardProps> = ({
           ) : (
             poster && (
               <Image
-                src={poster}
+                src={`https://image.tmdb.org/t/p/original${poster}`}
                 alt={`poster movie ${title}`}
                 className="img-fluid poster-movie"
                 width={100}

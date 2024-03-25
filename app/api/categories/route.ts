@@ -6,7 +6,7 @@ export const GET = async () => {
   try {
     const prisma = new PrismaClient();
     const categories = await prisma.movie_categories.findMany({});
-    console.log(categories);
+
     if (categories !== null) {
       return NextResponse.json(categories, {
         status: 200,

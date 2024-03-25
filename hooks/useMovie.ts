@@ -39,3 +39,21 @@ export const useGetRecentMovie = (year: number, page: number) => {
     queryFn: () => getRecentMovie(year, page),
   });
 };
+
+const getTrendingMovie = async (page: number) => {
+  try {
+    const { data } = await axios.get(`/api/movies/trending?page=${page}`);
+    return data;
+  } catch (error) {
+    console.error("Error while fetching playing movies", error);
+    throw error;
+  }
+};
+
+export const useGetTrendingMovie = (page: number) => {
+  return useQuery({
+    queryKey: ["popular-movie", page],
+
+    queryFn: () => getTrendingMovie(page),
+  });
+};
