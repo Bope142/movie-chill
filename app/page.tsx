@@ -18,7 +18,7 @@ import { TypeGenreMMovies } from "@/types/categorie";
 import { dataGenreMovie } from "@/data/genreMovie";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
-import { useGetPopularMovie, useGetSimilarMovie } from "@/hooks/useMovie";
+import { useGetPopularMovie, useGetRecentMovie } from "@/hooks/useMovie";
 import { useMutation } from "react-query";
 import axios from "axios";
 
@@ -213,7 +213,13 @@ const PopularMoviesSection = () => {
 };
 
 const ContainerFilmsRecent = () => {
-  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+  const date = new Date();
+  let year = date.getFullYear();
+  const { data: recentMovie, isLoading, isError } = useGetRecentMovie(year, 1);
+
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="primary" key={index} isLoading={true} />
+  ));
   return (
     <section className="section__page" id="film__recentes">
       <TitleSection
@@ -222,15 +228,19 @@ const ContainerFilmsRecent = () => {
         linkMore="/movies/recents"
       />
       <ContainerScroll>
-        {data.map((movie, index) => (
-          <CardMovie
-            key={index}
-            variant="primary"
-            poster={movie.poster}
-            title={movie.title}
-            id={movie.id}
-          />
-        ))}
+        {isLoading
+          ? loadingCardMovies
+          : recentMovie
+              .slice(0, 20)
+              .map((movie: TypeMovieDetails) => (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              ))}
       </ContainerScroll>
     </section>
   );

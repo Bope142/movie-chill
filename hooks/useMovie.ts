@@ -20,20 +20,22 @@ export const useGetPopularMovie = (page: number) => {
   });
 };
 
-const getSimilarMovie = async (id: number) => {
+const getRecentMovie = async (year: number, page: number) => {
   try {
-    const { data } = await axios.get(`/api/movies/similar/${id}`);
+    const { data } = await axios.get(
+      `/api/movies/recents?year=${year}&page=${page}`
+    );
     return data;
   } catch (error) {
-    console.error("Error while fetching popular movies", error);
+    console.error("Error while fetching recents movies", error);
     throw error;
   }
 };
 
-export const useGetSimilarMovie = (id: number) => {
+export const useGetRecentMovie = (year: number, page: number) => {
   return useQuery({
-    queryKey: ["similar-movie", id],
+    queryKey: ["recent-movie", year, page],
 
-    queryFn: () => getSimilarMovie(id),
+    queryFn: () => getRecentMovie(year, page),
   });
 };
