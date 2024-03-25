@@ -14,13 +14,14 @@ import { MdStarRate } from "react-icons/md";
 import { TypeMovieOverview, TypeMovieDetails } from "@/types/movie";
 import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { useEffect, useState } from "react";
-import { TypeGenreMMovies } from "@/types/categorie";
+import { TypeGenreMMovies, TypeMovieCategory } from "@/types/categorie";
 import { dataGenreMovie } from "@/data/genreMovie";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
 import { useGetPopularMovie, useGetRecentMovie } from "@/hooks/useMovie";
 import { useMutation } from "react-query";
 import axios from "axios";
+import { useGettAllCategories } from "@/hooks/useCategory";
 
 interface PropsMovieComponent {
   movie?: TypeMovieDetails;
@@ -246,19 +247,21 @@ const ContainerFilmsRecent = () => {
   );
 };
 const SectionCategoryMovies = () => {
-  const data: Array<TypeGenreMMovies> = dataGenreMovie;
+  const { data: categoriesMovie, isLoading } = useGettAllCategories();
+
   return (
     <section className="section__page" id="genre__films">
       <TitleSection variant="title-large" title="GENRE DES FILMS" />
       <div className="container__category">
-        {data.map((genre, index) => (
-          <CardCategorie
-            key={index}
-            variant="simple"
-            title={genre.name}
-            id={genre.id}
-          />
-        ))}
+        {isLoading === false &&
+          categoriesMovie.map((genre: TypeMovieCategory) => (
+            <CardCategorie
+              key={genre.category_id}
+              variant="simple"
+              title={genre.category_name}
+              id={genre.category_id}
+            />
+          ))}
       </div>
     </section>
   );

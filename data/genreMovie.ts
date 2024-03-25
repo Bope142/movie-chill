@@ -7,7 +7,7 @@ export const dataGenreMovie: TypeGenreMMovies[] = [
   },
   {
     id: 12,
-    name: "Adventure",
+    name: "Aventure",
   },
   {
     id: 16,
@@ -15,7 +15,7 @@ export const dataGenreMovie: TypeGenreMMovies[] = [
   },
   {
     id: 35,
-    name: "Comedy",
+    name: "Comédie",
   },
   {
     id: 80,
@@ -23,35 +23,35 @@ export const dataGenreMovie: TypeGenreMMovies[] = [
   },
   {
     id: 99,
-    name: "Documentary",
+    name: "Documentaire",
   },
   {
     id: 18,
-    name: "Drama",
+    name: "Drame",
   },
   {
     id: 10751,
-    name: "Family",
+    name: "Famille",
   },
   {
     id: 14,
-    name: "Fantasy",
+    name: "Fantaisie",
   },
   {
     id: 36,
-    name: "History",
+    name: "Histoire",
   },
   {
     id: 27,
-    name: "Horror",
+    name: "Horreur",
   },
   {
     id: 10402,
-    name: "Music",
+    name: "Musique",
   },
   {
     id: 9648,
-    name: "Mystery",
+    name: "Mystère",
   },
   {
     id: 10749,
@@ -59,11 +59,11 @@ export const dataGenreMovie: TypeGenreMMovies[] = [
   },
   {
     id: 878,
-    name: "Science Fiction",
+    name: "Science-Fiction",
   },
   {
     id: 10770,
-    name: "TV Movie",
+    name: "Téléfilm",
   },
   {
     id: 53,
@@ -71,7 +71,7 @@ export const dataGenreMovie: TypeGenreMMovies[] = [
   },
   {
     id: 10752,
-    name: "War",
+    name: "Guerre",
   },
   {
     id: 37,
