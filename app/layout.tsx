@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/public/style/main.scss";
+import QueryProvider from "@/providers/queryProviders";
 
 export const metadata: Metadata = {
   title: "Movie Chill",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }

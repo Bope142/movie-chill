@@ -11,13 +11,14 @@ import {
 } from "@/components/container/container";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { MdStarRate } from "react-icons/md";
-import { TypeMovieOverview } from "@/types/movie";
+import { TypeMovieOverview, TypeMovieDetails } from "@/types/movie";
 import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { useState } from "react";
 import { TypeGenreMMovies } from "@/types/categorie";
 import { dataGenreMovie } from "@/data/genreMovie";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
+import { useGetPopularMovie } from "@/hooks/useMovie";
 const BannerHomePage = () => {
   return (
     <section
@@ -76,34 +77,58 @@ const BannerHomePage = () => {
 };
 
 interface PropsMovieComponent {
+  movie?: TypeMovieDetails;
+  isLoading: boolean;
+}
+
+interface PropsMovieComponent2 {
   movie: TypeMovieOverview;
 }
 
 const ContainerCurrentPopularMovie: React.FC<PropsMovieComponent> = ({
   movie,
+  isLoading,
 }) => {
-  const ratingCountIcons = (rating: number): React.ReactNode => {
+  const ratingCountIcons = (rating: any): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
-    for (let index = 0; index < rating; index++) {
-      containerRating.push(<MdStarRate key={index} className="icons-start" />);
+    if (rating !== undefined) {
+      for (let index = 0; index < rating; index++) {
+        containerRating.push(
+          <MdStarRate key={index} className="icons-start" />
+        );
+      }
+      return containerRating;
     }
-    return containerRating;
   };
-  return (
+  const displayContainer = isLoading ? (
+    <section
+      className="section__page loading__container"
+      id="content__movie_popular"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : (
     <section
       className="section__page"
       id="content__movie_popular"
       style={{
-        background: `url("${movie.poster}") center/cover fixed`,
+        background: `url("https://image.tmdb.org/t/p/original${
+          movie && movie.poster_path
+        }") center/cover fixed`,
       }}
     >
-      <h1>{movie.title}</h1>
+      <h1>{movie && movie.title}</h1>
       <div className="details__movie">
-        <div className="rating">{ratingCountIcons(movie.ratingCount)}</div>{" "}
-        <p className="rate_prct">{movie.ratingCount.toFixed(1)}</p>{" "}
-        <p className="years">{movie.releaseDate}</p>
+        <div className="rating">
+          {movie &&
+            ratingCountIcons(
+              Math.round(Math.max(0, Math.min(5, movie.vote_average)))
+            )}
+        </div>
+        <p className="rate_prct">{movie && movie.vote_count.toFixed(1)}</p>{" "}
+        <p className="years">{movie && movie.release_date}</p>
       </div>
-      <p className="overview">{movie.overview}</p>
+      <p className="overview">{movie && movie.overview}</p>
       <div className="controll-action-button">
         <Button variant="primary">
           Voir le trailer <FaPlay />
@@ -114,14 +139,20 @@ const ContainerCurrentPopularMovie: React.FC<PropsMovieComponent> = ({
       </div>
     </section>
   );
+  return displayContainer;
 };
 
 const PopularMoviesSection = () => {
+  const { data: moviesPopular, isLoading, isError } = useGetPopularMovie(1);
   const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0);
-  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+
   const handleCardClick = (index: number) => {
     setSelectedMovieIndex(index);
   };
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="popular" key={index} isLoading={true} />
+  ));
+
   return (
     <>
       <section className="section__page" id="popular__movie">
@@ -131,18 +162,23 @@ const PopularMoviesSection = () => {
           linkMore="/movies/popular"
         />
         <ContainerScroll>
-          {data.map((movie, index) => (
-            <CardMovie
-              key={index}
-              variant="popular"
-              poster={movie.poster}
-              onClick={() => handleCardClick(index)}
-              isSelected={index === selectedMovieIndex}
-            />
-          ))}
+          {isLoading
+            ? loadingCardMovies
+            : moviesPopular.map((movie: TypeMovieDetails, index: number) => (
+                <CardMovie
+                  key={index}
+                  variant="popular"
+                  poster={movie.poster_path}
+                  onClick={() => handleCardClick(index)}
+                  isSelected={index === selectedMovieIndex}
+                />
+              ))}
         </ContainerScroll>
       </section>
-      <ContainerCurrentPopularMovie movie={data[selectedMovieIndex]} />
+      <ContainerCurrentPopularMovie
+        movie={isLoading === false && moviesPopular[selectedMovieIndex]}
+        isLoading={isLoading}
+      />
     </>
   );
 };
@@ -189,7 +225,7 @@ const SectionCategoryMovies = () => {
   );
 };
 
-const ContainerMoviePlaying: React.FC<PropsMovieComponent> = ({ movie }) => {
+const ContainerMoviePlaying: React.FC<PropsMovieComponent2> = ({ movie }) => {
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
@@ -305,7 +341,7 @@ const ContainerRandomMovieTwo = () => {
   );
 };
 
-const ContainerMovieUpcoming: React.FC<PropsMovieComponent> = ({ movie }) => {
+const ContainerMovieUpcoming: React.FC<PropsMovieComponent2> = ({ movie }) => {
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
