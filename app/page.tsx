@@ -14,7 +14,7 @@ import { MdStarRate } from "react-icons/md";
 import { TypeMovieOverview, TypeMovieDetails } from "@/types/movie";
 import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { useEffect, useState } from "react";
-import { TypeGenreMMovies, TypeMovieCategory } from "@/types/categorie";
+import { TypeMovieCategory } from "@/types/categorie";
 import { dataGenreMovie } from "@/data/genreMovie";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
@@ -29,6 +29,11 @@ import { useGettAllCategories } from "@/hooks/useCategory";
 
 interface PropsMovieComponent {
   movie?: TypeMovieDetails;
+  isLoading: boolean;
+}
+
+interface PropsMovieRandom {
+  categorieMovie?: TypeMovieCategory;
   isLoading: boolean;
 }
 
@@ -376,52 +381,190 @@ const PlayingMoviesSection = () => {
   );
 };
 
-const ContainerRandomMovieOne = () => {
-  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
-  return (
+const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
+  categorieMovie,
+  isLoading,
+}) => {
+  type MovieType = TypeMovieDetails[];
+  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
+  const [Movies, setMovies] = useState<MovieType>([]);
+
+  const { mutate: getMovies, isLoading: loaded } = useMutation(
+    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
+    {
+      onSuccess: async (response) => {
+        console.log(response.data);
+        setMovies(response.data);
+        setLoadingMovie(false);
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="primary" key={index} isLoading={true} />
+  ));
+  useEffect(() => {
+    if (!isLoading && categorieMovie) {
+      console.log(categorieMovie);
+      console.log("isLoading", categorieMovie?.idMovieDb);
+      getMovies(categorieMovie?.idMovieDb);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, categorieMovie]);
+
+  const displayContainer = isLoading ? (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : loadingMovie ? (
     <section className="section__page" id="random_one">
       <TitleSection
         variant="title-large"
-        title="FILMS ACTIONS"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
         linkMore="/movies/recents"
       />
-      <ContainerScroll>
-        {data.map((movie, index) => (
-          <CardMovie
-            key={index}
-            variant="primary"
-            poster={movie.poster}
-            title={movie.title}
-            id={movie.id}
-          />
-        ))}
-      </ContainerScroll>
+      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
-  );
-};
-
-const ContainerRandomMovieTwo = () => {
-  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
-  return (
-    <section className="section__page" id="random_two">
+  ) : (
+    <section className="section__page" id="random_one">
       <TitleSection
         variant="title-large"
-        title="FILMS HORREUR"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
         linkMore="/movies/recents"
       />
       <ContainerScroll>
-        {data.map((movie, index) => (
-          <CardMovie
-            key={index}
-            variant="primary"
-            poster={movie.poster}
-            title={movie.title}
-            id={movie.id}
-          />
-        ))}
+        {Movies &&
+          Movies.map((movie) => (
+            <CardMovie
+              key={movie.id}
+              variant="primary"
+              poster={movie.poster_path}
+              title={movie.title}
+              id={movie.id}
+            />
+          ))}
       </ContainerScroll>
     </section>
   );
+  return displayContainer;
+};
+
+const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
+  categorieMovie,
+  isLoading,
+}) => {
+  type MovieType = TypeMovieDetails[];
+  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
+  const [Movies, setMovies] = useState<MovieType>([]);
+
+  const { mutate: getMovies, isLoading: loaded } = useMutation(
+    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
+    {
+      onSuccess: async (response) => {
+        console.log(response.data);
+        setMovies(response.data);
+        setLoadingMovie(false);
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="primary" key={index} isLoading={true} />
+  ));
+  useEffect(() => {
+    if (!isLoading && categorieMovie) {
+      console.log(categorieMovie);
+      console.log("isLoading", categorieMovie?.idMovieDb);
+      getMovies(categorieMovie?.idMovieDb);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, categorieMovie]);
+
+  const displayContainer = isLoading ? (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : loadingMovie ? (
+    <section className="section__page" id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore="/movies/recents"
+      />
+      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+    </section>
+  ) : (
+    <section className="section__page" id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore="/movies/recents"
+      />
+      <ContainerScroll>
+        {Movies &&
+          Movies.map((movie) => (
+            <CardMovie
+              key={movie.id}
+              variant="primary"
+              poster={movie.poster_path}
+              title={movie.title}
+              id={movie.id}
+            />
+          ))}
+      </ContainerScroll>
+    </section>
+  );
+  return displayContainer;
+};
+
+const ContainerMoviesRandom = () => {
+  type categoriesMovieType = TypeMovieCategory[];
+  const [randomCategorie, setRandomCategorie] = useState<categoriesMovieType>(
+    []
+  );
+  const { data: categoriesMovie, isLoading } = useGettAllCategories();
+  console.log(categoriesMovie);
+  function getRandomCategories(data: TypeMovieCategory[]): TypeMovieCategory[] {
+    const shuffledCategories = data.sort(() => Math.random() - 0.5);
+    return shuffledCategories.slice(0, 2);
+  }
+
+  useEffect(() => {
+    if (!isLoading) {
+      setRandomCategorie(getRandomCategories(categoriesMovie));
+    }
+  }, [isLoading, categoriesMovie]);
+
+  const displayContainer = isLoading ? (
+    <>
+      <ContainerRandomMovieOne isLoading={true} />
+      <ContainerRandomMovieTwo isLoading={true} />
+    </>
+  ) : (
+    randomCategorie.length !== 0 && (
+      <>
+        <ContainerRandomMovieOne
+          isLoading={false}
+          categorieMovie={randomCategorie[0]}
+        />
+        <ContainerRandomMovieTwo
+          isLoading={false}
+          categorieMovie={randomCategorie[1]}
+        />
+      </>
+    )
+  );
+  return displayContainer;
 };
 
 const ContainerMovieUpcoming: React.FC<PropsMovieComponent2> = ({ movie }) => {
@@ -550,8 +693,7 @@ export default function Home() {
         <ContainerFilmsRecent />
         <SectionCategoryMovies />
         <PlayingMoviesSection />
-        <ContainerRandomMovieOne />
-        <ContainerRandomMovieTwo />
+        <ContainerMoviesRandom />
         <UpcomingMoviesSection />
         <ContainerTvMoivies />
         <ContainerFavoritesMoivies />

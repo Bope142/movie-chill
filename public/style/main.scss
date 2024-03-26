@@ -216,8 +216,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  padding-top: 25px !important;
+  padding-bottom: 25px !important;
   .skeleton-loading {
     background: rgba($colorPrimaryBase, 0.5);
     border-radius: 0.5rem;
