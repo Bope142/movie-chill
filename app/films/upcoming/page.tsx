@@ -10,15 +10,16 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useMutation } from "react-query";
 import axios from "axios";
 import { useGetOneCaregorie } from "@/hooks/useCategory";
-import { useGetPopularMovie } from "@/hooks/useMovie";
+import { useGetPopularMovie, useGetUpcomingMovie } from "@/hooks/useMovie";
 
 const Banner = () => {
   return (
     <section className="section__page banner__page" id="banner">
       <p>
-        <span>Découvrez</span> les films les plus <span>populaires</span> du
-        moment ! Plongez-vous dans une <span>sélection</span> captivante de{" "}
-        <span>films</span> qui ont conquis le cœur du <span>public</span>.
+        Préparez-vous pour l'avenir du <span>cinéma</span> ! Explorez les{" "}
+        <span>films à venir</span> et soyez parmi les premiers à découvrir les
+        prochaines <span>grandes aventures</span>, les histoires captivantes et
+        les performances <span>éblouissantes</span>.
       </p>
     </section>
   );
@@ -30,12 +31,13 @@ const ContainerMovie = () => {
     data: dataFirstPage,
     isLoading: loadingFirstPage,
     isError,
-  } = useGetPopularMovie(1);
+  } = useGetUpcomingMovie(1);
   const [page, setPage] = useState<number>(2);
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const [movieList, setMovieList] = useState<movieType>([]);
   const { mutate: getMovieList, isLoading: loaded } = useMutation(
-    (pageNumber: number) => axios.get(`/api/movies/popular?page=${pageNumber}`),
+    (pageNumber: number) =>
+      axios.get(`/api/movies/trending?page=${pageNumber}`),
     {
       onSuccess: async (response) => {
         const newData = response.data.filter((newItem: TVShow) => {
@@ -102,7 +104,7 @@ const ContainerMovie = () => {
   );
   return displayedComponent;
 };
-export default function MoviePopular() {
+export default function MovieUpcoming() {
   return (
     <main className="container__page">
       <Suspense fallback={<LoaderPage />}>
