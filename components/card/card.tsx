@@ -106,7 +106,7 @@ export const CardCategorie: React.FC<CardCategoryMovie> = ({
   } else {
     return (
       <Link
-        href={`/films/categorie/${id}`}
+        href={`/films/genre/${id}`}
         className={`card_categorie categorie_card_simple`}
       >
         {title}
