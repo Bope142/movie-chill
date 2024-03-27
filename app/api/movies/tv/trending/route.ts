@@ -6,6 +6,7 @@ export const GET = async (req: NextRequest) => {
     const url = new URL(req.url);
     const page = url.searchParams.get("page");
     const timeWindow = url.searchParams.get("time_window") || "day";
+
     if (!page)
       return NextResponse.json(
         {
