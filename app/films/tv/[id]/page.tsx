@@ -6,12 +6,7 @@ import { ContainerScroll } from "@/components/container/container";
 import "./style.scss";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
-import {
-  DetailMovie,
-  TypeMovieDetails,
-  TypeMovieOverview,
-} from "@/types/movie";
-import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
+import { DetailMovie, DetailTvMovie, TypeMovieDetails } from "@/types/movie";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { TitleSection } from "@/components/titleSection/titleSection";
 import { MdStarRate } from "react-icons/md";
@@ -23,9 +18,9 @@ import { AiFillInstagram } from "react-icons/ai";
 import { FaFacebookSquare } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
-import { useGetDetailMovie } from "@/hooks/useMovie";
+import { useGetDetailMovieTv } from "@/hooks/useMovie";
 type propsBanner = {
-  movie?: DetailMovie;
+  movie?: DetailTvMovie;
   isLoading: boolean;
 };
 const Banner = ({ movie, isLoading }: propsBanner) => {
@@ -53,7 +48,7 @@ const Banner = ({ movie, isLoading }: propsBanner) => {
     >
       <div className="container__details__movies">
         <div className="left">
-          <h2>{movie && movie.original_title}</h2>
+          <h2>{movie && movie.original_name}</h2>
           <div className="category__movie__container">
             {movie &&
               movie.genres.map((genre) => (
@@ -73,7 +68,7 @@ const Banner = ({ movie, isLoading }: propsBanner) => {
                 )}
             </div>
             <span className="circle"></span>
-            <p className="years">{movie && movie.release_date}</p>
+            <p className="years">{movie && movie.first_air_date}</p>
             <p className="langs">
               {movie &&
                 movie.spoken_languages.map((language) => language.name + " ")}
@@ -124,7 +119,7 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
   ));
   return (
     <section className="section__page sections__movies">
-      <TitleSection variant="title-large" title="FILMS SIMILAIR" />
+      <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
       <ContainerScroll>
         {isLoading
           ? loadingCardMovies
@@ -138,15 +133,16 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
                   poster={movie.poster_path}
                   title={movie.title}
                   id={movie.id}
+                  forTv={true}
                 />
               ))}
       </ContainerScroll>
     </section>
   );
 };
-function MovieDetailPage({ params }: { params: Record<string, string> }) {
+function MovieTvDetailPage({ params }: { params: Record<string, string> }) {
   const id = parseInt(params.id);
-  const { data, isLoading } = useGetDetailMovie(id);
+  const { data, isLoading } = useGetDetailMovieTv(id);
   return (
     <main className="container__page">
       <Suspense fallback={<LoaderPage />}>
@@ -162,4 +158,4 @@ function MovieDetailPage({ params }: { params: Record<string, string> }) {
   );
 }
 
-export default MovieDetailPage;
+export default MovieTvDetailPage;

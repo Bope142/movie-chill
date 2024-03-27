@@ -94,6 +94,7 @@ const ContainerMovieTV = () => {
             poster={movie.poster_path}
             title={movie.original_name}
             id={movie.id}
+            forTv={true}
           />
         ))}
       </main>

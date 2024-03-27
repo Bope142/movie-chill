@@ -118,3 +118,39 @@ export const useGetTrendingMovieTv = (timeWindow: string, page: number) => {
     queryFn: () => getTrendingMovieTv(timeWindow, page),
   });
 };
+
+const getDetailMovie = async (id: number) => {
+  try {
+    const { data } = await axios.get(`/api/movies/${id}`);
+    return data;
+  } catch (error) {
+    console.error("Error while fetching playing movies", error);
+    throw error;
+  }
+};
+
+export const useGetDetailMovie = (id: number) => {
+  return useQuery({
+    queryKey: ["detail-movie", id],
+
+    queryFn: () => getDetailMovie(id),
+  });
+};
+
+const getDetailMovieTv = async (id: number) => {
+  try {
+    const { data } = await axios.get(`/api/movies/tv/${id}`);
+    return data;
+  } catch (error) {
+    console.error("Error while fetching tv movies", error);
+    throw error;
+  }
+};
+
+export const useGetDetailMovieTv = (id: number) => {
+  return useQuery({
+    queryKey: ["detail-movie-tv", id],
+
+    queryFn: () => getDetailMovieTv(id),
+  });
+};

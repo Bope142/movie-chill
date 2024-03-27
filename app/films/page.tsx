@@ -80,7 +80,7 @@ const BannerPage = () => {
         <Button variant="primary">
           Voir le trailer <FaPlay />
         </Button>
-        <ButtonLink variant="secondary" href={`/movies/${randomMovie?.id}`}>
+        <ButtonLink variant="secondary" href={`/films/${randomMovie?.id}`}>
           Plus d'infos
         </ButtonLink>
       </div>
@@ -131,7 +131,7 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
@@ -140,7 +140,7 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>
         {Movies &&
@@ -201,7 +201,7 @@ const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
@@ -210,7 +210,7 @@ const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>
         {Movies &&
@@ -271,7 +271,7 @@ const ContainerRandomMovieThree: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
@@ -280,7 +280,7 @@ const ContainerRandomMovieThree: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>
         {Movies &&
@@ -341,7 +341,7 @@ const ContainerRandomMovieFour: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
@@ -350,7 +350,7 @@ const ContainerRandomMovieFour: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>
         {Movies &&
@@ -411,7 +411,7 @@ const ContainerRandomMovieFive: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
@@ -420,7 +420,7 @@ const ContainerRandomMovieFive: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>
         {Movies &&
