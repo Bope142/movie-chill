@@ -13,7 +13,7 @@ import { CardCategorie, CardMovie } from "@/components/card/card";
 import { MdStarRate } from "react-icons/md";
 import { TypeMovieOverview, TypeMovieDetails } from "@/types/movie";
 import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { TypeMovieCategory } from "@/types/categorie";
 import { dataGenreMovie } from "@/data/genreMovie";
 import LoaderPage from "@/components/loader/loader";
@@ -22,6 +22,7 @@ import {
   useGetPopularMovie,
   useGetRecentMovie,
   useGetTrendingMovie,
+  useGetUpcomingMovie,
 } from "@/hooks/useMovie";
 import { useMutation } from "react-query";
 import axios from "axios";
@@ -35,10 +36,6 @@ interface PropsMovieComponent {
 interface PropsMovieRandom {
   categorieMovie?: TypeMovieCategory;
   isLoading: boolean;
-}
-
-interface PropsMovieComponent2 {
-  movie: TypeMovieOverview;
 }
 
 const BannerHomePage = () => {
@@ -182,7 +179,12 @@ const ContainerCurrentPopularMovie: React.FC<PropsMovieComponent> = ({
 };
 
 const PopularMoviesSection = () => {
-  const { data: moviesPopular, isLoading, isError } = useGetPopularMovie(1);
+  const randomPageNumber = useMemo(() => Math.floor(Math.random() * 4) + 1, []);
+  const {
+    data: moviesPopular,
+    isLoading,
+    isError,
+  } = useGetPopularMovie(randomPageNumber);
   const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0);
 
   const handleCardClick = (index: number) => {
@@ -225,6 +227,7 @@ const PopularMoviesSection = () => {
 const ContainerFilmsRecent = () => {
   const date = new Date();
   let year = date.getFullYear();
+
   const randomPage = Math.floor(Math.random() * 3) + 1;
   const {
     data: recentMovie,
@@ -339,7 +342,12 @@ const ContainerMoviePlaying: React.FC<PropsMovieComponent> = ({
 };
 
 const PlayingMoviesSection = () => {
-  const { data: moviesTrending, isLoading, isError } = useGetTrendingMovie(2);
+  const randomPageNumber = useMemo(() => Math.floor(Math.random() * 4) + 1, []);
+  const {
+    data: moviesTrending,
+    isLoading,
+    isError,
+  } = useGetTrendingMovie(randomPageNumber);
   const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0);
 
   const handleCardClick = (index: number) => {
@@ -393,7 +401,6 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
     (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
     {
       onSuccess: async (response) => {
-        console.log(response.data);
         setMovies(response.data);
         setLoadingMovie(false);
       },
@@ -407,8 +414,6 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
   ));
   useEffect(() => {
     if (!isLoading && categorieMovie) {
-      console.log(categorieMovie);
-      console.log("isLoading", categorieMovie?.idMovieDb);
       getMovies(categorieMovie?.idMovieDb);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -466,7 +471,6 @@ const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
     (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
     {
       onSuccess: async (response) => {
-        console.log(response.data);
         setMovies(response.data);
         setLoadingMovie(false);
       },
@@ -480,8 +484,6 @@ const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
   ));
   useEffect(() => {
     if (!isLoading && categorieMovie) {
-      console.log(categorieMovie);
-      console.log("isLoading", categorieMovie?.idMovieDb);
       getMovies(categorieMovie?.idMovieDb);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -533,7 +535,6 @@ const ContainerMoviesRandom = () => {
     []
   );
   const { data: categoriesMovie, isLoading } = useGettAllCategories();
-  console.log(categoriesMovie);
   function getRandomCategories(data: TypeMovieCategory[]): TypeMovieCategory[] {
     const shuffledCategories = data.sort(() => Math.random() - 0.5);
     return shuffledCategories.slice(0, 2);
@@ -567,74 +568,111 @@ const ContainerMoviesRandom = () => {
   return displayContainer;
 };
 
-const ContainerMovieUpcoming: React.FC<PropsMovieComponent2> = ({ movie }) => {
-  const ratingCountIcons = (rating: number): React.ReactNode => {
+const ContainerMovieUpcoming: React.FC<PropsMovieComponent> = ({
+  movie,
+  isLoading,
+}) => {
+  const ratingCountIcons = (rating: any): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
-    for (let index = 0; index < rating; index++) {
-      containerRating.push(<MdStarRate key={index} className="icons-start" />);
+    if (rating !== undefined) {
+      for (let index = 0; index < rating; index++) {
+        containerRating.push(
+          <MdStarRate key={index} className="icons-start" />
+        );
+      }
+      return containerRating;
     }
-    return containerRating;
   };
-  return (
+  const displayContainer = isLoading ? (
+    <section
+      className="section__page loading__container"
+      id="content__movie_trending"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : (
     <section
       className="section__page"
-      id="content__movie_upcoming"
+      id="content__movie_trending"
       style={{
-        background: `url("${movie.poster}") center/cover fixed`,
+        background: `url("https://image.tmdb.org/t/p/original${
+          movie && movie.poster_path
+        }") center/cover fixed`,
       }}
     >
-      <h1>{movie.title}</h1>
+      <h1>{movie && movie.title}</h1>
       <div className="details__movie">
-        <div className="rating">{ratingCountIcons(movie.ratingCount)}</div>{" "}
-        <p className="rate_prct">{movie.ratingCount.toFixed(1)}</p>{" "}
-        <p className="years">{movie.releaseDate}</p>
+        <div className="rating">
+          {movie &&
+            ratingCountIcons(
+              Math.round(Math.max(0, Math.min(5, movie.vote_average)))
+            )}
+        </div>
+        <p className="rate_prct">{movie && movie.vote_count.toFixed(1)}</p>{" "}
+        <p className="years">{movie && movie.release_date}</p>
       </div>
-      <p className="overview">{movie.overview}</p>
+      <p className="overview">{movie && movie.overview}</p>
       <div className="controll-action-button">
         <Button variant="primary">
           Voir le trailer <FaPlay />
         </Button>
-        <ButtonLink variant="secondary" href="/movies/12">
+        <ButtonLink variant="secondary" href={`/movies/${movie?.id}`}>
           Plus d'infos
         </ButtonLink>
       </div>
     </section>
   );
+  return displayContainer;
 };
 
 const UpcomingMoviesSection = () => {
-  const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(2);
-  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+  const randomParam = useMemo(() => Math.floor(Math.random() * 5) + 1, []);
+  const {
+    data: moviesUpcoming,
+    isLoading,
+    isError,
+  } = useGetUpcomingMovie(randomParam);
+
+  const [selectedMovieIndex, setSelectedMovieIndex] = useState<number>(0);
+
   const handleCardClick = (index: number) => {
     setSelectedMovieIndex(index);
   };
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="simple" key={index} isLoading={true} />
+  ));
+
   return (
     <>
       <div className="title__content">
         <TitleSection
           variant="title-large"
           title="FILM AVENIR"
-          linkMore="/movies/popular"
+          linkMore="/movies/upcoming"
         />
       </div>
-      <ContainerMovieUpcoming movie={data[selectedMovieIndex]} />
-      <section className="section__page trending__movie" id="upcoming__movie">
+      <ContainerMovieUpcoming
+        movie={isLoading === false && moviesUpcoming[selectedMovieIndex]}
+        isLoading={isLoading}
+      />
+      <section className="section__page" id="upcoming__movie">
         <ContainerScroll>
-          {data.map((movie, index) => (
-            <CardMovie
-              key={index}
-              variant="simple"
-              poster={movie.poster}
-              onClick={() => handleCardClick(index)}
-              isSelected={index === selectedMovieIndex}
-            />
-          ))}
+          {isLoading
+            ? loadingCardMovies
+            : moviesUpcoming.map((movie: TypeMovieDetails, index: number) => (
+                <CardMovie
+                  key={movie.id}
+                  variant="simple"
+                  poster={movie.poster_path}
+                  onClick={() => handleCardClick(index)}
+                  isSelected={index === selectedMovieIndex}
+                />
+              ))}
         </ContainerScroll>
       </section>
     </>
   );
 };
-
 const ContainerTvMoivies = () => {
   const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
   return (

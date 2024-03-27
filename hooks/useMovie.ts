@@ -80,3 +80,21 @@ export const useGetMovieBasedOnCategorie = (
     queryFn: () => getMovieBasedOnCategorie(idCategorie, page),
   });
 };
+
+const getUpcomingMovie = async (page: number) => {
+  try {
+    const { data } = await axios.get(`/api/movies/trending?page=${page}`);
+    return data;
+  } catch (error) {
+    console.error("Error while fetching playing movies", error);
+    throw error;
+  }
+};
+
+export const useGetUpcomingMovie = (page: number) => {
+  return useQuery({
+    queryKey: ["upcoming-movie", page],
+
+    queryFn: () => getUpcomingMovie(page),
+  });
+};
