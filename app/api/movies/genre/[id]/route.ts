@@ -20,7 +20,7 @@ export const GET = async (
     const page = url.searchParams.get("page");
 
     const response = await axios.get(
-      `${process.env.BASE_URL_API}discover/movie?with_genres=${id}/similar?&sort_by=vote_average.desc&vote_count.gte=10&api_key=${process.env.API_KEY}&language=fr&page=${page}`
+      `${process.env.BASE_URL_API}discover/movie?with_genres=${id}?&sort_by=vote_average.desc&vote_count.gte=10&api_key=${process.env.API_KEY}&language=fr&page=${page}`
     );
 
     if (response.status === 200) {
