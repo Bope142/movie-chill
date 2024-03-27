@@ -98,7 +98,7 @@ const BannerHomePage = () => {
         </p>
         <ButtonLink
           variant="primary"
-          href={`/movies/${currentPopularMovie && currentPopularMovie.id}`}
+          href={`/films/${currentPopularMovie && currentPopularMovie.id}`}
         >
           Voir Maintenant <FaPlay />
         </ButtonLink>
@@ -170,7 +170,7 @@ const ContainerCurrentPopularMovie: React.FC<PropsMovieComponent> = ({
         <Button variant="primary">
           Voir le trailer <FaPlay />
         </Button>
-        <ButtonLink variant="secondary" href={`/movies/${movie?.id}`}>
+        <ButtonLink variant="secondary" href={`/films/${movie?.id}`}>
           Plus d'infos
         </ButtonLink>
       </div>
@@ -201,7 +201,7 @@ const PopularMoviesSection = () => {
         <TitleSection
           variant="title-large"
           title="FILM POPULAIRE"
-          linkMore="/movies/popular"
+          linkMore="/films/popular"
         />
         <ContainerScroll>
           {isLoading
@@ -244,7 +244,7 @@ const ContainerFilmsRecent = () => {
       <TitleSection
         variant="title-large"
         title="FILMS RECENTS"
-        linkMore="/movies/recents"
+        linkMore="/films/recents"
       />
       <ContainerScroll>
         {isLoading
@@ -333,7 +333,7 @@ const ContainerMoviePlaying: React.FC<PropsMovieComponent> = ({
         <Button variant="primary">
           Voir le trailer <FaPlay />
         </Button>
-        <ButtonLink variant="secondary" href={`/movies/${movie?.id}`}>
+        <ButtonLink variant="secondary" href={`/films/${movie?.id}`}>
           Plus d'infos
         </ButtonLink>
       </div>
@@ -364,7 +364,7 @@ const PlayingMoviesSection = () => {
         <TitleSection
           variant="title-large"
           title="EN TENDANCE"
-          linkMore="/movies/popular"
+          linkMore="/films/popular"
         />
       </div>
       <ContainerMoviePlaying
@@ -432,7 +432,7 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
@@ -441,7 +441,7 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>
         {Movies &&
@@ -502,7 +502,7 @@ const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
@@ -511,7 +511,7 @@ const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
       <TitleSection
         variant="title-large"
         title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore="/movies/recents"
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
       />
       <ContainerScroll>
         {Movies &&
@@ -617,7 +617,7 @@ const ContainerMovieUpcoming: React.FC<PropsMovieComponent> = ({
         <Button variant="primary">
           Voir le trailer <FaPlay />
         </Button>
-        <ButtonLink variant="secondary" href={`/movies/${movie?.id}`}>
+        <ButtonLink variant="secondary" href={`/films/${movie?.id}`}>
           Plus d'infos
         </ButtonLink>
       </div>
@@ -649,7 +649,7 @@ const UpcomingMoviesSection = () => {
         <TitleSection
           variant="title-large"
           title="FILM AVENIR"
-          linkMore="/movies/upcoming"
+          linkMore="/films/upcoming"
         />
       </div>
       <ContainerMovieUpcoming
@@ -676,7 +676,7 @@ const UpcomingMoviesSection = () => {
 };
 
 const ContainerTvMoivies = () => {
-  const randomPageNumber = useMemo(() => Math.floor(Math.random() * 5) + 1, []);
+  const randomPageNumber = useMemo(() => Math.floor(Math.random() * 3) + 1, []);
   const randomTimeWindow = useMemo(() => {
     const randomNumber = Math.random();
     return randomNumber < 0.5 ? "day" : "week";
@@ -695,7 +695,7 @@ const ContainerTvMoivies = () => {
       <TitleSection
         variant="title-large"
         title="EN TENDANCE TV"
-        linkMore="/tv/trending"
+        linkMore="/films/tv/trending"
       />
       <ContainerScroll>
         {isLoading
@@ -709,6 +709,7 @@ const ContainerTvMoivies = () => {
                   poster={tvShow.poster_path}
                   title={tvShow.name}
                   id={tvShow.id}
+                  forTv={true}
                 />
               ))}
       </ContainerScroll>

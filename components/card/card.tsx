@@ -35,6 +35,7 @@ interface CardProps {
   poster?: string;
   isLoading?: boolean;
   isSelected?: boolean;
+  forTv?: boolean;
   onClick?: () => void;
 }
 
@@ -172,6 +173,7 @@ export const CardMovie: React.FC<CardProps> = ({
   poster,
   isLoading,
   isSelected,
+  forTv,
   onClick,
 }) => {
   const skeletonLoadingClass = isLoading ? variant + "-skeleton-loading" : "";
@@ -197,7 +199,10 @@ export const CardMovie: React.FC<CardProps> = ({
               <div className="overview__container">
                 <div className="content">
                   <span className="movie__title">{title}</span>
-                  <ButtonLink variant="primary" href={`/films/${id}`}>
+                  <ButtonLink
+                    variant="primary"
+                    href={forTv && forTv ? `/films/tv/${id}` : `/films/${id}`}
+                  >
                     Voir
                   </ButtonLink>
                 </div>
@@ -227,7 +232,10 @@ export const CardMovie: React.FC<CardProps> = ({
               <div className="overview__container">
                 <div className="content-mv">
                   <span className="movie__title">{title}</span>
-                  <ButtonLink variant="primary" href={`/films/${id}`}>
+                  <ButtonLink
+                    variant="primary"
+                    href={forTv && forTv ? `/films/tv/${id}` : `/films/${id}`}
+                  >
                     Voir
                   </ButtonLink>
                 </div>
