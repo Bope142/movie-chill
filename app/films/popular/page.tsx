@@ -10,32 +10,32 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useMutation } from "react-query";
 import axios from "axios";
 import { useGetOneCaregorie } from "@/hooks/useCategory";
-type propsBanner = {
-  titleCategory: string;
-};
-const Banner = ({ titleCategory }: propsBanner) => {
+import { useGetPopularMovie } from "@/hooks/useMovie";
+
+const Banner = () => {
   return (
     <section className="section__page banner__page" id="banner">
       <p>
-        <span>Explorez</span> un monde vaste de <span>divertissement</span>,
-        d'intrigues et de <span>personnages</span> captivants avec notre
-        sélection éclectique de <span>films {titleCategory}</span>.
+        <span>Découvrez</span> les films les plus <span>populaires</span> du
+        moment ! Plongez-vous dans une <span>sélection</span> captivante de{" "}
+        <span>films</span> qui ont conquis le cœur du <span>public</span>.
       </p>
     </section>
   );
 };
-type propsContainer = {
-  idCategorie: number;
-};
-const ContainerMovie = ({ idCategorie }: propsContainer) => {
-  type MovieType = TypeMovieDetails[];
+
+const ContainerMovie = () => {
+  type movieType = TypeMovieDetails[];
+  const {
+    data: dataFirstPage,
+    isLoading: loadingFirstPage,
+    isError,
+  } = useGetPopularMovie(1);
   const [page, setPage] = useState<number>(2);
-  const [loadingFirstPage, setLoadingFirstPage] = useState<boolean>(true);
   const [loadingData, setLoadingData] = useState<boolean>(true);
-  const [movieList, setMovieList] = useState<MovieType>([]);
-  const { mutate: getMovies, isLoading: loaded } = useMutation(
-    (pageNumber: number) =>
-      axios.get(`/api/movies/genre/${idCategorie}?page=${pageNumber}`),
+  const [movieList, setMovieList] = useState<movieType>([]);
+  const { mutate: getMovieList, isLoading: loaded } = useMutation(
+    (pageNumber: number) => axios.get(`/api/movies/popular?page=${pageNumber}`),
     {
       onSuccess: async (response) => {
         const newData = response.data.filter((newItem: TVShow) => {
@@ -45,11 +45,7 @@ const ContainerMovie = ({ idCategorie }: propsContainer) => {
           );
         });
         setMovieList((prevData) => [...prevData, ...newData]);
-        if (loadingFirstPage) {
-          setLoadingFirstPage(false);
-        } else {
-          setLoadingData(false);
-        }
+        setLoadingData(false);
       },
       onError: async (error) => {
         console.log(error);
@@ -59,17 +55,14 @@ const ContainerMovie = ({ idCategorie }: propsContainer) => {
   const handlerLoadMoreMovie = () => {
     setLoadingData(true);
     setPage((prevPage) => prevPage + 1); // Increment page number
-    getMovies(page);
+    getMovieList(page);
   };
   useEffect(() => {
-    if (idCategorie !== 0) {
-      getMovies(1);
+    if (loadingFirstPage === false && dataFirstPage !== null) {
+      setMovieList(dataFirstPage);
       setLoadingData(false);
-    } else {
-      setLoadingData(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idCategorie]);
+  }, [loadingFirstPage, dataFirstPage]);
 
   const loadingCardMovies = Array.from({ length: 20 }).map((_, index) => (
     <CardMovie variant="default" key={index} isLoading={true} />
@@ -109,26 +102,13 @@ const ContainerMovie = ({ idCategorie }: propsContainer) => {
   );
   return displayedComponent;
 };
-export default function MoviePopular({
-  params,
-}: {
-  params: Record<string, string>;
-}) {
-  const id = parseInt(params.id);
-  const { data: categoriesMovie, isLoading } = useGetOneCaregorie(id);
-
+export default function MovieGenre() {
   return (
     <main className="container__page">
       <Suspense fallback={<LoaderPage />}>
         <PageContent>
-          <Banner
-            titleCategory={
-              categoriesMovie ? categoriesMovie.category_name : "d"
-            }
-          />
-          <ContainerMovie
-            idCategorie={categoriesMovie ? categoriesMovie.idMovieDb : 0}
-          />
+          <Banner />
+          <ContainerMovie />
         </PageContent>
       </Suspense>
     </main>
