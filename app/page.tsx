@@ -11,7 +11,7 @@ import {
 } from "@/components/container/container";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { MdStarRate } from "react-icons/md";
-import { TypeMovieOverview, TypeMovieDetails } from "@/types/movie";
+import { TypeMovieOverview, TypeMovieDetails, TVShow } from "@/types/movie";
 import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { useEffect, useState, useMemo } from "react";
 import { TypeMovieCategory } from "@/types/categorie";
@@ -22,6 +22,7 @@ import {
   useGetPopularMovie,
   useGetRecentMovie,
   useGetTrendingMovie,
+  useGetTrendingMovieTv,
   useGetUpcomingMovie,
 } from "@/hooks/useMovie";
 import { useMutation } from "react-query";
@@ -673,25 +674,43 @@ const UpcomingMoviesSection = () => {
     </>
   );
 };
+
 const ContainerTvMoivies = () => {
-  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
+  const randomPageNumber = useMemo(() => Math.floor(Math.random() * 5) + 1, []);
+  const randomTimeWindow = useMemo(() => {
+    const randomNumber = Math.random();
+    return randomNumber < 0.5 ? "day" : "week";
+  }, []);
+
+  const {
+    data: trendigMovieTv,
+    isLoading,
+    isError,
+  } = useGetTrendingMovieTv(randomTimeWindow, randomPageNumber);
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="primary" key={index} isLoading={true} />
+  ));
   return (
     <section className="section__page" id="tv__movies">
       <TitleSection
         variant="title-large"
-        title="TV LIVES"
-        linkMore="/movies/recents"
+        title="EN TENDANCE TV"
+        linkMore="/tv/trending"
       />
       <ContainerScroll>
-        {data.map((movie, index) => (
-          <CardMovie
-            key={index}
-            variant="primary"
-            poster={movie.poster}
-            title={movie.title}
-            id={movie.id}
-          />
-        ))}
+        {isLoading
+          ? loadingCardMovies
+          : trendigMovieTv
+              .slice(0, 20)
+              .map((tvShow: TVShow) => (
+                <CardMovie
+                  key={tvShow.id}
+                  variant="primary"
+                  poster={tvShow.poster_path}
+                  title={tvShow.name}
+                  id={tvShow.id}
+                />
+              ))}
       </ContainerScroll>
     </section>
   );
@@ -734,7 +753,7 @@ export default function Home() {
         <ContainerMoviesRandom />
         <UpcomingMoviesSection />
         <ContainerTvMoivies />
-        <ContainerFavoritesMoivies />
+        {/* <ContainerFavoritesMoivies /> */}
         <Footer />
       </Suspense>
     </main>

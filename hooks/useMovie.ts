@@ -98,3 +98,23 @@ export const useGetUpcomingMovie = (page: number) => {
     queryFn: () => getUpcomingMovie(page),
   });
 };
+
+const getTrendingMovieTv = async (timeWindow: string, page: number) => {
+  try {
+    const { data } = await axios.get(
+      `/api/movies/tv/trending?time_window=${timeWindow}&page=${page}`
+    );
+    return data;
+  } catch (error) {
+    console.error("Error while fetching playing movies", error);
+    throw error;
+  }
+};
+
+export const useGetTrendingMovieTv = (timeWindow: string, page: number) => {
+  return useQuery({
+    queryKey: ["trending-movie-tv", timeWindow, page],
+
+    queryFn: () => getTrendingMovieTv(timeWindow, page),
+  });
+};
