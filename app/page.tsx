@@ -241,11 +241,7 @@ const ContainerFilmsRecent = () => {
   ));
   return (
     <section className="section__page" id="film__recentes">
-      <TitleSection
-        variant="title-large"
-        title="FILMS RECENTS"
-        linkMore="/films/recents"
-      />
+      <TitleSection variant="title-large" title="FILMS RECENTS" />
       <ContainerScroll>
         {isLoading
           ? loadingCardMovies
@@ -364,7 +360,7 @@ const PlayingMoviesSection = () => {
         <TitleSection
           variant="title-large"
           title="EN TENDANCE"
-          linkMore="/films/popular"
+          linkMore="/films/trending"
         />
       </div>
       <ContainerMoviePlaying
