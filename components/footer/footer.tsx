@@ -18,19 +18,15 @@ function Footer() {
       </div>
       <div className="social__media">
         <a href="">
-          {" "}
           <IoLogoLinkedin />
         </a>
         <a href="">
-          {" "}
           <AiFillInstagram />
         </a>
         <a href="">
-          {" "}
           <FaFacebookSquare />
         </a>
         <a href="">
-          {" "}
           <FaGithub />
         </a>
       </div>

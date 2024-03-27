@@ -3,19 +3,26 @@
 .footer__page {
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: space-between;
   padding: 25px $paddingSection;
   background: #0c0b0b;
   margin-top: auto;
+  margin-bottom: 0;
+  bottom: 0;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
   gap: 25px;
   & .text-footer {
     display: flex;
     gap: 5px;
-
+    text-align: center;
     font-family: $fontLight;
     font-size: 0.9rem;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     & .logo {
       color: $colorPrimaryBase;
       & span {
@@ -24,6 +31,7 @@
     }
     a {
       text-decoration: none;
+      text-align: center;
       color: $colorPrimaryBase;
     }
   }

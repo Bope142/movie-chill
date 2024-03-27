@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model movie_categories {
+  category_id              Int                        @id @default(autoincrement())
+  category_name            String                     @unique(map: "category_name") @db.VarChar(255)
+  idMovieDb                Int
+  user_favorite_categories user_favorite_categories[]
+}
+
+model user_favorite_categories {
+  id               Int              @id @default(autoincrement())
+  category_id      Int
+  user_id          Int?
+  users            users?           @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "user_favorite_categories_ibfk_1")
+  movie_categories movie_categories @relation(fields: [category_id], references: [category_id], onDelete: Cascade, map: "user_favorite_categories_ibfk_2")
+
+  @@index([category_id], map: "category_id")
+  @@index([user_id], map: "user_id")
+}
+
+model user_favorite_movies {
+  id           Int    @id @default(autoincrement())
+  idMovieDb    Int
+  title        String @db.VarChar(255)
+  poster       String @db.VarChar(255)
+  release_date String @db.VarChar(255)
+  rating_count Int
+  user_id      Int?
+  users        users? @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "user_favorite_movies_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model users {
+  user_id                  Int                        @id @default(autoincrement())
+  username                 String                     @unique(map: "username") @db.VarChar(255)
+  email                    String?                    @unique(map: "email") @db.VarChar(255)
+  password                 String?                    @db.VarChar(255)
+  profile_picture          String?                    @db.VarChar(255)
+  date_registered          DateTime?                  @default(now()) @db.Timestamp(0)
+  user_favorite_categories user_favorite_categories[]
+  user_favorite_movies     user_favorite_movies[]
+}
