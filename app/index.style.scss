@@ -146,6 +146,7 @@
   @include flexbox(column, flex-start, flex-start);
   row-gap: 20px;
   padding-bottom: $paddingSection;
+  padding-top: 25px !important;
   & .title__section {
     margin: 0 $paddingSection;
   }
