@@ -15,7 +15,6 @@ import { TypeMovieOverview, TypeMovieDetails, TVShow } from "@/types/movie";
 import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { useEffect, useState, useMemo } from "react";
 import { TypeMovieCategory } from "@/types/categorie";
-import { dataGenreMovie } from "@/data/genreMovie";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
 import {
@@ -106,15 +105,20 @@ const BannerHomePage = () => {
       <div className="container__similar_movie">
         <TitleSection variant="title-small" title="FILM SIMILAIRE" />
         <ContainerScroll>
-          {similarMovie.slice(0, 10).map((movie) => (
-            <CardMovie
-              key={movie.id}
-              variant="primary"
-              poster={movie.poster_path}
-              title={movie.title}
-              id={movie.id}
-            />
-          ))}
+          {similarMovie
+            .slice(0, 10)
+            .map(
+              (movie) =>
+                movie.poster_path !== null && (
+                  <CardMovie
+                    key={movie.id}
+                    variant="primary"
+                    poster={movie.poster_path}
+                    title={movie.title}
+                    id={movie.id}
+                  />
+                )
+            )}
         </ContainerScroll>
       </div>
     </section>
@@ -206,15 +210,18 @@ const PopularMoviesSection = () => {
         <ContainerScroll>
           {isLoading
             ? loadingCardMovies
-            : moviesPopular.map((movie: TypeMovieDetails, index: number) => (
-                <CardMovie
-                  key={movie.id}
-                  variant="popular"
-                  poster={movie.poster_path}
-                  onClick={() => handleCardClick(index)}
-                  isSelected={index === selectedMovieIndex}
-                />
-              ))}
+            : moviesPopular.map(
+                (movie: TypeMovieDetails, index: number) =>
+                  movie.poster_path !== null && (
+                    <CardMovie
+                      key={movie.id}
+                      variant="popular"
+                      poster={movie.poster_path}
+                      onClick={() => handleCardClick(index)}
+                      isSelected={index === selectedMovieIndex}
+                    />
+                  )
+              )}
         </ContainerScroll>
       </section>
       <ContainerCurrentPopularMovie
@@ -247,15 +254,18 @@ const ContainerFilmsRecent = () => {
           ? loadingCardMovies
           : recentMovie
               .slice(0, 20)
-              .map((movie: TypeMovieDetails) => (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.title}
-                  id={movie.id}
-                />
-              ))}
+              .map(
+                (movie: TypeMovieDetails) =>
+                  movie.poster_path !== null && (
+                    <CardMovie
+                      key={movie.id}
+                      variant="primary"
+                      poster={movie.poster_path}
+                      title={movie.title}
+                      id={movie.id}
+                    />
+                  )
+              )}
       </ContainerScroll>
     </section>
   );
@@ -371,15 +381,18 @@ const PlayingMoviesSection = () => {
         <ContainerScroll>
           {isLoading
             ? loadingCardMovies
-            : moviesTrending.map((movie: TypeMovieDetails, index: number) => (
-                <CardMovie
-                  key={movie.id}
-                  variant="simple"
-                  poster={movie.poster_path}
-                  onClick={() => handleCardClick(index)}
-                  isSelected={index === selectedMovieIndex}
-                />
-              ))}
+            : moviesTrending.map(
+                (movie: TypeMovieDetails, index: number) =>
+                  movie.poster_path !== null && (
+                    <CardMovie
+                      key={movie.id}
+                      variant="simple"
+                      poster={movie.poster_path}
+                      onClick={() => handleCardClick(index)}
+                      isSelected={index === selectedMovieIndex}
+                    />
+                  )
+              )}
         </ContainerScroll>
       </section>
     </>
@@ -441,15 +454,18 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
       />
       <ContainerScroll>
         {Movies &&
-          Movies.map((movie) => (
-            <CardMovie
-              key={movie.id}
-              variant="primary"
-              poster={movie.poster_path}
-              title={movie.title}
-              id={movie.id}
-            />
-          ))}
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
       </ContainerScroll>
     </section>
   );
@@ -511,15 +527,18 @@ const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
       />
       <ContainerScroll>
         {Movies &&
-          Movies.map((movie) => (
-            <CardMovie
-              key={movie.id}
-              variant="primary"
-              poster={movie.poster_path}
-              title={movie.title}
-              id={movie.id}
-            />
-          ))}
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
       </ContainerScroll>
     </section>
   );
@@ -656,15 +675,18 @@ const UpcomingMoviesSection = () => {
         <ContainerScroll>
           {isLoading
             ? loadingCardMovies
-            : moviesUpcoming.map((movie: TypeMovieDetails, index: number) => (
-                <CardMovie
-                  key={movie.id}
-                  variant="simple"
-                  poster={movie.poster_path}
-                  onClick={() => handleCardClick(index)}
-                  isSelected={index === selectedMovieIndex}
-                />
-              ))}
+            : moviesUpcoming.map(
+                (movie: TypeMovieDetails, index: number) =>
+                  movie.poster_path !== null && (
+                    <CardMovie
+                      key={movie.id}
+                      variant="simple"
+                      poster={movie.poster_path}
+                      onClick={() => handleCardClick(index)}
+                      isSelected={index === selectedMovieIndex}
+                    />
+                  )
+              )}
         </ContainerScroll>
       </section>
     </>
@@ -698,16 +720,19 @@ const ContainerTvMoivies = () => {
           ? loadingCardMovies
           : trendigMovieTv
               .slice(0, 20)
-              .map((tvShow: TVShow) => (
-                <CardMovie
-                  key={tvShow.id}
-                  variant="primary"
-                  poster={tvShow.poster_path}
-                  title={tvShow.name}
-                  id={tvShow.id}
-                  forTv={true}
-                />
-              ))}
+              .map(
+                (tvShow: TVShow) =>
+                  tvShow.poster_path !== null && (
+                    <CardMovie
+                      key={tvShow.id}
+                      variant="primary"
+                      poster={tvShow.poster_path}
+                      title={tvShow.name}
+                      id={tvShow.id}
+                      forTv={true}
+                    />
+                  )
+              )}
       </ContainerScroll>
     </section>
   );
