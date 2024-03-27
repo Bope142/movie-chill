@@ -1,13 +1,30 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async () => {
+export const GET = async (
+  req: NextRequest,
+  { params }: { params: Record<string, string> }
+) => {
   try {
+    const { id } = params;
+    if (!id)
+      return NextResponse.json(
+        {
+          error: "parameters not specified for GET request ",
+        },
+        {
+          status: 403,
+        }
+      );
     const prisma = new PrismaClient();
-    const categories = await prisma.movie_categories.findMany({});
+    const oneCategorie = await prisma.movie_categories.findUnique({
+      where: {
+        category_id: parseInt(id),
+      },
+    });
 
-    if (categories !== null) {
-      return NextResponse.json(categories, {
+    if (oneCategorie !== null) {
+      return NextResponse.json(oneCategorie, {
         status: 200,
       });
     } else {

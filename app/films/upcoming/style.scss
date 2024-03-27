@@ -1,0 +1,89 @@
+@import "../../../public/style/main.scss";
+
+#banner {
+  @include flexbox(column, flex-start, flex-start);
+  row-gap: 20px;
+  background: url("/images/cover/pwGmXVKUgKN13psUjlhC9zBcq1o.jpg");
+  font-family: $fontBold;
+
+  position: relative;
+  & p {
+    max-width: 800px;
+    font-size: 2rem;
+    line-height: 2.3rem;
+  }
+
+  z-index: 8;
+  & * {
+    z-index: 8;
+  }
+  & span {
+    color: $colorPrimaryBase;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    box-sizing: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.12),
+      rgba(0, 0, 0, 0.7),
+      rgba(0, 0, 0, 0.9),
+      rgb(0, 0, 0)
+    );
+  }
+}
+
+#content__movie_tv {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  & .content {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  & .btn {
+    align-self: center;
+  }
+}
+
+@media only screen and (max-width: 1500px) {
+  #content__movie_tv {
+    & .content {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  #content__movie_tv {
+    & .content {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #content__movie_tv {
+    & .content {
+      gap: 5px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+@media only screen and (max-width: 300px) {
+  #content__movie_tv {
+    & .content {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+}
