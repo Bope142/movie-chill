@@ -68,6 +68,20 @@
   grid-template-columns: 1fr 1fr;
   transform: scale(0.6);
 }
+
+#random_one,
+#random_two,
+#random_three,
+#random_four,
+#random_five {
+  @include flexbox(column, flex-start, flex-start);
+  row-gap: 20px;
+  padding-bottom: $paddingSection;
+  padding-top: 25px !important;
+  & .title__section {
+    margin: 0 $paddingSection;
+  }
+}
 @media only screen and (max-width: 1070px) {
   $paddingSection: 20px;
   #banner__movie {
@@ -75,5 +89,17 @@
   }
   #container__all_movie {
     padding: 50px 10px;
+  }
+
+  #random_one,
+  #random_two,
+  #random_three,
+  #random_four,
+  #random_five {
+    @include flexbox(column, flex-start, flex-start);
+    padding-bottom: $paddingSection;
+    & .title__section {
+      margin: 0 $paddingSection;
+    }
   }
 }
