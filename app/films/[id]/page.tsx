@@ -122,7 +122,7 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
   const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
     <CardMovie variant="primary" key={index} isLoading={true} />
   ));
-  console.log(movie);
+
   return (
     <section className="section__page sections__movies">
       <TitleSection variant="title-large" title="FILMS SIMILAIR" />
