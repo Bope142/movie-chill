@@ -83,15 +83,18 @@ const ContainerMovie = () => {
       id="content__movie_tv"
     >
       <main className="content">
-        {movieList.map((movie, index) => (
-          <CardMovie
-            key={index}
-            variant="default"
-            poster={movie.poster_path}
-            title={movie.original_title}
-            id={movie.id}
-          />
-        ))}
+        {movieList.map(
+          (movie) =>
+            movie.poster_path !== null && (
+              <CardMovie
+                key={movie.id}
+                variant="default"
+                poster={movie.poster_path}
+                title={movie.original_title}
+                id={movie.id}
+              />
+            )
+        )}
       </main>
       <Button
         variant="primary"

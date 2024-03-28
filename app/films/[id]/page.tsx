@@ -122,6 +122,7 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
   const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
     <CardMovie variant="primary" key={index} isLoading={true} />
   ));
+  console.log(movie);
   return (
     <section className="section__page sections__movies">
       <TitleSection variant="title-large" title="FILMS SIMILAIR" />
@@ -131,15 +132,19 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
           : movie &&
             movie
               .slice(0, 20)
-              .map((movie: TypeMovieDetails) => (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.title}
-                  id={movie.id}
-                />
-              ))}
+              .map(
+                (movie: TypeMovieDetails) =>
+                  movie.poster_path !== null && (
+                    <CardMovie
+                      key={movie.id}
+                      variant="primary"
+                      poster={movie.poster_path}
+                      title={movie.title}
+                      id={movie.id}
+                      cover={movie.backdrop_path}
+                    />
+                  )
+              )}
       </ContainerScroll>
     </section>
   );

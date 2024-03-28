@@ -87,16 +87,19 @@ const ContainerMovieTV = () => {
       id="content__movie_tv"
     >
       <main className="content">
-        {movieTrendingTv.map((movie, index) => (
-          <CardMovie
-            key={index}
-            variant="default"
-            poster={movie.poster_path}
-            title={movie.original_name}
-            id={movie.id}
-            forTv={true}
-          />
-        ))}
+        {movieTrendingTv.map(
+          (movie, index) =>
+            movie.poster_path !== null && (
+              <CardMovie
+                key={index}
+                variant="default"
+                poster={movie.poster_path}
+                title={movie.original_name}
+                id={movie.id}
+                forTv={true}
+              />
+            )
+        )}
       </main>
       <Button
         variant="primary"

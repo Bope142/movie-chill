@@ -144,15 +144,18 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
       />
       <ContainerScroll>
         {Movies &&
-          Movies.map((movie) => (
-            <CardMovie
-              key={movie.id}
-              variant="primary"
-              poster={movie.poster_path}
-              title={movie.title}
-              id={movie.id}
-            />
-          ))}
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
       </ContainerScroll>
     </section>
   );
@@ -214,15 +217,18 @@ const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
       />
       <ContainerScroll>
         {Movies &&
-          Movies.map((movie) => (
-            <CardMovie
-              key={movie.id}
-              variant="primary"
-              poster={movie.poster_path}
-              title={movie.title}
-              id={movie.id}
-            />
-          ))}
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
       </ContainerScroll>
     </section>
   );
@@ -284,15 +290,18 @@ const ContainerRandomMovieThree: React.FC<PropsMovieRandom> = ({
       />
       <ContainerScroll>
         {Movies &&
-          Movies.map((movie) => (
-            <CardMovie
-              key={movie.id}
-              variant="primary"
-              poster={movie.poster_path}
-              title={movie.title}
-              id={movie.id}
-            />
-          ))}
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
       </ContainerScroll>
     </section>
   );
@@ -354,15 +363,18 @@ const ContainerRandomMovieFour: React.FC<PropsMovieRandom> = ({
       />
       <ContainerScroll>
         {Movies &&
-          Movies.map((movie) => (
-            <CardMovie
-              key={movie.id}
-              variant="primary"
-              poster={movie.poster_path}
-              title={movie.title}
-              id={movie.id}
-            />
-          ))}
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
       </ContainerScroll>
     </section>
   );
@@ -424,15 +436,18 @@ const ContainerRandomMovieFive: React.FC<PropsMovieRandom> = ({
       />
       <ContainerScroll>
         {Movies &&
-          Movies.map((movie) => (
-            <CardMovie
-              key={movie.id}
-              variant="primary"
-              poster={movie.poster_path}
-              title={movie.title}
-              id={movie.id}
-            />
-          ))}
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
       </ContainerScroll>
     </section>
   );

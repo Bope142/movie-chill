@@ -6,7 +6,12 @@ import { ContainerScroll } from "@/components/container/container";
 import "./style.scss";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
-import { DetailMovie, DetailTvMovie, TypeMovieDetails } from "@/types/movie";
+import {
+  DetailMovie,
+  DetailTvMovie,
+  TVShow,
+  TypeMovieDetails,
+} from "@/types/movie";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { TitleSection } from "@/components/titleSection/titleSection";
 import { MdStarRate } from "react-icons/md";
@@ -107,7 +112,7 @@ const Banner = ({ movie, isLoading }: propsBanner) => {
   return displayContainer;
 };
 
-type SimilarMovies = TypeMovieDetails[];
+type SimilarMovies = TVShow[];
 type propsSimilarMovie = {
   movie?: SimilarMovies;
   isLoading: boolean;
@@ -117,6 +122,7 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
   const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
     <CardMovie variant="primary" key={index} isLoading={true} />
   ));
+  console.log(movie);
   return (
     <section className="section__page sections__movies">
       <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
@@ -125,13 +131,14 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
           ? loadingCardMovies
           : movie &&
             movie
+              .filter((movie: TVShow) => movie.poster_path !== null)
               .slice(0, 20)
-              .map((movie: TypeMovieDetails) => (
+              .map((movie: TVShow) => (
                 <CardMovie
                   key={movie.id}
                   variant="primary"
                   poster={movie.poster_path}
-                  title={movie.title}
+                  title={movie.original_name}
                   id={movie.id}
                   forTv={true}
                 />

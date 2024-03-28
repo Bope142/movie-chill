@@ -36,6 +36,7 @@ interface CardProps {
   isLoading?: boolean;
   isSelected?: boolean;
   forTv?: boolean;
+  cover?: string;
   onClick?: () => void;
 }
 
@@ -166,11 +167,13 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
     </div>
   );
 };
+
 export const CardMovie: React.FC<CardProps> = ({
   variant,
   id,
   title,
   poster,
+  cover,
   isLoading,
   isSelected,
   forTv,
@@ -188,7 +191,9 @@ export const CardMovie: React.FC<CardProps> = ({
             <>
               {poster && (
                 <Image
-                  src={`https://image.tmdb.org/t/p/original${poster}`}
+                  src={`https://image.tmdb.org/t/p/original${
+                    poster === null ? cover : poster
+                  }`}
                   alt={`poster movie ${title}`}
                   className="img-fluid poster-movie"
                   width={100}
@@ -256,7 +261,7 @@ export const CardMovie: React.FC<CardProps> = ({
           {isLoading ? (
             <div className="skeleton-loading"></div>
           ) : (
-            poster && (
+            poster !== null && (
               <Image
                 src={`https://image.tmdb.org/t/p/original${poster}`}
                 alt={`poster movie ${title}`}
@@ -280,7 +285,7 @@ export const CardMovie: React.FC<CardProps> = ({
           {isLoading ? (
             <div className="skeleton-loading"></div>
           ) : (
-            poster && (
+            poster !== null && (
               <Image
                 src={`https://image.tmdb.org/t/p/original${poster}`}
                 alt={`poster movie ${title}`}
