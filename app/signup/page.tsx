@@ -9,6 +9,7 @@ import { Suspense, useState } from "react";
 import { ModalMessage } from "@/components/modal/modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { signup } from "@/lib/auth/action";
 
 type FormSignupProps = {
   setOpenModal: (value: boolean) => void;
@@ -22,6 +23,7 @@ type TypeInputValidity = {
 };
 
 const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
+  const [loadingBtnSignup, setLoadingBtnSignup] = useState<boolean>(false);
   const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
     nameUser: false,
     emailUser: false,
@@ -41,9 +43,21 @@ const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
     }));
   };
 
-  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isFormValid) setOpenModal(true);
+    if (isFormValid) {
+      setLoadingBtnSignup(true);
+      const formData = new FormData(e.currentTarget);
+      const response = await signup(formData);
+      if (response.redirectTo) {
+        //setOpenModal(true);
+        setLoadingBtnSignup(false);
+      } else if (response.formError) {
+        console.error(response.formError);
+        toast.error(response.formError);
+        setLoadingBtnSignup(false);
+      }
+    }
   };
 
   return (
@@ -96,7 +110,11 @@ const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
             handleValidityChange("confirmPassword", isValid)
           }
         />
-        <Button variant="primary" isDisabled={!isFormValid}>
+        <Button
+          variant="primary"
+          isDisabled={!isFormValid}
+          isLoading={loadingBtnSignup}
+        >
           S'inscrire
         </Button>
       </form>
@@ -150,19 +168,19 @@ export default function SignupPage() {
               Continuer
             </ButtonLink>
           </div>
-          <ToastContainer
-            position="bottom-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
         </ModalMessage>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </Suspense>
     </main>
   );

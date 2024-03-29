@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import "./style.scss";
 
@@ -8,10 +9,6 @@ type TypePropsInputBoxForm = {
   nameInput: string;
   required?: boolean;
   onValidityChange?: (isValid: boolean) => void;
-};
-
-type FormValidity = {
-  [inputName: string]: boolean;
 };
 
 export function InputBoxForm({
@@ -59,10 +56,12 @@ export function InputBoxForm({
     if (typeInput === "text") {
       valid = inputValue.length >= 4;
     }
+    console.log("text ", valid);
     setIsValid(valid);
     if (onValidityChange) {
       onValidityChange(valid);
     }
+    //onValidityChange(valid);
     return valid;
   };
 

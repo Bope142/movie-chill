@@ -36,6 +36,12 @@
     }
   }
 }
+.input_box_form:-webkit-autofill,
+.input_box_form:-webkit-autofill:hover,
+.input_box_form:-webkit-autofill:focus,
+.input_box_form:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
 
 .input_box_form:has(:user-invalid) {
   & .input__form__box {
