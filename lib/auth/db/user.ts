@@ -8,7 +8,6 @@ export async function existingUser(email: string): Promise<boolean> {
     const user = await prisma.users.findUnique({
       where: { email: email },
     });
-    console.log(user);
     return user ? true : false;
   } catch (error) {
     throw new Error("error verifying user");
@@ -28,7 +27,6 @@ export async function createUser(
         password,
       },
     });
-    console.log(user);
     return user !== null ? user.user_id : 0;
   } catch (error) {
     throw new Error("error creating user");

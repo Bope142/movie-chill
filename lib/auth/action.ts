@@ -38,7 +38,13 @@ export async function signup(
     };
   } else {
     const createNewUser = await createUser(username, email, password);
-    console.log(createNewUser);
-    return { redirectTo: "/" };
+    if (createNewUser !== 0) {
+      console.log(createNewUser);
+      return { redirectTo: "/" };
+    }
+
+    return {
+      formError: "Une erreur s'est produite lors de votre inscription.",
+    };
   }
 }

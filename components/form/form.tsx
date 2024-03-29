@@ -56,7 +56,7 @@ export function InputBoxForm({
     if (typeInput === "text") {
       valid = inputValue.length >= 4;
     }
-    console.log("text ", valid);
+
     setIsValid(valid);
     if (onValidityChange) {
       onValidityChange(valid);
