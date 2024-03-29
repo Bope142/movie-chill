@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import "./index.style.scss";
@@ -57,15 +58,18 @@ const BannerHomePage = () => {
       },
     }
   );
+
   useEffect(() => {
-    if (!isLoading && data !== null) {
+    if (!isLoading && data !== null && isError === false) {
+      console.log(data);
+      //TODO : fix this error on first load
       const randomIndex: number = Math.floor(Math.random() * data.length - 1);
-      const randomMovieId: number = data[randomIndex].id;
+      const randomMovieId: number = data[1].id;
       getSemilarMovie(randomMovieId);
       setCurrentPopularMovie(data[randomIndex]);
       setLoadeingSimilarMovie(false);
     }
-  }, [isLoading, data, getSemilarMovie]);
+  }, [isLoading]);
 
   const displayContainer = loadeingSimilarMovie ? (
     <section
@@ -90,7 +94,8 @@ const BannerHomePage = () => {
         </p>
         <div className="detail">
           {currentPopularMovie && currentPopularMovie.release_date} | LANGUE :{" "}
-          {currentPopularMovie && currentPopularMovie.original_language}
+          {currentPopularMovie &&
+            currentPopularMovie.original_language.toLocaleUpperCase()}
         </div>
         <p className="overview">
           {currentPopularMovie && currentPopularMovie.overview}
@@ -99,7 +104,7 @@ const BannerHomePage = () => {
           variant="primary"
           href={`/films/${currentPopularMovie && currentPopularMovie.id}`}
         >
-          Voir Maintenant <FaPlay />
+          Plus d'infos <FaPlay />
         </ButtonLink>
       </div>
       <div className="container__similar_movie">
@@ -171,9 +176,6 @@ const ContainerCurrentPopularMovie: React.FC<PropsMovieComponent> = ({
       </div>
       <p className="overview">{movie && movie.overview}</p>
       <div className="controll-action-button">
-        <Button variant="primary">
-          Voir le trailer <FaPlay />
-        </Button>
         <ButtonLink variant="secondary" href={`/films/${movie?.id}`}>
           Plus d'infos
         </ButtonLink>
@@ -336,9 +338,6 @@ const ContainerMoviePlaying: React.FC<PropsMovieComponent> = ({
       </div>
       <p className="overview">{movie && movie.overview}</p>
       <div className="controll-action-button">
-        <Button variant="primary">
-          Voir le trailer <FaPlay />
-        </Button>
         <ButtonLink variant="secondary" href={`/films/${movie?.id}`}>
           Plus d'infos
         </ButtonLink>
@@ -629,9 +628,6 @@ const ContainerMovieUpcoming: React.FC<PropsMovieComponent> = ({
       </div>
       <p className="overview">{movie && movie.overview}</p>
       <div className="controll-action-button">
-        <Button variant="primary">
-          Voir le trailer <FaPlay />
-        </Button>
         <ButtonLink variant="secondary" href={`/films/${movie?.id}`}>
           Plus d'infos
         </ButtonLink>
@@ -775,6 +771,7 @@ export default function Home() {
         <ContainerMoviesRandom />
         <UpcomingMoviesSection />
         <ContainerTvMoivies />
+
         {/* <ContainerFavoritesMoivies /> */}
         <Footer />
       </Suspense>
