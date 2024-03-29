@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { PageContent } from "@/components/container/container";
 import { ContainerScroll } from "@/components/container/container";
 import "./style.scss";
@@ -15,20 +15,21 @@ import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { TitleSection } from "@/components/titleSection/titleSection";
 import { MdStarRate } from "react-icons/md";
-import { Button } from "@/components/button/button";
+import { Button, ButtonLink } from "@/components/button/button";
 import { FaHeart } from "react-icons/fa";
 import { FaShareAlt } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io";
 import { AiFillInstagram } from "react-icons/ai";
 import { FaFacebookSquare } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { useGetDetailMovie } from "@/hooks/useMovie";
+import ModalVideo, { ModalMessage } from "@/components/modal/modal";
 type propsBanner = {
   movie?: DetailMovie;
   isLoading: boolean;
+  setOpenModal: (value: boolean) => void;
 };
-const Banner = ({ movie, isLoading }: propsBanner) => {
+const Banner = ({ movie, isLoading, setOpenModal }: propsBanner) => {
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
@@ -81,7 +82,9 @@ const Banner = ({ movie, isLoading }: propsBanner) => {
           </div>
         </div>
         <div className="right">
-          <Button variant="secondary">Voir le trailer</Button>
+          <Button variant="secondary" onClick={() => setOpenModal(true)}>
+            Voir le trailer
+          </Button>
           <Button variant="primary">
             <FaHeart />
           </Button>
@@ -152,15 +155,25 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
 function MovieDetailPage({ params }: { params: Record<string, string> }) {
   const id = parseInt(params.id);
   const { data, isLoading } = useGetDetailMovie(id);
+  const [openModalVideo, setOpenModalVideo] = useState<boolean>(false);
   return (
     <main className="container__page">
       <Suspense fallback={<LoaderPage />}>
         <PageContent>
-          <Banner isLoading={isLoading} movie={!isLoading && data.movie} />
+          <Banner
+            isLoading={isLoading}
+            movie={!isLoading && data.movie}
+            setOpenModal={setOpenModalVideo}
+          />
           <ContainerMovieSimilar
             isLoading={isLoading}
             movie={!isLoading && data.similar}
           />
+          <ModalVideo
+            isOpen={openModalVideo}
+            videoLink="https://www.youtube.com/embed/6JnN1DmbqoU"
+            onClose={() => setOpenModalVideo(false)}
+          ></ModalVideo>
         </PageContent>
       </Suspense>
     </main>
