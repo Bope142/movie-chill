@@ -47,4 +47,15 @@ model users {
   date_registered          DateTime?                  @default(now()) @db.Timestamp(0)
   user_favorite_categories user_favorite_categories[]
   user_favorite_movies     user_favorite_movies[]
+  user_sessions            user_sessions[]
+}
+
+model user_sessions {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  expires_at DateTime  @db.DateTime(0)
+  users      users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "user_sessions_ibfk_1")
+
+  @@index([user_id], map: "user_id")
 }
