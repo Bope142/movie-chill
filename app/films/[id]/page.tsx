@@ -164,7 +164,6 @@ function MovieDetailPage({ params }: { params: Record<string, string> }) {
   const id = parseInt(params.id);
   const { data, isLoading } = useGetDetailMovie(id);
   const [openModalVideo, setOpenModalVideo] = useState<boolean>(false);
-  console.log(data);
   return (
     <main className="container__page">
       <Suspense fallback={<LoaderPage />}>

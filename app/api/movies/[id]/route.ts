@@ -4,24 +4,36 @@ import { NextRequest, NextResponse } from "next/server";
 const getUrlVideo = async (idMovie: number): Promise<string | null> => {
   try {
     const response = await axios.get(
-      `${process.env.BASE_URL_API}movie/${idMovie}/videos?api_key=${process.env.API_KEY}`
+      `${process.env.BASE_URL_API}movie/${idMovie}/videos?api_key=${process.env.API_KEY}&language=fr`
     );
 
     if (response.status === 200) {
       const videosData = response.data;
       const clipVideos = videosData.results.filter(
-        (video: any) => video.type === "Clip" || video.type === "Trailer"
+        (video: any) =>
+          video.type === "Clip" ||
+          video.type === "Trailer" ||
+          video.type === "Teaser" ||
+          video.type === "Featurette"
       );
 
       if (clipVideos.length > 0) {
-        const firstVideo = clipVideos[0];
-        if (firstVideo.site === "YouTube") {
-          return `https://www.youtube.com/embed/${firstVideo.key}`;
-        } else if (firstVideo.site === "Vimeo") {
-          return `https://vimeo.com/${firstVideo.key}`;
-        } else {
-          return null;
+        for (const video of clipVideos) {
+          const videoResponse = await axios.head(
+            video.site === "YouTube"
+              ? `https://www.youtube.com/embed/${video.key}`
+              : `https://vimeo.com/${video.key}`
+          );
+
+          if (videoResponse.status === 200) {
+            if (video.site === "YouTube") {
+              return `https://www.youtube.com/embed/${video.key}`;
+            } else if (video.site === "Vimeo") {
+              return `https://vimeo.com/${video.key}`;
+            }
+          }
         }
+        return null;
       } else {
         return null;
       }

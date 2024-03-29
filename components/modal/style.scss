@@ -112,7 +112,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 25px;
+  padding: 0px !important;
   transition: all 0.3s linear;
 
   & * {
@@ -123,7 +123,7 @@
 .container-modal-video {
   background: $colorNeutral1;
   border-radius: 0.8rem;
-  padding: 25px;
+  padding: 3px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -138,6 +138,7 @@
   width: 90%;
 
   height: 60%;
+  padding-bottom: 20px !important;
 
   & iframe {
     height: 100%;
