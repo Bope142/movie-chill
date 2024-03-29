@@ -64,7 +64,7 @@ const BannerHomePage = () => {
       console.log(data);
       //TODO : fix this error on first load
       const randomIndex: number = Math.floor(Math.random() * data.length - 1);
-      const randomMovieId: number = data[randomIndex].id;
+      const randomMovieId: number = data[1].id;
       getSemilarMovie(randomMovieId);
       setCurrentPopularMovie(data[randomIndex]);
       setLoadeingSimilarMovie(false);
