@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import "./index.style.scss";
@@ -57,15 +58,18 @@ const BannerHomePage = () => {
       },
     }
   );
+
   useEffect(() => {
-    if (!isLoading && data !== null) {
+    if (!isLoading && data !== null && isError === false) {
+      console.log(data);
+      //TODO : fix this error on first load
       const randomIndex: number = Math.floor(Math.random() * data.length - 1);
       const randomMovieId: number = data[randomIndex].id;
       getSemilarMovie(randomMovieId);
       setCurrentPopularMovie(data[randomIndex]);
       setLoadeingSimilarMovie(false);
     }
-  }, [isLoading, data, getSemilarMovie]);
+  }, [isLoading]);
 
   const displayContainer = loadeingSimilarMovie ? (
     <section

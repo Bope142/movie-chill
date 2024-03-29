@@ -15,15 +15,15 @@ import { fakeDataPopularMovie } from "@/data/fakeData.PopularMovie";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { TitleSection } from "@/components/titleSection/titleSection";
 import { MdStarRate } from "react-icons/md";
-import { Button } from "@/components/button/button";
+import { Button, ButtonLink } from "@/components/button/button";
 import { FaHeart } from "react-icons/fa";
 import { FaShareAlt } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io";
 import { AiFillInstagram } from "react-icons/ai";
 import { FaFacebookSquare } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { useGetDetailMovie } from "@/hooks/useMovie";
+import { ModalMessage } from "@/components/modal/modal";
 type propsBanner = {
   movie?: DetailMovie;
   isLoading: boolean;
