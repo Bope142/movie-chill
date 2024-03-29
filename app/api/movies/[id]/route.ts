@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 const getUrlVideo = async (idMovie: number): Promise<string | null> => {
   try {
     const response = await axios.get(
-      `${process.env.BASE_URL_API}movie/${idMovie}/videos?api_key=${process.env.API_KEY}&language=fr`
+      `${process.env.BASE_URL_API}movie/${idMovie}/videos?api_key=${process.env.API_KEY}&language=en-US`
     );
 
     if (response.status === 200) {
