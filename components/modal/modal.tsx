@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
+import { Button } from "../button/button";
 
 interface ModalMessageProps {
   isOpen: boolean;
@@ -43,29 +44,50 @@ export const ModalMessage: React.FC<ModalMessageProps> = ({
 
 interface ModalProps {
   isOpen: boolean;
-  title: string;
-  children: React.ReactNode;
+  videoLink: string;
   onClose: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+const ModalVideo: React.FC<ModalProps> = ({ isOpen, videoLink, onClose }) => {
+  const [showContentModal, setShowContentModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    if (isOpen) {
+      timeout = setTimeout(() => {
+        setShowContentModal(isOpen);
+      }, 0.002);
+    } else {
+      setShowContentModal(false);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [isOpen]);
+
+  const handleClose = () => {
+    setShowContentModal(false);
+    onClose();
+  };
+
   return (
-    <>
-      {isOpen && (
-        <div className="modal-overlay" onClick={onClose}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{title}</h3>
-              <button className="modal-close-btn" onClick={onClose}>
-                Close
-              </button>
-            </div>
-            <div className="modal-body">{children}</div>
-          </div>
+    <div className={`modal__video ${isOpen && "modal__video__show"}`}>
+      <div className="video-container">
+        <div
+          className={`container-modal-video ${
+            showContentModal && "container-modal-video-open"
+          }`}
+        >
+          <iframe
+            src={videoLink}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          />
+          <Button variant="primary" onClick={handleClose}>
+            Fermer
+          </Button>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
-
-export default Modal;
+export default ModalVideo;
