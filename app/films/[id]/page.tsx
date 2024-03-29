@@ -28,8 +28,14 @@ type propsBanner = {
   movie?: DetailMovie;
   isLoading: boolean;
   setOpenModal: (value: boolean) => void;
+  existUrlVideo: boolean;
 };
-const Banner = ({ movie, isLoading, setOpenModal }: propsBanner) => {
+const Banner = ({
+  movie,
+  isLoading,
+  setOpenModal,
+  existUrlVideo,
+}: propsBanner) => {
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
@@ -67,7 +73,6 @@ const Banner = ({ movie, isLoading, setOpenModal }: propsBanner) => {
           </div>
           <div className="details__other">
             <div className="rating">
-              {" "}
               {movie &&
                 ratingCountIcons(
                   Math.round(Math.max(0, Math.min(5, movie.vote_average)))
@@ -82,9 +87,12 @@ const Banner = ({ movie, isLoading, setOpenModal }: propsBanner) => {
           </div>
         </div>
         <div className="right">
-          <Button variant="secondary" onClick={() => setOpenModal(true)}>
-            Voir le trailer
-          </Button>
+          {existUrlVideo && (
+            <Button variant="secondary" onClick={() => setOpenModal(true)}>
+              Voir le trailer
+            </Button>
+          )}
+
           <Button variant="primary">
             <FaHeart />
           </Button>
@@ -164,16 +172,23 @@ function MovieDetailPage({ params }: { params: Record<string, string> }) {
             isLoading={isLoading}
             movie={!isLoading && data.movie}
             setOpenModal={setOpenModalVideo}
+            existUrlVideo={
+              isLoading ? false : data.videoLink === null ? false : true
+            }
           />
           <ContainerMovieSimilar
             isLoading={isLoading}
             movie={!isLoading && data.similar}
           />
-          <ModalVideo
-            isOpen={openModalVideo}
-            videoLink="https://www.youtube.com/embed/6JnN1DmbqoU"
-            onClose={() => setOpenModalVideo(false)}
-          ></ModalVideo>
+          {!isLoading && data.videoLink !== null && (
+            <ModalVideo
+              isOpen={openModalVideo}
+              videoLink={
+                !isLoading && data.videoLink !== null && data.videoLink
+              }
+              onClose={() => setOpenModalVideo(false)}
+            ></ModalVideo>
+          )}
         </PageContent>
       </Suspense>
     </main>
