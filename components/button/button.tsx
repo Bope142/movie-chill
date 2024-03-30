@@ -7,6 +7,7 @@ import Link from "next/link";
 interface ButtonProps {
   variant: "primary" | "secondary" | "danger";
   isLoading?: boolean;
+  isDisabled?: boolean;
   onClick?: () => void;
   children?: React.ReactNode;
 }
@@ -27,16 +28,17 @@ interface LinkButtonProps {
 export const Button: React.FC<ButtonProps> = ({
   variant,
   isLoading = false,
+  isDisabled = false,
   onClick,
   children,
 }) => {
   return (
     <button
-      className={`btn btn-${variant} ${isLoading ? "btn-disabled" : ""} ${
+      className={`btn btn-${variant} ${isDisabled ? "btn-disabled" : ""} ${
         isLoading ? "btn-loading" : ""
       }`}
       onClick={onClick}
-      disabled={isLoading}
+      disabled={isDisabled}
     >
       {isLoading ? <FiLoader className="loader-icon-btn" /> : children}
     </button>

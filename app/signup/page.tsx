@@ -7,12 +7,61 @@ import { Button, ButtonLink } from "@/components/button/button";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense, useState } from "react";
 import { ModalMessage } from "@/components/modal/modal";
-const FormLogin: React.FC<{ setOpenModal: (value: boolean) => void }> = ({
-  setOpenModal,
-}) => {
-  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { signup } from "@/lib/auth/action";
+
+type FormSignupProps = {
+  setOpenModal: (value: boolean) => void;
+};
+
+type TypeInputValidity = {
+  nameUser: boolean;
+  emailUser: boolean;
+  passwordUser: boolean;
+  confirmPassword: boolean;
+};
+
+const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
+  const [loadingBtnSignup, setLoadingBtnSignup] = useState<boolean>(false);
+  const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
+    nameUser: false,
+    emailUser: false,
+    passwordUser: false,
+    confirmPassword: false,
+  });
+
+  const isFormValid = Object.values(inputValidity).every((valid) => valid);
+
+  const handleValidityChange = (
+    inputName: keyof TypeInputValidity,
+    isValid: boolean
+  ) => {
+    setInputValidity((prevValidity) => ({
+      ...prevValidity,
+      [inputName]: isValid,
+    }));
+  };
+
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setOpenModal(true);
+    if (isFormValid) {
+      setLoadingBtnSignup(true);
+      const formData = new FormData(e.currentTarget);
+      const response = await signup(formData);
+      if (response.redirectTo) {
+        //setOpenModal(true);
+        console.log(response);
+        toast.success(
+          "Votre inscription sur MOVIE CHILL a été effectuée avec succès ! Veuillez vérifier votre boîte de réception pour activer votre compte."
+        );
+        setLoadingBtnSignup(false);
+      } else if (response.formError) {
+        console.error(response.formError);
+        toast.error(response.formError);
+        setLoadingBtnSignup(false);
+      }
+    }
   };
 
   return (
@@ -30,26 +79,48 @@ const FormLogin: React.FC<{ setOpenModal: (value: boolean) => void }> = ({
           placeholder="Votre nom d'utilisateur ici"
           typeInput="text"
           nameInput="nameUser"
+          required={true}
+          onValidityChange={(isValid) =>
+            handleValidityChange("nameUser", isValid)
+          }
         />
         <InputBoxForm
           label="Email"
           placeholder="Votre adresse email ici"
           typeInput="email"
           nameInput="emailUser"
+          required={true}
+          onValidityChange={(isValid) =>
+            handleValidityChange("emailUser", isValid)
+          }
         />
         <InputBoxForm
           label="Mot de Passe"
           placeholder="Votre mot de passe ici"
           typeInput="password"
           nameInput="passwordUser"
+          required={true}
+          onValidityChange={(isValid) =>
+            handleValidityChange("passwordUser", isValid)
+          }
         />
         <InputBoxForm
           label="Confirmation du Mot de Passe"
           placeholder="Confirmer le mot de passe"
           typeInput="password"
           nameInput="confirmPassword"
+          required={true}
+          onValidityChange={(isValid) =>
+            handleValidityChange("confirmPassword", isValid)
+          }
         />
-        <Button variant="primary">S'inscrire</Button>
+        <Button
+          variant="primary"
+          isDisabled={!isFormValid}
+          isLoading={loadingBtnSignup}
+        >
+          S'inscrire
+        </Button>
       </form>
       <p className="bottom-text">
         Vous avez déjà un compte ? Vous pouvez
@@ -81,7 +152,7 @@ export default function SignupPage() {
   return (
     <main className="container__page" id="signup__page">
       <Suspense fallback={<LoaderPage />}>
-        <FormLogin setOpenModal={setOpenModal} />
+        <FormSignup setOpenModal={setOpenModal} />
         <RightContainer />
         <ModalMessage isOpen={openModal}>
           <p className="msg-modal">
@@ -102,6 +173,18 @@ export default function SignupPage() {
             </ButtonLink>
           </div>
         </ModalMessage>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </Suspense>
     </main>
   );
