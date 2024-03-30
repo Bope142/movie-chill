@@ -49,18 +49,18 @@ const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
       setLoadingBtnSignup(true);
       const formData = new FormData(e.currentTarget);
       const response = await signup(formData);
-      if (response.redirectTo) {
-        //setOpenModal(true);
-        console.log(response);
-        toast.success(
-          "Votre inscription sur MOVIE CHILL a été effectuée avec succès ! Veuillez vérifier votre boîte de réception pour activer votre compte."
-        );
-        setLoadingBtnSignup(false);
-      } else if (response.formError) {
-        console.error(response.formError);
-        toast.error(response.formError);
-        setLoadingBtnSignup(false);
-      }
+      // if (response.redirectTo) {
+      //   //setOpenModal(true);
+      //   console.log(response);
+      //   toast.success(
+      //     "Votre inscription sur MOVIE CHILL a été effectuée avec succès ! Veuillez vérifier votre boîte de réception pour activer votre compte."
+      //   );
+      //   setLoadingBtnSignup(false);
+      // } else if (response.formError) {
+      //   console.error(response.formError);
+      //   toast.error(response.formError);
+      //   setLoadingBtnSignup(false);
+      // }
     }
   };
 
