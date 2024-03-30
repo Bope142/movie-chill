@@ -1,6 +1,8 @@
 "use server";
+import { UserType } from "@/types/user";
 import { PrismaClient } from "@prisma/client";
 import { isWithinExpirationDate, TimeSpan, createDate } from "oslo";
+const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
 export async function existingUser(email: string): Promise<boolean> {
@@ -18,16 +20,17 @@ export async function createUser(
   username: string,
   email: string,
   password: string
-): Promise<number> {
+) {
   try {
+    const password_hash = await bcrypt.hash(password, 10);
     const user = await prisma.users.create({
       data: {
         username,
         email,
-        password,
+        password: password_hash,
       },
     });
-    return user !== null ? user.user_id : 0;
+    return user !== null ? user : null;
   } catch (error) {
     throw new Error("error creating user");
   }
@@ -72,5 +75,16 @@ export async function saveEmailVerification(
   } catch (error) {
     console.error("Error saving email verification code:", error);
     throw new Error("Failed to save email verification code.");
+  }
+}
+
+export async function getUser(email: string) {
+  try {
+    const user = await prisma.users.findUnique({
+      where: { email: email },
+    });
+    return user;
+  } catch (error) {
+    throw new Error("error get user");
   }
 }

@@ -1,9 +1,10 @@
 "use server";
 import { ActionResponseSignup } from "@/types/actionResponse";
-import { createUser, existingUser, saveEmailVerification } from "./db/user";
+import { createUser, existingUser, saveEmailVerification } from "../db/user";
 import { sendMail } from "../email/sendEmail";
 import { renderVerificationCodeEmail } from "../email/emailVerification";
 import { redirects } from "../constants";
+import { signIn } from "next-auth/react";
 
 export async function signup(
   formData: FormData
@@ -41,22 +42,30 @@ export async function signup(
         "Un compte avec cet email existe déjà. Veuillez utiliser une autre adresse email ou connectez-vous si vous avez déjà un compte.",
     };
   } else {
-    const createNewUser = await createUser(username, email, password);
-    if (createNewUser !== 0) {
-      console.log(createNewUser);
+    const newUser = await createUser(username, email, password);
+    if (newUser !== null) {
+      console.log(newUser);
       const verificationCode = await saveEmailVerification(
-        createNewUser,
+        newUser.user_id,
         email
       );
       console.log(verificationCode);
       if (verificationCode.length === 8) {
-        await sendMail({
-          to: email,
-          subject:
-            "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
-          body: renderVerificationCodeEmail({ code: verificationCode }),
-        });
+        // await sendMail({
+        //   to: email,
+        //   subject:
+        //     "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
+        //   body: renderVerificationCodeEmail({ code: verificationCode }),
+        // });
+
         return { redirectTo: redirects.toVerify };
+        // if (requestSignIn?.ok) {
+
+        // } else {
+        //   return {
+        //     formError: "Une erreur s'est produite lors de votre inscription.",
+        //   };
+        // }
       } else {
         return {
           formError: "Une erreur s'est produite lors de votre inscription.",

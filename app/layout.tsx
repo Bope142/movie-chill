@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "@/public/style/main.scss";
 import QueryProvider from "@/providers/queryProviders";
+import { SessionProvider } from "next-auth/react";
+import AuthProvider from "@/providers/authProvider";
 
 export const metadata: Metadata = {
   title: "Movie Chill",
@@ -15,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <AuthProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

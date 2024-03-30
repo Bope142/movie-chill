@@ -10,6 +10,9 @@ import { ModalMessage } from "@/components/modal/modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { signup } from "@/lib/auth/action";
+import { signIn } from "next-auth/react";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type FormSignupProps = {
   setOpenModal: (value: boolean) => void;
@@ -23,6 +26,7 @@ type TypeInputValidity = {
 };
 
 const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
+  const router = useRouter();
   const [loadingBtnSignup, setLoadingBtnSignup] = useState<boolean>(false);
   const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
     nameUser: false,
@@ -49,18 +53,32 @@ const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
       setLoadingBtnSignup(true);
       const formData = new FormData(e.currentTarget);
       const response = await signup(formData);
-      // if (response.redirectTo) {
-      //   //setOpenModal(true);
-      //   console.log(response);
-      //   toast.success(
-      //     "Votre inscription sur MOVIE CHILL a été effectuée avec succès ! Veuillez vérifier votre boîte de réception pour activer votre compte."
-      //   );
-      //   setLoadingBtnSignup(false);
-      // } else if (response.formError) {
-      //   console.error(response.formError);
-      //   toast.error(response.formError);
-      //   setLoadingBtnSignup(false);
-      // }
+      if (response.redirectTo) {
+        //setOpenModal(true);
+
+        const requestSignIn = await signIn("credentials", {
+          redirect: false,
+          email: formData.get("emailUser"),
+          password: formData.get("passwordUser"),
+          callbackUrl: "/",
+        });
+        console.log(requestSignIn);
+        if (requestSignIn?.ok) {
+          console.log(response);
+          toast.success(
+            "Votre inscription sur MOVIE CHILL a été effectuée avec succès ! Veuillez vérifier votre boîte de réception pour activer votre compte."
+          );
+          router.push(response.redirectTo);
+        } else {
+          toast.error("Une erreur s'est produite");
+        }
+
+        setLoadingBtnSignup(false);
+      } else if (response.formError) {
+        console.error(response.formError);
+        toast.error(response.formError);
+        setLoadingBtnSignup(false);
+      }
     }
   };
 
