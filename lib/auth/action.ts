@@ -1,6 +1,9 @@
 "use server";
 import { ActionResponseSignup } from "@/types/actionResponse";
-import { createUser, existingUser } from "./db/user";
+import { createUser, existingUser, saveEmailVerification } from "./db/user";
+import { sendMail } from "../email/sendEmail";
+import { renderVerificationCodeEmail } from "../email/emailVerification";
+import { redirects } from "../constants";
 
 export async function signup(
   formData: FormData
@@ -9,9 +12,10 @@ export async function signup(
   const email = formData.get("emailUser") as string;
   const password = formData.get("passwordUser") as string;
 
-  const usernameRegex = /^[a-zA-Z0-9_]{4,20}$/;
+  const usernameRegex = /^[a-zA-Z0-9._-]{4,20}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[^\s]{8,20}$/;
 
   if (!usernameRegex.test(username)) {
     return {
@@ -24,7 +28,7 @@ export async function signup(
     return { formError: "Adresse e-mail invalide." };
   }
 
-  if (password.length <= 4) {
+  if (!passwordRegex.test(password)) {
     return {
       formError:
         "Mot de passe invalide. Il doit contenir au moins 4 caractères avec au moins une lettre et un chiffre.",
@@ -40,7 +44,24 @@ export async function signup(
     const createNewUser = await createUser(username, email, password);
     if (createNewUser !== 0) {
       console.log(createNewUser);
-      return { redirectTo: "/" };
+      const verificationCode = await saveEmailVerification(
+        createNewUser,
+        email
+      );
+      console.log(verificationCode);
+      if (verificationCode.length === 8) {
+        await sendMail({
+          to: email,
+          subject:
+            "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
+          body: renderVerificationCodeEmail({ code: verificationCode }),
+        });
+        return { redirectTo: redirects.toVerify };
+      } else {
+        return {
+          formError: "Une erreur s'est produite lors de votre inscription.",
+        };
+      }
     }
 
     return {

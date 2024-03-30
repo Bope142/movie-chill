@@ -51,6 +51,10 @@ const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
       const response = await signup(formData);
       if (response.redirectTo) {
         //setOpenModal(true);
+        console.log(response);
+        toast.success(
+          "Votre inscription sur MOVIE CHILL a été effectuée avec succès ! Veuillez vérifier votre boîte de réception pour activer votre compte."
+        );
         setLoadingBtnSignup(false);
       } else if (response.formError) {
         console.error(response.formError);
