@@ -1,5 +1,5 @@
 "use server";
-import { UserType } from "@/types/user";
+
 import { PrismaClient } from "@prisma/client";
 import { isWithinExpirationDate, TimeSpan, createDate } from "oslo";
 import { sendMail } from "../email/sendEmail";
@@ -15,6 +15,8 @@ export async function existingUser(email: string): Promise<boolean> {
     return user ? true : false;
   } catch (error) {
     throw new Error("error verifying user");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -35,6 +37,8 @@ export async function createUser(
     return user !== null ? user : null;
   } catch (error) {
     throw new Error("error creating user");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -77,6 +81,8 @@ export async function saveEmailVerification(
   } catch (error) {
     console.error("Error saving email verification code:", error);
     throw new Error("Failed to save email verification code.");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -88,6 +94,8 @@ export async function getUser(email: string) {
     return user;
   } catch (error) {
     throw new Error("error get user");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -106,30 +114,37 @@ export async function resendVerificationEmail(
   error?: string;
   success?: boolean;
 }> {
-  const lastSent = await prisma.email_verification.findMany({
-    where: { email: email, user_id: userId },
-  });
-  if (lastSent.length > 0) {
-    if (lastSent && isWithinExpirationDate(lastSent[0].expires_at)) {
-      return {
-        error: `Désolé, veuillez patienter ${timeFromNow(
-          lastSent[0].expires_at
-        )} avant de renvoyer le code de vérification.`,
-      };
-    }
-    const verificationCode = await saveEmailVerification(userId, email);
-    await sendMail({
-      to: email,
-      subject:
-        "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
-      body: renderVerificationCodeEmail({ code: verificationCode }),
+  try {
+    const lastSent = await prisma.email_verification.findMany({
+      where: { email: email, user_id: userId },
     });
+    if (lastSent.length > 0) {
+      if (lastSent && isWithinExpirationDate(lastSent[0].expires_at)) {
+        return {
+          error: `Désolé, veuillez patienter ${timeFromNow(
+            lastSent[0].expires_at
+          )} avant de renvoyer le code de vérification.`,
+        };
+      }
+      const verificationCode = await saveEmailVerification(userId, email);
+      await sendMail({
+        to: email,
+        subject:
+          "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
+        body: renderVerificationCodeEmail({ code: verificationCode }),
+      });
 
-    return { success: true };
+      return { success: true };
+    }
+    return {
+      error: `no existing verification code`,
+    };
+  } catch (error) {
+    console.error("Error resend verification code:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
   }
-  return {
-    error: `no existing verification code`,
-  };
 }
 
 export async function verifyUser(userId: number, email: string) {
@@ -143,6 +158,8 @@ export async function verifyUser(userId: number, email: string) {
     return user;
   } catch (error) {
     throw new Error("error get user");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -172,4 +189,22 @@ export async function verifyEmail(
   return {
     error: "Aucun code de vérification existant n'a été trouvé.",
   };
+}
+
+export async function createSessionUser(userId: number): Promise<any> {
+  try {
+    const expirationTime = createDate(new TimeSpan(5, "m"));
+    const sessionUser = await prisma.user_sessions.create({
+      data: {
+        user_id: userId,
+        expires_at: expirationTime,
+      },
+    });
+    return sessionUser;
+  } catch (error) {
+    console.error("Error creating session:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 }

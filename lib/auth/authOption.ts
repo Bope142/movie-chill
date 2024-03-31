@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { createSessionUser } from "../db/user";
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
@@ -12,13 +13,8 @@ type NextAuthSessionCallback = {
 export const authOption = {
   debug: false,
   secret: process.env.NEXTAUTH_SECRET,
-  strategy: "jwt",
-  session: {
-    maxAge: 5 * 60,
-  },
-  jwt: {
-    maxAge: 5 * 60,
-  },
+  strategy: "database",
+
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -29,14 +25,17 @@ export const authOption = {
       async authorize(credentials, req): Promise<any> {
         if (!credentials) throw new Error("No provid credentials");
         const { email, password } = credentials;
+
         const user = await prisma.users.findUnique({
           where: {
             email: email,
           },
           include: {
             email_verification: true,
+            user_sessions: true,
           },
         });
+
         if (user !== null) {
           const matchPasswordUser = await bcrypt.compare(
             password,
@@ -46,7 +45,10 @@ export const authOption = {
           if (!user || !matchPasswordUser) {
             throw new Error("Invalid credentials");
           } else {
-            return user;
+            const generateNewSession = await createSessionUser(user.user_id);
+            console.log("session generated", generateNewSession);
+            if (generateNewSession) return user;
+            return null;
           }
         }
         return null;
