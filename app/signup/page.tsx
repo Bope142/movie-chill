@@ -11,7 +11,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { signup } from "@/lib/auth/action";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 type FormSignupProps = {

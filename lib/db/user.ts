@@ -2,6 +2,8 @@
 import { UserType } from "@/types/user";
 import { PrismaClient } from "@prisma/client";
 import { isWithinExpirationDate, TimeSpan, createDate } from "oslo";
+import { sendMail } from "../email/sendEmail";
+import { renderVerificationCodeEmail } from "../email/emailVerification";
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
@@ -87,4 +89,45 @@ export async function getUser(email: string) {
   } catch (error) {
     throw new Error("error get user");
   }
+}
+
+const timeFromNow = (time: Date) => {
+  const now = new Date();
+  const diff = time.getTime() - now.getTime();
+  const minutes = Math.floor(diff / 1000 / 60);
+  const seconds = Math.floor(diff / 1000) % 60;
+  return `${minutes}m ${seconds}s`;
+};
+
+export async function resendVerificationEmail(
+  userId: number,
+  email: string
+): Promise<{
+  error?: string;
+  success?: boolean;
+}> {
+  const lastSent = await prisma.email_verification.findMany({
+    where: { email: email, user_id: userId },
+  });
+  if (lastSent.length > 0) {
+    if (lastSent && isWithinExpirationDate(lastSent[0].expires_at)) {
+      return {
+        error: `Désolé, veuillez patienter ${timeFromNow(
+          lastSent[0].expires_at
+        )} avant de renvoyer le code de vérification.`,
+      };
+    }
+    const verificationCode = await saveEmailVerification(userId, email);
+    await sendMail({
+      to: email,
+      subject:
+        "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
+      body: renderVerificationCodeEmail({ code: verificationCode }),
+    });
+
+    return { success: true };
+  }
+  return {
+    error: `no existing verification code`,
+  };
 }

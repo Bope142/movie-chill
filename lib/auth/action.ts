@@ -1,10 +1,12 @@
 "use server";
-import { ActionResponseSignup } from "@/types/actionResponse";
+import {
+  ActionResponseSignup,
+  ResendVerificationCodeResponse,
+} from "@/types/actionResponse";
 import { createUser, existingUser, saveEmailVerification } from "../db/user";
 import { sendMail } from "../email/sendEmail";
 import { renderVerificationCodeEmail } from "../email/emailVerification";
 import { redirects } from "../constants";
-import { signIn } from "next-auth/react";
 
 export async function signup(
   formData: FormData
@@ -51,21 +53,14 @@ export async function signup(
       );
       console.log(verificationCode);
       if (verificationCode.length === 8) {
-        // await sendMail({
-        //   to: email,
-        //   subject:
-        //     "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
-        //   body: renderVerificationCodeEmail({ code: verificationCode }),
-        // });
+        await sendMail({
+          to: email,
+          subject:
+            "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
+          body: renderVerificationCodeEmail({ code: verificationCode }),
+        });
 
         return { redirectTo: redirects.toVerify };
-        // if (requestSignIn?.ok) {
-
-        // } else {
-        //   return {
-        //     formError: "Une erreur s'est produite lors de votre inscription.",
-        //   };
-        // }
       } else {
         return {
           formError: "Une erreur s'est produite lors de votre inscription.",

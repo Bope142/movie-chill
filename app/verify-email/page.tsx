@@ -5,37 +5,105 @@ import "./style.scss";
 import Link from "next/link";
 import { Button } from "@/components/button/button";
 import LoaderPage from "@/components/loader/loader";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useMutation } from "react-query";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 type propsForm = {
   emailUser: any;
 };
+type TypeInputValidity = {
+  verificationCode: boolean;
+};
 const FormVerifyEmail = ({ emailUser }: propsForm) => {
+  const [loadingBtnSignup, setLoadingBtnSignup] = useState<boolean>(false);
+  const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
+    verificationCode: false,
+  });
+  const { mutate: resendVerificationCode, isLoading: loaded } = useMutation(
+    () => axios.get(`/api/auth/resend-verification-email`),
+    {
+      onSuccess: async (response) => {
+        if (response.data.code === 200) {
+          toast.success(
+            "votre code de vérification a été renvoyé avec succès ! Veuillez vérifier votre messagerie et saisir le code pour continuer."
+          );
+        } else {
+          toast.error(response.data.message);
+        }
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+
+  const isFormValid = Object.values(inputValidity).every((valid) => valid);
+
+  const handleValidityChange = (
+    inputName: keyof TypeInputValidity,
+    isValid: boolean
+  ) => {
+    setInputValidity((prevValidity) => ({
+      ...prevValidity,
+      [inputName]: isValid,
+    }));
+  };
+
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <main className="container__form container__padding">
       <h1>
         <span>Vérification</span> de l'adresse <span>e-mail</span>
       </h1>
       <p className="text-form">
-        Un e-mail contenant un code de vérification a été envoyé à {emailUser}.
-        Veuillez vérifier votre boîte de réception et suivez les instructions
-        pour compléter le processus de vérification.
+        Un e-mail contenant un code de vérification a été envoyé à{" "}
+        <strong> {emailUser}</strong>. Veuillez vérifier votre boîte de
+        réception et suivez les instructions pour compléter le processus de
+        vérification.
       </p>
-      <form action="" className="form__reset__password form">
+      <form
+        action=""
+        className="form__reset__password form"
+        onSubmit={handleSubmitForm}
+      >
         <InputBoxForm
-          label="Email"
-          placeholder="Votre adresse email ici"
-          typeInput="email"
-          nameInput="emailUser"
+          label="Code de vérification"
+          placeholder="Entrez le code de vérification ici"
+          typeInput="text"
+          nameInput="verificationCode"
           required={true}
+          onValidityChange={(isValid) =>
+            handleValidityChange("verificationCode", isValid)
+          }
         />
-        <Button variant="primary">Confirmer l'adresse</Button>
+        <Button
+          variant="primary"
+          isDisabled={!isFormValid}
+          isLoading={loadingBtnSignup}
+        >
+          Confirmer l'adresse
+        </Button>
       </form>
       <p className="bottom-text">
-        <Link href={"/"} className="">
-          Retour à la page d'accueil
-        </Link>
+        Si vous n'avez pas reçu de code de vérification, veuillez{" "}
+        <span
+          onClick={() => {
+            if (!loaded) {
+              resendVerificationCode();
+            }
+          }}
+        >
+          cliquer ici{" "}
+        </span>
+        pour renvoyer un nouveau code.
       </p>
     </main>
   );
@@ -74,6 +142,18 @@ export default function ForgotPasswordPage() {
           )}
 
           <RightContainer />
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
         </Suspense>
       </main>
     );
