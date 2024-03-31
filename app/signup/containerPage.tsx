@@ -178,44 +178,51 @@ export const ContainerPage = () => {
         <LoaderPage />
       </main>
     );
+  } else if (status === "unauthenticated") {
+    return (
+      <main className="container__page" id="signup__page">
+        <Suspense fallback={<LoaderPage />}>
+          <FormSignup setOpenModal={setOpenModal} />
+          <RightContainer />
+          <ModalMessage isOpen={openModal}>
+            <p className="msg-modal">
+              <span>Félicitations</span> 🤩 Votre inscription à{" "}
+              <span> Movie Chill</span> a été un succès 🥰😍!
+            </p>
+            <p className="detail-msg-modal">
+              Souhaitez-vous configurer votre compte maintenant ? Vous pouvez
+              appuyer sur le bouton <span>Passer</span> pour ignorer cette étape
+              ou continuer pour personnaliser votre compte immédiatement.
+            </p>
+            <div className="modal-action">
+              <Button variant="secondary" onClick={skipOnBoardingProfil}>
+                Passer
+              </Button>
+              <ButtonLink variant="primary" href="/">
+                Continuer
+              </ButtonLink>
+            </div>
+          </ModalMessage>
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+        </Suspense>
+      </main>
+    );
+  } else {
+    return (
+      <main className="page__content">
+        <LoaderPage />
+      </main>
+    );
   }
-  return (
-    <main className="container__page" id="signup__page">
-      <Suspense fallback={<LoaderPage />}>
-        <FormSignup setOpenModal={setOpenModal} />
-        <RightContainer />
-        <ModalMessage isOpen={openModal}>
-          <p className="msg-modal">
-            <span>Félicitations</span> 🤩 Votre inscription à{" "}
-            <span> Movie Chill</span> a été un succès 🥰😍!
-          </p>
-          <p className="detail-msg-modal">
-            Souhaitez-vous configurer votre compte maintenant ? Vous pouvez
-            appuyer sur le bouton <span>Passer</span> pour ignorer cette étape
-            ou continuer pour personnaliser votre compte immédiatement.
-          </p>
-          <div className="modal-action">
-            <Button variant="secondary" onClick={skipOnBoardingProfil}>
-              Passer
-            </Button>
-            <ButtonLink variant="primary" href="/">
-              Continuer
-            </ButtonLink>
-          </div>
-        </ModalMessage>
-        <ToastContainer
-          position="bottom-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-      </Suspense>
-    </main>
-  );
 };

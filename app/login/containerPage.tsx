@@ -134,25 +134,32 @@ export const ContainerPage = () => {
         <LoaderPage />
       </main>
     );
+  } else if (status === "unauthenticated") {
+    return (
+      <main className="container__page" id="login__page">
+        <Suspense fallback={<LoaderPage />}>
+          <FormLogin />
+          <RightContainer />
+          <ToastContainer
+            position="bottom-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+        </Suspense>
+      </main>
+    );
+  } else {
+    return (
+      <main className="page__content">
+        <LoaderPage />
+      </main>
+    );
   }
-  return (
-    <main className="container__page" id="login__page">
-      <Suspense fallback={<LoaderPage />}>
-        <FormLogin />
-        <RightContainer />
-        <ToastContainer
-          position="bottom-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-      </Suspense>
-    </main>
-  );
 };
