@@ -58,13 +58,12 @@ export async function saveEmailVerification(
   email: string
 ): Promise<string> {
   try {
-    const deleteVerificationCodeUser =
-      await prisma.email_verification.deleteMany({
-        where: {
-          email: email,
-          user_id: userId,
-        },
-      });
+    await prisma.email_verification.deleteMany({
+      where: {
+        email: email,
+        user_id: userId,
+      },
+    });
     const verificationCode = generateVerificationCode(8);
     const newVerificationCode = await prisma.email_verification.create({
       data: {
@@ -193,6 +192,11 @@ export async function verifyEmail(
 
 export async function createSessionUser(userId: number): Promise<any> {
   try {
+    // await prisma.user_sessions.deleteMany({
+    //   where: {
+    //     user_id: userId,
+    //   },
+    // });
     const expirationTime = createDate(new TimeSpan(5, "m"));
     const sessionUser = await prisma.user_sessions.create({
       data: {
@@ -203,6 +207,37 @@ export async function createSessionUser(userId: number): Promise<any> {
     return sessionUser;
   } catch (error) {
     console.error("Error creating session:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function isSessionValid(userId: number): Promise<boolean> {
+  try {
+    const userSession = await prisma.user_sessions.findFirst({
+      where: {
+        user_id: userId,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    if (!userSession) {
+      console.log("No session found for the user.");
+      return false;
+    }
+    const expiresAt = userSession.expires_at;
+    if (!isWithinExpirationDate(expiresAt)) {
+      console.log("Session has expired.");
+      return false;
+    }
+
+    console.log(`Session is valid.`);
+    return true;
+  } catch (error) {
+    console.error("Error checking session validity:", error);
     throw error;
   } finally {
     await prisma.$disconnect();

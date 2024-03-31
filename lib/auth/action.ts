@@ -31,7 +31,7 @@ export async function signup(
     return { formError: "Adresse e-mail invalide." };
   }
 
-  if (!passwordRegex.test(password)) {
+  if (password.length < 8) {
     return {
       formError:
         "Mot de passe invalide. Il doit contenir au moins 4 caractères avec au moins une lettre et un chiffre.",

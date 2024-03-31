@@ -54,7 +54,7 @@ export function InputBoxForm({
     if (typeInput === "password") {
       const passwordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[^\s]{8,20}$/;
-      valid = passwordRegex.test(inputValue);
+      valid = inputValue.length < 8 ? false : true;
     }
 
     if (typeInput === "text") {

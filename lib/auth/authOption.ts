@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { createSessionUser } from "../db/user";
+import { createSessionUser, isSessionValid } from "../db/user";
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
@@ -57,7 +57,6 @@ export const authOption = {
   ],
   callbacks: {
     async session({ session, token }: NextAuthSessionCallback) {
-      console.log(token);
       if (session !== undefined && token.email !== undefined) {
         const user = await prisma.users.findUnique({
           where: {
@@ -65,10 +64,13 @@ export const authOption = {
           },
           include: {
             email_verification: true,
+            user_sessions: true,
           },
         });
 
         if (user !== null && session !== undefined) {
+          const isSessionStillValid = await isSessionValid(user.user_id);
+          if (!isSessionStillValid) return [];
           if (session.user !== undefined) {
             session.user.name = user.username;
             session.user.image = user.profile_picture;
@@ -77,15 +79,13 @@ export const authOption = {
             } else {
               session.user.verified = false;
             }
-            console.log("session user", session);
             return session;
           } else {
-            console.error("session.user is undefined");
             return session;
           }
         }
 
-        return null;
+        return [];
       }
     },
 
