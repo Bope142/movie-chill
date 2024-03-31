@@ -131,3 +131,45 @@ export async function resendVerificationEmail(
     error: `no existing verification code`,
   };
 }
+
+export async function verifyUser(userId: number, email: string) {
+  try {
+    const user = await prisma.email_verification.updateMany({
+      where: { email: email, user_id: userId },
+      data: {
+        is_verified: true,
+      },
+    });
+    return user;
+  } catch (error) {
+    throw new Error("error get user");
+  }
+}
+
+export async function verifyEmail(
+  userId: number,
+  email: string,
+  code: string
+): Promise<{
+  error?: string;
+  success?: boolean;
+}> {
+  console.log("object", userId, email, code);
+  const dbCode = await prisma.email_verification.findMany({
+    where: { email: email, user_id: userId, verification_code: code },
+  });
+  console.log(dbCode);
+  if (dbCode.length > 0) {
+    if (!isWithinExpirationDate(dbCode[0].expires_at)) {
+      return { error: "Le code de vérification a expiré." };
+    }
+    const validEmailUser = await verifyUser(userId, email);
+    if (validEmailUser) {
+      return { success: true };
+    }
+    return { error: "L'adresse e-mail ne correspond pas." };
+  }
+  return {
+    error: "Aucun code de vérification existant n'a été trouvé.",
+  };
+}

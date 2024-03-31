@@ -67,7 +67,7 @@ const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
           toast.success(
             "Votre inscription sur MOVIE CHILL a été effectuée avec succès ! Veuillez vérifier votre boîte de réception pour activer votre compte."
           );
-          router.push(response.redirectTo);
+          router.push("/verify-email");
         } else {
           toast.error("Une erreur s'est produite");
         }

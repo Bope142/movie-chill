@@ -5,7 +5,7 @@ import "./style.scss";
 import Link from "next/link";
 import { Button } from "@/components/button/button";
 import LoaderPage from "@/components/loader/loader";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "react-query";
@@ -20,6 +20,7 @@ type TypeInputValidity = {
   verificationCode: boolean;
 };
 const FormVerifyEmail = ({ emailUser }: propsForm) => {
+  const router = useRouter();
   const [loadingBtnSignup, setLoadingBtnSignup] = useState<boolean>(false);
   const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
     verificationCode: false,
@@ -36,8 +37,25 @@ const FormVerifyEmail = ({ emailUser }: propsForm) => {
           toast.error(response.data.message);
         }
       },
+      onError: async (error) => {},
+    }
+  );
+  const { mutate: verifyEmail, isLoading } = useMutation(
+    (code: string) => axios.get(`/api/auth/verify-email/${code}`),
+    {
+      onSuccess: async (response) => {
+        if (response.data.code === 200) {
+          toast.success("Votre adresse e-mail a été vérifiée avec succès !");
+          setLoadingBtnSignup(false);
+          router.push("/");
+        } else {
+          toast.error(response.data.message);
+          setLoadingBtnSignup(false);
+        }
+      },
       onError: async (error) => {
         console.log(error);
+        setLoadingBtnSignup(false);
       },
     }
   );
@@ -56,6 +74,12 @@ const FormVerifyEmail = ({ emailUser }: propsForm) => {
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isFormValid) {
+      setLoadingBtnSignup(true);
+      const formData = new FormData(e.currentTarget);
+      const code = formData.get("verificationCode") as string;
+      verifyEmail(code);
+    }
   };
 
   return (
@@ -122,11 +146,21 @@ const RightContainer = () => {
     </main>
   );
 };
-export default function ForgotPasswordPage() {
+
+export default function VerifyEmailPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  console.log(session);
-  console.log(status);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      if (session.user !== undefined && session.user.verified === true) {
+        router.push("/");
+      }
+    } else if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, session, router]);
+
   if (status === "loading") {
     return (
       <main className="page__content">
@@ -134,33 +168,39 @@ export default function ForgotPasswordPage() {
       </main>
     );
   } else if (status === "authenticated") {
-    return (
-      <main className="container__page" id="verify_email__page">
-        <Suspense fallback={<LoaderPage />}>
-          {session.user && (
-            <FormVerifyEmail emailUser={session.user && session.user.email} />
-          )}
+    if (session.user !== undefined && session.user.verified === false) {
+      return (
+        <main className="container__page" id="verify_email__page">
+          <Suspense fallback={<LoaderPage />}>
+            {session.user && (
+              <FormVerifyEmail emailUser={session.user && session.user.email} />
+            )}
 
-          <RightContainer />
-          <ToastContainer
-            position="bottom-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
-          />
-        </Suspense>
+            <RightContainer />
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
+          </Suspense>
+        </main>
+      );
+    }
+    return (
+      <main className="page__content">
+        <LoaderPage />
       </main>
     );
   } else {
-    router.push("/login");
     return (
-      <main className="page__content" id="homePage">
+      <main className="page__content">
         <LoaderPage />
       </main>
     );
