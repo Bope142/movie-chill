@@ -3,7 +3,7 @@ import { InputBoxForm } from "@/components/form/form";
 import Link from "next/link";
 import { Button } from "@/components/button/button";
 import LoaderPage from "@/components/loader/loader";
-import { useEffect, useState, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
 
 import { useSession } from "next-auth/react";
@@ -11,7 +11,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useRouter } from "next/navigation";
-import { usePathname, useSearchParams } from "next/navigation";
 type TypeInputValidity = {
   emailUser: boolean;
   passwordUser: boolean;
@@ -127,8 +126,7 @@ const RightContainer = () => {
 
 export const ContainerPage = () => {
   const { data: session, status } = useSession();
-  const pathname = usePathname();
-  useAuthRedirect(session, status, pathname);
+  useAuthRedirect(session, status);
 
   if (status === "loading") {
     return (
