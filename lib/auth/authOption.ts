@@ -33,6 +33,9 @@ export const authOption = {
           where: {
             email: email,
           },
+          include: {
+            email_verification: true,
+          },
         });
         if (user !== null) {
           const matchPasswordUser = await bcrypt.compare(

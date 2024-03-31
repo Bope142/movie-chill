@@ -1,11 +1,66 @@
+"use client";
 import { InputBoxForm } from "@/components/form/form";
 import "./style.scss";
 import Link from "next/link";
 import { Button } from "@/components/button/button";
 import LoaderPage from "@/components/loader/loader";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+type TypeInputValidity = {
+  emailUser: boolean;
+  passwordUser: boolean;
+};
 
 const FormLogin = () => {
+  const router = useRouter();
+  const [loadingBtnSignup, setLoadingBtnSignup] = useState<boolean>(false);
+  const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
+    emailUser: false,
+    passwordUser: false,
+  });
+  const isFormValid = Object.values(inputValidity).every((valid) => valid);
+
+  const handleValidityChange = (
+    inputName: keyof TypeInputValidity,
+    isValid: boolean
+  ) => {
+    setInputValidity((prevValidity) => ({
+      ...prevValidity,
+      [inputName]: isValid,
+    }));
+  };
+
+  const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isFormValid) {
+      setLoadingBtnSignup(true);
+      const formData = new FormData(e.currentTarget);
+      const requestSignIn = await signIn("credentials", {
+        redirect: false,
+        email: formData.get("emailUser"),
+        password: formData.get("passwordUser"),
+        callbackUrl: "/",
+      });
+      console.log(requestSignIn);
+      if (requestSignIn?.ok) {
+        toast.success(
+          "Authentification réussie! Vous allez être redirigé vers la page d'accueil dans les 2 prochaines sécondes."
+        );
+        setTimeout(function () {
+          router.push("/");
+        }, 1000);
+      } else {
+        toast.error(
+          "Les identifiants que vous avez fournis ne sont pas valides. Veuillez vérifier votre adresse e-mail et votre mot de passe, puis réessayer."
+        );
+        setLoadingBtnSignup(false);
+      }
+    }
+  };
   return (
     <main className="container__form container__padding">
       <h1>
@@ -14,23 +69,37 @@ const FormLogin = () => {
       <p className="text-form">
         Connectez-vous pour accéder à votre compte Movie Chill.
       </p>
-      <form action="" className="form__login form">
+      <form action="" className="form__login form" onSubmit={handleSubmitForm}>
         <InputBoxForm
           label="Email"
           placeholder="Votre adresse email ici"
           typeInput="email"
           nameInput="emailUser"
+          required={true}
+          onValidityChange={(isValid) =>
+            handleValidityChange("emailUser", isValid)
+          }
         />
         <InputBoxForm
           label="Mot de Passe"
           placeholder="Votre mot de passe ici"
           typeInput="password"
           nameInput="passwordUser"
+          required={true}
+          onValidityChange={(isValid) =>
+            handleValidityChange("passwordUser", isValid)
+          }
         />
         <Link href={"/login/forgot-password"} className="forgot-pswd">
           Mot de passe oublié ?
         </Link>
-        <Button variant="primary">Se connecter</Button>
+        <Button
+          variant="primary"
+          isDisabled={!isFormValid}
+          isLoading={loadingBtnSignup}
+        >
+          Se connecter
+        </Button>
       </form>
       <p className="bottom-text">
         Pas encore de compte ? Vous pouvez
@@ -59,6 +128,18 @@ export default function LoginPage() {
       <Suspense fallback={<LoaderPage />}>
         <FormLogin />
         <RightContainer />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </Suspense>
     </main>
   );
