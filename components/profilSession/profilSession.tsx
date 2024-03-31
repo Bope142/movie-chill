@@ -5,9 +5,10 @@ import "./style.scss";
 import Image from "next/image";
 import { Button, ButtonLink } from "../button/button";
 import { IoIosLogOut } from "react-icons/io";
+import { signOut } from "next-auth/react";
 type propsProfil = {
   connected: boolean;
-  profilCover?: string;
+  profilCover?: string | null;
   nameUser?: string;
 };
 
@@ -32,7 +33,12 @@ export const ProfilSession: React.FC<propsProfil> = ({
             <p>{nameUser && nameUser.substring(0, 2).toUpperCase()}</p>
           )}
         </div>
-        <Button variant="danger">
+        <Button
+          variant="danger"
+          onClick={() => {
+            signOut();
+          }}
+        >
           <IoIosLogOut />
         </Button>
       </div>

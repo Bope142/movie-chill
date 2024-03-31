@@ -69,15 +69,26 @@ const HeaderNav = () => {
     </nav>
   );
 };
-
-function Header() {
+type profilUser = {
+  name: string | null;
+  image: string | null;
+};
+function Header({ name, image }: profilUser) {
   const [isNavMobileActive, setIsNavMobileActive] = useState(false);
 
   return (
     <header className="header__page">
       <HeaderLogo />
       <HeaderNav />
-      <ProfilSession connected={false} nameUser="Norbert" />
+      {name === null ? (
+        <ProfilSession
+          connected={false}
+          nameUser="Norbert"
+          profilCover={null}
+        />
+      ) : (
+        <ProfilSession connected={true} nameUser={name} profilCover={image} />
+      )}
       <ButtonMenuMobile
         setIsActive={setIsNavMobileActive}
         isActive={isNavMobileActive}

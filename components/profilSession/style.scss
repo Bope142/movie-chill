@@ -5,22 +5,30 @@
   align-items: center;
   gap: 10px;
   overflow: hidden;
+  padding: 5px;
 
   & .profil {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
       rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
     background: $colorPrimaryBase;
-    height: 55px;
-    width: 55px;
+    height: 50px;
+    width: 50px;
     overflow: hidden;
     border-radius: 50%;
     border: 5px solid $colorPrimaryBase;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 4px solid white;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+      rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+      rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
     & p {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       font-family: $fontSemiBold;
     }
+  }
+  & .btn {
+    padding: 10px !important;
   }
 }

@@ -10,6 +10,12 @@ type typeProps = {
   children: React.ReactNode;
 };
 
+type typePropsContainer = {
+  name: string | null;
+  image: string | null;
+  children: React.ReactNode;
+};
+
 export const ContainerScroll: React.FC<typeProps> = ({ children }) => {
   return <main className="container__scroll">{children}</main>;
 };
@@ -23,11 +29,15 @@ export const HeaderContainer = () => {
   );
 };
 
-export const PageContent: React.FC<typeProps> = ({ children }) => {
+export const PageContent: React.FC<typePropsContainer> = ({
+  name,
+  image,
+  children,
+}) => {
   return (
     <>
-      <Header />
-      <NavMobile />
+      <Header name={name} image={image} />
+      <NavMobile name={name} image={image} />
       {children}
       <Footer />
     </>
