@@ -41,12 +41,10 @@ export const authOption = {
             password,
             user.password
           );
-          console.log(matchPasswordUser);
           if (!user || !matchPasswordUser) {
             throw new Error("Invalid credentials");
           } else {
             const generateNewSession = await createSessionUser(user.user_id);
-            console.log("session generated", generateNewSession);
             if (generateNewSession) return user;
             return null;
           }

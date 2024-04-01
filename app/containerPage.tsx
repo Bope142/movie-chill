@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import "./index.style.scss";
 import Footer from "@/components/footer/footer";
 import { ButtonLink } from "@/components/button/button";
