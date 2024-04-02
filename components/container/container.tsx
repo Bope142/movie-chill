@@ -11,22 +11,13 @@ type typeProps = {
 };
 
 type typePropsContainer = {
-  name: string | null;
-  image: string | null;
+  name: string | null | undefined;
+  image: string | null | undefined;
   children: React.ReactNode;
 };
 
 export const ContainerScroll: React.FC<typeProps> = ({ children }) => {
   return <main className="container__scroll">{children}</main>;
-};
-
-export const HeaderContainer = () => {
-  return (
-    <>
-      <Header />
-      <NavMobile />
-    </>
-  );
 };
 
 export const PageContent: React.FC<typePropsContainer> = ({
@@ -35,11 +26,14 @@ export const PageContent: React.FC<typePropsContainer> = ({
   children,
 }) => {
   return (
-    <>
-      <Header name={name} image={image} />
-      <NavMobile name={name} image={image} />
-      {children}
-      <Footer />
-    </>
+    name !== undefined &&
+    image !== undefined && (
+      <>
+        <Header name={name} image={image} />
+        <NavMobile name={name} image={image} />
+        {children}
+        <Footer />
+      </>
+    )
   );
 };
