@@ -4,8 +4,11 @@ import "./style.scss";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProfilSession } from "../profilSession/profilSession";
-
-function NavMobile() {
+type profilUser = {
+  name: string | null;
+  image: string | null;
+};
+function NavMobile({ name, image }: profilUser) {
   const pathname = usePathname();
   const navLinks = [
     { title: "Accueil", path: "/" },
@@ -32,7 +35,15 @@ function NavMobile() {
           </Link>
         ))}
       </div>
-      <ProfilSession connected={false} nameUser="Norbert" />
+      {name === null ? (
+        <ProfilSession
+          connected={false}
+          nameUser="Norbert"
+          profilCover={null}
+        />
+      ) : (
+        <ProfilSession connected={true} nameUser={name} profilCover={image} />
+      )}
     </div>
   );
 }

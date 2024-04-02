@@ -1,6 +1,9 @@
 "use server";
-import { ActionResponseSignup } from "@/types/actionResponse";
-import { createUser, existingUser, saveEmailVerification } from "./db/user";
+import {
+  ActionResponseSignup,
+  ResendVerificationCodeResponse,
+} from "@/types/actionResponse";
+import { createUser, existingUser, saveEmailVerification } from "../db/user";
 import { sendMail } from "../email/sendEmail";
 import { renderVerificationCodeEmail } from "../email/emailVerification";
 import { redirects } from "../constants";
@@ -12,7 +15,7 @@ export async function signup(
   const email = formData.get("emailUser") as string;
   const password = formData.get("passwordUser") as string;
 
-  const usernameRegex = /^[a-zA-Z0-9._-]{4,20}$/;
+  const usernameRegex = /^.{4,}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[^\s]{8,20}$/;
@@ -28,7 +31,7 @@ export async function signup(
     return { formError: "Adresse e-mail invalide." };
   }
 
-  if (!passwordRegex.test(password)) {
+  if (password.length < 8) {
     return {
       formError:
         "Mot de passe invalide. Il doit contenir au moins 4 caractères avec au moins une lettre et un chiffre.",
@@ -41,11 +44,11 @@ export async function signup(
         "Un compte avec cet email existe déjà. Veuillez utiliser une autre adresse email ou connectez-vous si vous avez déjà un compte.",
     };
   } else {
-    const createNewUser = await createUser(username, email, password);
-    if (createNewUser !== 0) {
-      console.log(createNewUser);
+    const newUser = await createUser(username, email, password);
+    if (newUser !== null) {
+      console.log(newUser);
       const verificationCode = await saveEmailVerification(
-        createNewUser,
+        newUser.user_id,
         email
       );
       console.log(verificationCode);
@@ -56,6 +59,7 @@ export async function signup(
             "Vérifiez votre adresse e-mail pour finaliser votre inscription à MOVIE CHILL",
           body: renderVerificationCodeEmail({ code: verificationCode }),
         });
+
         return { redirectTo: redirects.toVerify };
       } else {
         return {

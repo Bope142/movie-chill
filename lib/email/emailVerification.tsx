@@ -72,16 +72,15 @@ export const VerificationCodeEmail = ({ code }: Props) => {
             <Text style={title}>MOVIE CHILL</Text>
             <Text style={text}>Salut 👋,</Text>
             <Text style={text}>
-              Nous vous remercions de vous être inscrit(e) à{" "}
-              <Text style={title}>MOVIE CHILL</Text>. Pour finaliser votre
-              inscription, veuillez vérifier votre adresse e-mail en utilisant
-              le code de vérification suivant :
+              Nous vous remercions de vous être inscrit(e) à MOVIE CHILL. Pour
+              finaliser votre inscription, veuillez vérifier votre adresse
+              e-mail en utilisant le code de vérification suivant :
             </Text>
             <Text style={codePlaceholder}>{code}</Text>
 
             <Text style={text}>
               Ce code est nécessaire pour activer votre compte et assurer la
-              sécurité de votre compte <Text style={title}>MOVIE CHILL</Text>.
+              sécurité de votre compte MOVIE CHILL.
             </Text>
             <Text style={text}>
               Si vous n'avez pas créé de compte sur MOVIE CHILL, veuillez
