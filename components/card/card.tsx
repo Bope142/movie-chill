@@ -88,6 +88,9 @@ export const CardCategorie: React.FC<CardCategoryMovie> = ({
   const [isActive, setIsActive] = useState(false);
   const handleClick = () => {
     setIsActive(!isActive);
+    if (onClick) {
+      onClick();
+    }
   };
   if (variant === "primary") {
     return (

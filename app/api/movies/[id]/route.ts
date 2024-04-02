@@ -13,8 +13,7 @@ const getUrlVideo = async (idMovie: number): Promise<string | null> => {
         (video: any) =>
           video.type === "Clip" ||
           video.type === "Trailer" ||
-          video.type === "Teaser" ||
-          video.type === "Featurette"
+          video.type === "Teaser"
       );
 
       if (clipVideos.length > 0) {

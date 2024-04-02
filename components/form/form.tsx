@@ -26,10 +26,12 @@ export function InputBoxForm({
   useEffect(() => {
     switch (typeInput) {
       case "email":
-        setErrorMessage("Veuillez saisir une adresse e-mail valide");
+        setErrorMessage("Adresse e-mail invalide.");
         break;
       case "password":
-        setErrorMessage("Le mot de passe doit contenir au moins 4 caractères");
+        setErrorMessage(
+          "Mot de passe invalide. Il doit contenir au moins 8 caractères avec au moins une lettre et un chiffre."
+        );
         break;
       case "text":
         setErrorMessage("Ce champ doit contenir au moins 4 caractères");
@@ -50,14 +52,20 @@ export function InputBoxForm({
     }
 
     if (typeInput === "password") {
-      valid = inputValue.length >= 4;
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[^\s]{8,20}$/;
+      valid = inputValue.length < 8 ? false : true;
     }
 
     if (typeInput === "text") {
-      valid = inputValue.length >= 4;
+      const usernameRegex = /^.{4,}$/;
+      valid = usernameRegex.test(inputValue);
     }
-    console.log("text ", valid);
+
     setIsValid(valid);
+    if (onValidityChange) {
+      onValidityChange(valid);
+    }
     //onValidityChange(valid);
     return valid;
   };
@@ -70,6 +78,7 @@ export function InputBoxForm({
 
   const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
+    validateInput(inputValue);
     setShowErrorMessage(!validateInput(inputValue));
   };
 

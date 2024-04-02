@@ -616,9 +616,9 @@
     opacity: 1;
     display: flex !important;
   }
-  // & .response__faq {
-  //   opacity: 1;
-  //   height: auto;
-  //   display: flex !important;
-  // }
+  & .response__faq {
+    opacity: 1;
+    height: auto;
+    display: flex !important;
+  }
 }
