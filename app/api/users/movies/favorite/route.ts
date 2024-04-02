@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-import type { NextApiRequest, NextApiResponse } from "next";
 import { validateRequestApi } from "@/lib/auth/vaildateRequest";
 import {
   addMovieAsFavorite,

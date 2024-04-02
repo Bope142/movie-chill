@@ -55,6 +55,44 @@
   }
 }
 
+.container__no_movie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  row-gap: 25px;
+  width: 100%;
+  & img {
+    height: 90% !important;
+    width: 90% !important;
+  }
+  & .container-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    & svg {
+      height: 22rem;
+      width: 22rem;
+    }
+  }
+  & p {
+    max-width: 800px;
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+    font-family: $fontBold;
+    text-align: center;
+  }
+
+  z-index: 8;
+  & * {
+    z-index: 8;
+  }
+  & span {
+    color: $colorPrimaryBase;
+  }
+}
+
 @media only screen and (max-width: 1950px) {
   #content__favorite__movie {
     & .content-list {
