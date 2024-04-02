@@ -4,7 +4,7 @@ import { Session, getServerSession } from "next-auth";
 import { NextApiRequest } from "next";
 
 export const validateRequestApi = async (
-  req: NextApiRequest
+  req: NextRequest
 ): Promise<{ user: any; session: Session } | { user: null; session: null }> => {
   const session = await getServerSession(req);
   if (!session) {

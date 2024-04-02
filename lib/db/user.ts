@@ -197,7 +197,7 @@ export async function createSessionUser(userId: number): Promise<any> {
     //     user_id: userId,
     //   },
     // });
-    const expirationTime = createDate(new TimeSpan(15, "m"));
+    const expirationTime = createDate(new TimeSpan(45, "m"));
     const sessionUser = await prisma.user_sessions.create({
       data: {
         user_id: userId,
@@ -239,6 +239,90 @@ export async function isSessionValid(userId: number): Promise<boolean> {
   } catch (error) {
     console.error("Error checking session validity:", error);
     throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateProfilUser(
+  userId: number,
+  email: string,
+  profilUrl: string
+) {
+  try {
+    const user = await prisma.users.update({
+      where: { user_id: userId, email: email },
+      data: {
+        profile_picture: profilUrl,
+      },
+    });
+    return user;
+  } catch (error) {
+    throw new Error("error get user");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+interface SelectedCategory {
+  id: number;
+  title: string;
+}
+
+interface UserFavoriteCategory {
+  id: number;
+  category_id: number;
+  user_id?: number;
+}
+
+function adaptFavoriteCategories(
+  favoriteCategories: SelectedCategory[],
+  userId: number
+): UserFavoriteCategory[] {
+  return favoriteCategories.map((category) => ({
+    id: 0, // Vous pouvez spécifier un ID ou le laisser par défaut pour être auto-incrémenté
+    category_id: category.id,
+    user_id: userId,
+  }));
+}
+
+export async function onboardingProfil(
+  userId: number,
+  email: string,
+  profilUrl: string,
+  favoriteCategory: SelectedCategory[]
+) {
+  try {
+    // Changement de la photo de profil
+    const user = await prisma.users.update({
+      where: { user_id: userId, email: email },
+      data: {
+        profile_picture: profilUrl,
+      },
+    });
+
+    if (user !== null && favoriteCategory.length !== 0) {
+      await prisma.user_favorite_categories.deleteMany({
+        where: { user_id: userId },
+      });
+
+      const adaptedCategories = adaptFavoriteCategories(
+        favoriteCategory,
+        userId
+      );
+      const userFavorisCategorie =
+        await prisma.user_favorite_categories.createMany({
+          data: adaptedCategories,
+        });
+      return {
+        url: user.profile_picture,
+        moviesGenres: userFavorisCategorie,
+      };
+    }
+
+    return null;
+  } catch (error) {
+    throw new Error("Erreur lors de la mise à jour du profil utilisateur");
   } finally {
     await prisma.$disconnect();
   }

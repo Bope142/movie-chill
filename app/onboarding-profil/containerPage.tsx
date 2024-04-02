@@ -6,26 +6,141 @@ import "swiper/css";
 import { Button } from "@/components/button/button";
 import { IoCaretBackOutline } from "react-icons/io5";
 import Image from "next/image";
-import { TypeGenreMMovies, TypeMovieCategory } from "@/types/categorie";
-import { dataGenreMovie } from "@/data/genreMovie";
+import { TypeMovieCategory } from "@/types/categorie";
 import { CardCategorie } from "@/components/card/card";
 import { MdAddPhotoAlternate } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import LoaderPage from "@/components/loader/loader";
-import { Suspense } from "react";
+import { Suspense, useRef, useState } from "react";
 import { useGettAllCategories } from "@/hooks/useCategory";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "@/lib/firebaseConfig";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useMutation } from "react-query";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
+type Swiper = any;
+interface SelectedCategory {
+  id: number;
+  title: string;
+}
+
+const isFirebaseStorageURL = (url: string) => {
+  const firebaseStorageRegex =
+    /^https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/blogospher\.appspot\.com\/.+/;
+  return firebaseStorageRegex.test(url);
+};
+
+interface OnboardingInfo {
+  urlProfil: string;
+  categoriesMovie: SelectedCategory[];
+}
 
 const ContainerSlide = () => {
-  const data: Array<TypeGenreMMovies> = dataGenreMovie;
+  const router = useRouter();
   const { data: categoriesMovie, isLoading } = useGettAllCategories();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [awaitBtnSave, setAwaitBtnSave] = useState<boolean>(false);
+  const fileInputRef = useRef(null);
+  const [profilPic, setProfilPic] = useState<string>(
+    "/images/icons/female_profile.svg"
+  );
+  const swiperRef = useRef<Swiper | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<
+    SelectedCategory[]
+  >([]);
+  const { mutate: newInfosUser } = useMutation<void, unknown, OnboardingInfo>(
+    (onboardingInfo) =>
+      axios.put("/api/users/profil/onboarding", onboardingInfo),
+    {
+      onSuccess: async (response) => {
+        console.log(response);
+        setAwaitBtnSave(false);
+        toast.success("Le processus d'onboarding s'est terminé avec succès !");
+        router.push("/");
+      },
+      onError: async (error) => {
+        setAwaitBtnSave(false);
+        console.error(error);
+        toast.error(
+          "Oups 🫡 une erreur s'est produite. Veuillez réessayer ultérieurement."
+        );
+      },
+    }
+  );
+
+  const handleCategoryClick = (id: number, title: string) => {
+    const categoryIndex = selectedCategories.findIndex((cat) => cat.id === id);
+    if (categoryIndex === -1) {
+      setSelectedCategories((prevCategories) => [
+        ...prevCategories,
+        { id, title },
+      ]);
+    } else {
+      setSelectedCategories((prevCategories) =>
+        prevCategories.filter((cat) => cat.id !== id)
+      );
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setProfilPic(imageUrl);
+    }
+  };
+
+  const handleFinishButtonClick = async () => {
+    try {
+      if (selectedImage) {
+        console.log("Catégories sélectionnées :", selectedCategories);
+        setAwaitBtnSave(true);
+        const imageUrl = await uploadImage(selectedImage);
+        newInfosUser({
+          urlProfil: imageUrl,
+          categoriesMovie: selectedCategories,
+        });
+      } else {
+        setAwaitBtnSave(false);
+        toast.warn("No photo selected!");
+      }
+    } catch (error: any) {
+      setAwaitBtnSave(false);
+      console.error("Error uploading image: ", error);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    try {
+      const storageRef = ref(storage, `profil/${file.name}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      // If you need to use `storageRef` later in your component, you can store it in state
+      //setRefFileUpload(storageRef);
+      console.log(downloadURL);
+      return downloadURL;
+    } catch (error: any) {
+      console.error("Error uploading file: ", error);
+      setAwaitBtnSave(false);
+      throw error;
+    }
+  };
+
   return (
     <main className="container__slide">
       <Swiper
         spaceBetween={50}
         slidesPerView={1}
-        onSlideChange={() => console.log("slide change")}
-        onSwiper={(swiper) => console.log(swiper)}
+        onSwiper={(swiper) => {
+          if (swiper !== undefined) {
+            swiperRef.current = swiper;
+          }
+        }}
         simulateTouch={false}
       >
         <SwiperSlide className="content">
@@ -34,18 +149,45 @@ const ContainerSlide = () => {
           </p>
           <div className="box-profil">
             <Image
-              src={"/images/icons/female_profile.svg"}
+              src={profilPic}
               alt=""
               width={100}
               height={100}
               className="img-fluid"
             />
-            <div className="btn-add-photo">
+            <div
+              className="btn-add-photo"
+              onClick={() => {
+                if (
+                  fileInputRef.current !== null &&
+                  fileInputRef.current !== undefined
+                ) {
+                  (fileInputRef.current as HTMLInputElement).click();
+                }
+              }}
+            >
               <MdAddPhotoAlternate />
             </div>
           </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/jpeg, image/png"
+            onChange={handleImageChange}
+            style={{ display: "none" }}
+          />
+
           <div className="controll__slide">
-            <Button variant="primary">Continuer</Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                if (swiperRef.current !== undefined) {
+                  swiperRef.current.slideNext();
+                }
+              }}
+            >
+              Continuer
+            </Button>
           </div>
         </SwiperSlide>
         <SwiperSlide className="content">
@@ -61,14 +203,30 @@ const ContainerSlide = () => {
                   variant="primary"
                   title={genre.category_name}
                   id={genre.category_id}
+                  onClick={() =>
+                    handleCategoryClick(genre.category_id, genre.category_name)
+                  }
                 />
               ))}
           </div>
           <div className="controll__slide">
-            <Button variant="primary">
+            <Button
+              variant="primary"
+              onClick={() => {
+                if (swiperRef.current !== undefined) {
+                  swiperRef.current.slidePrev();
+                }
+              }}
+            >
               <IoCaretBackOutline />
             </Button>
-            <Button variant="primary">Terminer</Button>
+            <Button
+              variant="primary"
+              onClick={handleFinishButtonClick}
+              isLoading={awaitBtnSave}
+            >
+              Terminer
+            </Button>
           </div>
         </SwiperSlide>
       </Swiper>
@@ -101,6 +259,18 @@ export const ContainerPage = () => {
               </div>
             </div>
             <ContainerSlide />
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
           </main>
         </Suspense>
       </main>
