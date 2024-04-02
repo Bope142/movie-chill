@@ -505,14 +505,14 @@ const ContainerMoviesRandom = () => {
 export const ContainerPage = () => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
-  console.log(session);
+
   if (status === "loading") {
     return (
       <main className="page__content">
         <LoaderPage />
       </main>
     );
-  } else if (status === "authenticated" && session.user.name !== null) {
+  } else if (status === "authenticated" && session.user !== undefined) {
     return (
       <main className="container__page" id="filmPage">
         <Suspense fallback={<LoaderPage />}>

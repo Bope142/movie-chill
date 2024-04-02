@@ -120,7 +120,7 @@ export const ContainerPage = () => {
         <LoaderPage />
       </main>
     );
-  } else if (status === "authenticated" && session.user.name !== null) {
+  } else if (status === "authenticated" && session.user !== undefined) {
     return (
       <main className="container__page">
         <Suspense fallback={<LoaderPage />}>
