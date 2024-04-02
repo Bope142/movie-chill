@@ -3,7 +3,7 @@
 import { InputBoxForm } from "@/components/form/form";
 import "./style.scss";
 import Link from "next/link";
-import { Button } from "@/components/button/button";
+import { Button, ButtonLink } from "@/components/button/button";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -48,7 +48,7 @@ const FormVerifyEmail = ({ emailUser }: propsForm) => {
         if (response.data.code === 200) {
           toast.success("Votre adresse e-mail a été vérifiée avec succès !");
           setLoadingBtnSignup(false);
-          router.push("/");
+          router.push("/onboarding-profil");
         } else {
           toast.error(response.data.message);
           setLoadingBtnSignup(false);
@@ -123,6 +123,10 @@ const FormVerifyEmail = ({ emailUser }: propsForm) => {
           onClick={() => {
             if (!loaded) {
               resendVerificationCode();
+            } else {
+              toast.warn(
+                "Vous avez déjà demandé un code de vérification. Veuillez attendre avant d'en demander un autre."
+              );
             }
           }}
         >
@@ -150,6 +154,7 @@ const RightContainer = () => {
 
 export const ContainerPage = () => {
   const { data: session, status } = useSession();
+  const router = useRouter();
   useAuthRedirect(session, status);
 
   if (status === "loading") {

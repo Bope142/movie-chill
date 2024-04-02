@@ -15,7 +15,7 @@ export async function signup(
   const email = formData.get("emailUser") as string;
   const password = formData.get("passwordUser") as string;
 
-  const usernameRegex = /^[a-zA-Z0-9._-]{4,20}$/;
+  const usernameRegex = /^.{4,}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[^\s]{8,20}$/;

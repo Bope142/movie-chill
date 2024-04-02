@@ -15,7 +15,6 @@ import { FaShareAlt } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io";
 import { AiFillInstagram } from "react-icons/ai";
 import { FaFacebookSquare } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
