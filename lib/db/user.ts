@@ -327,3 +327,70 @@ export async function onboardingProfil(
     await prisma.$disconnect();
   }
 }
+
+export async function getFavoritesMovieUser(
+  userId: number,
+  skip: number,
+  max: number
+) {
+  try {
+    const favoriteMovies = await prisma.user_favorite_movies.findMany({
+      where: {
+        user_id: userId,
+      },
+      skip: skip,
+      take: max,
+    });
+
+    return favoriteMovies !== null ? favoriteMovies : [];
+  } catch (error) {
+    throw new Error("error get favorite movie user");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+interface UserFavoriteMovie {
+  id: number;
+  idMovieDb: number;
+  title: string;
+  poster: string;
+  release_date: string;
+  rating_count: number;
+  user_id: number | null;
+}
+
+export async function addMovieAsFavorite(
+  movie: UserFavoriteMovie
+): Promise<UserFavoriteMovie> {
+  try {
+    const newFavoriteMovie = await prisma.user_favorite_movies.create({
+      data: movie,
+    });
+
+    return newFavoriteMovie;
+  } catch (error) {
+    throw new Error("Error adding movie as favorite");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function removeMovieFromFavorites(
+  movieId: number,
+  userId: number
+) {
+  try {
+    const deletedMovies = await prisma.user_favorite_movies.deleteMany({
+      where: {
+        idMovieDb: movieId,
+        user_id: userId,
+      },
+    });
+    return deletedMovies;
+  } catch (error) {
+    throw new Error("Error removing movie from favorites");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
