@@ -7,11 +7,7 @@ import Footer from "@/components/footer/footer";
 import { ButtonLink } from "@/components/button/button";
 import { FaPlay } from "react-icons/fa";
 import { TitleSection } from "@/components/titleSection/titleSection";
-import {
-  ContainerScroll,
-  HeaderContainer,
-  PageContent,
-} from "@/components/container/container";
+import { ContainerScroll, PageContent } from "@/components/container/container";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { MdStarRate } from "react-icons/md";
 import { TypeMovieOverview, TypeMovieDetails, TVShow } from "@/types/movie";
@@ -765,7 +761,6 @@ export const ContainerPage = () => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
 
-  console.log(session);
   if (status === "loading") {
     return (
       <main className="page__content">

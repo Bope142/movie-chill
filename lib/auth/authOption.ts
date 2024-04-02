@@ -73,7 +73,9 @@ export const authOption = {
             session.user.name = user.username;
             session.user.image = user.profile_picture;
             if (user.email_verification && user.email_verification.length > 0) {
-              session.user.verified = user.email_verification[0].is_verified;
+              session.user.verified = user.email_verification[0].is_verified
+                ? true
+                : false;
             } else {
               session.user.verified = false;
             }
