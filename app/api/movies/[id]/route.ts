@@ -1,3 +1,5 @@
+import { validateRequestApi } from "@/lib/auth/vaildateRequest";
+import { getUser, isMovieFavorited } from "@/lib/db/user";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -79,6 +81,26 @@ export const GET = async (
           status: 403,
         }
       );
+    const { user } = await validateRequestApi(req);
+    if (user === null)
+      return NextResponse.json(
+        {
+          message: "User is not authenticated",
+        },
+        {
+          status: 401,
+        }
+      );
+
+    const { email } = user;
+    const userAccount = await getUser(email);
+    if (!userAccount)
+      return NextResponse.json(
+        { message: "User not found" },
+        {
+          status: 403,
+        }
+      );
 
     const response = await axios.get(
       `${process.env.BASE_URL_API}movie/${id}?&api_key=${process.env.API_KEY}&language=fr`
@@ -87,11 +109,17 @@ export const GET = async (
     if (response.status === 200) {
       const similarMovies = await getSimilarMovies(parseInt(id));
       const videoUrl = await getUrlVideo(parseInt(id));
+      const isFavorite = await isMovieFavorited(
+        parseInt(id),
+        userAccount.user_id
+      );
+
       return NextResponse.json(
         {
           movie: response.data,
           similar: similarMovies,
           videoLink: videoUrl,
+          isFavorite,
         },
         {
           status: 200,

@@ -192,3 +192,14 @@ export interface DetailTvMovie {
   vote_average: number;
   vote_count: number;
 }
+
+export interface UserFavoriteMovie {
+  id?: number;
+  idMovieDb: number;
+  title: string;
+  poster: string | null;
+  release_date: string;
+  rating_count: number;
+  user_id?: number | null;
+  isTvMovie?: boolean;
+}

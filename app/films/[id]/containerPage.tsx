@@ -1,12 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PageContent } from "@/components/container/container";
 import { ContainerScroll } from "@/components/container/container";
 import "./style.scss";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
-import { DetailMovie, TypeMovieDetails } from "@/types/movie";
+import {
+  DetailMovie,
+  TypeMovieDetails,
+  UserFavoriteMovie,
+} from "@/types/movie";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { TitleSection } from "@/components/titleSection/titleSection";
 import { MdStarRate } from "react-icons/md";
@@ -21,19 +26,81 @@ import { useGetDetailMovie } from "@/hooks/useMovie";
 import ModalVideo, { ModalMessage } from "@/components/modal/modal";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
-
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { FaRegHeart } from "react-icons/fa6";
 type propsBanner = {
   movie?: DetailMovie;
   isLoading: boolean;
   setOpenModal: (value: boolean) => void;
   existUrlVideo: boolean;
+  isFavoriteMovie: boolean;
 };
 const Banner = ({
   movie,
   isLoading,
   setOpenModal,
   existUrlVideo,
+  isFavoriteMovie,
 }: propsBanner) => {
+  const [loadingBtnLike, setLoadingBtnLike] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(isFavoriteMovie);
+  const { mutate: addMovieAsFavorite, isLoading: loaded } = useMutation(
+    (movie: UserFavoriteMovie) =>
+      axios.post(`/api/users/movies/favorite/`, movie),
+    {
+      onSuccess: async (response) => {
+        console.log(response);
+        setLoadingBtnLike(false);
+        setIsFavorite(true);
+      },
+      onError: async (error) => {
+        console.log(error);
+        setLoadingBtnLike(false);
+        setIsFavorite(false);
+      },
+    }
+  );
+  const { mutate: removeMovieFromFavorites, isLoading: loadingDelete } =
+    useMutation(
+      (movieId: number) =>
+        axios.delete(`/api/users/movies/favorite?id=${movieId}`),
+      {
+        onSuccess: async (response) => {
+          console.log(response);
+          setLoadingBtnLike(false);
+          setIsFavorite(false);
+        },
+        onError: async (error) => {
+          console.log(error);
+          setLoadingBtnLike(false);
+          setIsFavorite(false);
+        },
+      }
+    );
+
+  useEffect(() => {
+    setIsFavorite(isFavoriteMovie);
+  }, [isFavoriteMovie]);
+
+  const handlerClickFavoriteMovie = () => {
+    if (movie) {
+      setLoadingBtnLike(true);
+      if (isFavorite) {
+        removeMovieFromFavorites(movie.id);
+      } else {
+        const movieData: UserFavoriteMovie = {
+          idMovieDb: movie.id,
+          title: movie.original_title,
+          poster: movie.poster_path,
+          release_date: movie.release_date,
+          rating_count: movie.vote_average,
+          isTvMovie: false,
+        };
+        addMovieAsFavorite(movieData);
+      }
+    }
+  };
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
@@ -91,8 +158,12 @@ const Banner = ({
             </Button>
           )}
 
-          <Button variant="primary">
-            <FaHeart />
+          <Button
+            variant="primary"
+            isLoading={loadingBtnLike}
+            onClick={handlerClickFavoriteMovie}
+          >
+            {isFavorite ? <FaHeart /> : <FaRegHeart />}
           </Button>
           <div className="btn-share">
             <div className="front">
@@ -187,6 +258,7 @@ export const ContainerPage = ({ idMovie }: propsContainer) => {
               existUrlVideo={
                 isLoading ? false : data.videoLink === null ? false : true
               }
+              isFavoriteMovie={isLoading ? false : data.isFavorite}
             />
             <ContainerMovieSimilar
               isLoading={isLoading}

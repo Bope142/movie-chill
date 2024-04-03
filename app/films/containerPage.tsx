@@ -72,9 +72,6 @@ const BannerPage = () => {
       <p className="overview">{randomMovie && randomMovie.overview}</p>
 
       <div className="controll-action-button">
-        <Button variant="primary">
-          Voir le trailer <FaPlay />
-        </Button>
         <ButtonLink variant="secondary" href={`/films/${randomMovie?.id}`}>
           Plus d'infos
         </ButtonLink>

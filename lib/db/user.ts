@@ -197,7 +197,7 @@ export async function createSessionUser(userId: number): Promise<any> {
     //     user_id: userId,
     //   },
     // });
-    const expirationTime = createDate(new TimeSpan(45, "m"));
+    const expirationTime = createDate(new TimeSpan(60, "m"));
     const sessionUser = await prisma.user_sessions.create({
       data: {
         user_id: userId,
@@ -323,6 +323,93 @@ export async function onboardingProfil(
     return null;
   } catch (error) {
     throw new Error("Erreur lors de la mise à jour du profil utilisateur");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function getFavoritesMovieUser(
+  userId: number,
+  skip: number,
+  max: number
+) {
+  try {
+    const favoriteMovies = await prisma.user_favorite_movies.findMany({
+      where: {
+        user_id: userId,
+      },
+      skip: skip,
+      take: max,
+    });
+
+    return favoriteMovies !== null ? favoriteMovies : [];
+  } catch (error) {
+    throw new Error("error get favorite movie user");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+interface UserFavoriteMovie {
+  id?: number;
+  idMovieDb: number;
+  title: string;
+  poster: string;
+  release_date: string;
+  rating_count: number;
+  user_id?: number | null;
+}
+
+export async function addMovieAsFavorite(
+  movie: UserFavoriteMovie
+): Promise<UserFavoriteMovie> {
+  try {
+    const newFavoriteMovie = await prisma.user_favorite_movies.create({
+      data: movie,
+    });
+
+    return newFavoriteMovie;
+  } catch (error) {
+    throw new Error("Error adding movie as favorite");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function removeMovieFromFavorites(
+  movieId: number,
+  userId: number
+) {
+  try {
+    const deletedMovies = await prisma.user_favorite_movies.deleteMany({
+      where: {
+        idMovieDb: movieId,
+        user_id: userId,
+      },
+    });
+    return deletedMovies;
+  } catch (error) {
+    throw new Error("Error removing movie from favorites");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function isMovieFavorited(
+  movieId: number,
+  userId: number
+): Promise<boolean> {
+  try {
+    const favorite = await prisma.user_favorite_movies.findFirst({
+      where: {
+        idMovieDb: movieId,
+        user_id: userId,
+      },
+    });
+    return favorite !== null;
+  } catch (error) {
+    console.error("Error checking if movie is favorited", error);
+    throw new Error("Error checking if movie is favorited");
   } finally {
     await prisma.$disconnect();
   }

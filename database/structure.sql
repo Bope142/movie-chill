@@ -34,6 +34,7 @@ CREATE TABLE user_favorite_movies (
     release_date VARCHAR(255) NOT NULL,
     rating_count INT NOT NULL,
     user_id INT,
+    isTvMovie BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
