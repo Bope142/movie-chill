@@ -397,8 +397,8 @@
 }
 
 .card-movie-skeleton-loading {
-  width: 500px;
   cursor: not-allowed;
+  height: 200px;
   &:hover {
     transform: none;
     box-shadow: none;

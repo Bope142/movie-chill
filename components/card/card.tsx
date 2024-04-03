@@ -144,7 +144,7 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
           <div className="content__poster">
             {poster && (
               <Image
-                src={poster}
+                src={`https://image.tmdb.org/t/p/original${poster}`}
                 alt={`poster movie ${title}`}
                 className="img-fluid poster-movie"
                 width={100}

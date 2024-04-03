@@ -531,21 +531,24 @@ const ContainerFavoriteMovie = () => {
       id="content__favorite__movie"
     >
       {isLoading ? (
-        loadingCardMovies
+        <main className="content-list">{loadingCardMovies}</main>
       ) : favoriteMovie.length === 0 ? (
         containerNoFavoriteMovie
       ) : (
         <main className="content-list">
-          {favoriteMovie.map((movie: UserFavoriteMovie) => (
-            <CardMovieFavorite
-              key={movie.id}
-              poster={movie.poster}
-              title={movie.title}
-              id={movie.idMovieDb}
-              rating={movie.rating_count}
-              detailsMovie={movie.release_date}
-            />
-          ))}
+          {favoriteMovie.map(
+            (movie: UserFavoriteMovie) =>
+              movie.poster !== null && (
+                <CardMovieFavorite
+                  key={movie.id}
+                  poster={movie.poster}
+                  title={movie.title}
+                  id={movie.idMovieDb}
+                  rating={movie.rating_count}
+                  detailsMovie={movie.release_date}
+                />
+              )
+          )}
         </main>
       )}
 

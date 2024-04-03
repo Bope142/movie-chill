@@ -194,11 +194,11 @@ export interface DetailTvMovie {
 }
 
 export interface UserFavoriteMovie {
-  id: number;
+  id?: number;
   idMovieDb: number;
   title: string;
-  poster: string;
+  poster: string | null;
   release_date: string;
   rating_count: number;
-  user_id: number | null;
+  user_id?: number | null;
 }

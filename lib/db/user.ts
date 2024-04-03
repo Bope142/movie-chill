@@ -351,13 +351,13 @@ export async function getFavoritesMovieUser(
 }
 
 interface UserFavoriteMovie {
-  id: number;
+  id?: number;
   idMovieDb: number;
   title: string;
   poster: string;
   release_date: string;
   rating_count: number;
-  user_id: number | null;
+  user_id?: number | null;
 }
 
 export async function addMovieAsFavorite(
@@ -390,6 +390,26 @@ export async function removeMovieFromFavorites(
     return deletedMovies;
   } catch (error) {
     throw new Error("Error removing movie from favorites");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function isMovieFavorited(
+  movieId: number,
+  userId: number
+): Promise<boolean> {
+  try {
+    const favorite = await prisma.user_favorite_movies.findFirst({
+      where: {
+        idMovieDb: movieId,
+        user_id: userId,
+      },
+    });
+    return favorite !== null;
+  } catch (error) {
+    console.error("Error checking if movie is favorited", error);
+    throw new Error("Error checking if movie is favorited");
   } finally {
     await prisma.$disconnect();
   }

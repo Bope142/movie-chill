@@ -1,12 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PageContent } from "@/components/container/container";
 import { ContainerScroll } from "@/components/container/container";
 import "./style.scss";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
-import { DetailMovie, TypeMovieDetails } from "@/types/movie";
+import {
+  DetailMovie,
+  TypeMovieDetails,
+  UserFavoriteMovie,
+} from "@/types/movie";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { TitleSection } from "@/components/titleSection/titleSection";
 import { MdStarRate } from "react-icons/md";
@@ -21,7 +26,9 @@ import { useGetDetailMovie } from "@/hooks/useMovie";
 import ModalVideo, { ModalMessage } from "@/components/modal/modal";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
-
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { FaRegHeart } from "react-icons/fa6";
 type propsBanner = {
   movie?: DetailMovie;
   isLoading: boolean;
@@ -34,6 +41,83 @@ const Banner = ({
   setOpenModal,
   existUrlVideo,
 }: propsBanner) => {
+  const queryClient = useQueryClient();
+  const [loadingBtnLike, setLoadingBtnLike] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [loadingInfos, setLoadingInfos] = useState<boolean>(true);
+  const { mutate: addMovieAsFavorite, isLoading: loaded } = useMutation(
+    (movie: UserFavoriteMovie) =>
+      axios.post(`/api/users/movies/favorite/`, movie),
+    {
+      onSuccess: async (response) => {
+        console.log(response);
+        setLoadingBtnLike(false);
+        setIsFavorite(true);
+      },
+      onError: async (error) => {
+        console.log(error);
+        setLoadingBtnLike(false);
+        setIsFavorite(false);
+      },
+    }
+  );
+  const { mutate: removeMovieFromFavorites, isLoading: loadingDelete } =
+    useMutation(
+      (movieId: number) =>
+        axios.delete(`/api/users/movies/favorite?id=${movieId}`),
+      {
+        onSuccess: async (response) => {
+          console.log(response);
+          setLoadingBtnLike(false);
+          setIsFavorite(false);
+        },
+        onError: async (error) => {
+          console.log(error);
+          setLoadingBtnLike(false);
+          setIsFavorite(false);
+        },
+      }
+    );
+  const { mutate: isMovieFavorited, isLoading: loadingCheckIsFavorite } =
+    useMutation(
+      (movieId: number) => axios.get(`/api/users/movies/favorite/${movieId}`),
+      {
+        onSuccess: async (response) => {
+          setIsFavorite(response.data.isFavorite);
+          setLoadingInfos(false);
+        },
+        onError: async (error) => {
+          console.log(error);
+          setLoadingInfos(false);
+        },
+      }
+    );
+
+  useEffect(() => {
+    if (!isLoading && movie !== undefined) {
+      console.log(movie);
+      const idMovie = movie.id as number;
+      isMovieFavorited(idMovie);
+    }
+  }, [isLoading, movie]);
+
+  const handlerClickFavoriteMovie = () => {
+    if (movie) {
+      setLoadingBtnLike(true);
+      if (isFavorite) {
+        removeMovieFromFavorites(movie.id);
+      } else {
+        const movieData: UserFavoriteMovie = {
+          idMovieDb: movie.id,
+          title: movie.original_title,
+          poster: movie.poster_path,
+          release_date: movie.release_date,
+          rating_count: movie.vote_average,
+        };
+        addMovieAsFavorite(movieData);
+      }
+    }
+  };
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
@@ -42,7 +126,7 @@ const Banner = ({
     return containerRating;
   };
 
-  const displayContainer = isLoading ? (
+  const displayContainer = loadingInfos ? (
     <section className="banner-loading section__page loading__container container__padding">
       <div className="skeleton-loading"></div>
     </section>
@@ -91,8 +175,12 @@ const Banner = ({
             </Button>
           )}
 
-          <Button variant="primary">
-            <FaHeart />
+          <Button
+            variant="primary"
+            isLoading={loadingBtnLike}
+            onClick={handlerClickFavoriteMovie}
+          >
+            {isFavorite ? <FaHeart /> : <FaRegHeart />}
           </Button>
           <div className="btn-share">
             <div className="front">

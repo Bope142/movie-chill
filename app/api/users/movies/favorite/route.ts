@@ -77,10 +77,11 @@ export const POST = async (req: NextRequest) => {
         }
       );
 
-    const { movie } = await req.json();
-    if (!movie)
+    const data = await req.json();
+    console.log(data);
+    if (!data)
       return NextResponse.json(
-        { message: " movie is required" },
+        { message: " data is required" },
         {
           status: 403,
         }
@@ -94,9 +95,9 @@ export const POST = async (req: NextRequest) => {
           status: 200,
         }
       );
-    movie.user_id = userAccount.user_id;
-    const newFavorite = await addMovieAsFavorite(movie);
-    console.log(newFavorite);
+    data.user_id = userAccount.user_id;
+    const newFavorite = await addMovieAsFavorite(data);
+
     return NextResponse.json(
       { message: "movie added to favorite list", newFavorite },
       {
