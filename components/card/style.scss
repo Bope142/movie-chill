@@ -392,13 +392,16 @@
       display: flex;
       margin-top: 10px;
       gap: 15px;
+      & .btn {
+        padding: 10px !important;
+      }
     }
   }
 }
 
 .card-movie-skeleton-loading {
-  width: 500px;
   cursor: not-allowed;
+  height: 200px;
   &:hover {
     transform: none;
     box-shadow: none;

@@ -48,6 +48,7 @@ interface CardFavoriteMovieProps {
   detailsMovie?: string;
   isLoading?: boolean;
   onClick?: () => void;
+  isTvMovie?: boolean;
 }
 
 export const CardFAQ: React.FC<CardFaq> = ({
@@ -126,6 +127,7 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
   detailsMovie,
   isLoading,
   onClick,
+  isTvMovie,
 }) => {
   const skeletonLoadingClass = isLoading ? "card-movie-skeleton-loading" : "";
   const ratingCountIcons = (rating: number): React.ReactNode => {
@@ -134,6 +136,11 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
       containerRating.push(<MdStarRate key={index} className="icons-start" />);
     }
     return containerRating;
+  };
+  const eventDeleteMovie = () => {
+    if (onClick) {
+      onClick();
+    }
   };
   return (
     <div className={`card_movie_favorite ${skeletonLoadingClass}`}>
@@ -144,7 +151,7 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
           <div className="content__poster">
             {poster && (
               <Image
-                src={poster}
+                src={`https://image.tmdb.org/t/p/original${poster}`}
                 alt={`poster movie ${title}`}
                 className="img-fluid poster-movie"
                 width={100}
@@ -157,10 +164,15 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
             <div className="rating__count">{ratingCountIcons(rating || 0)}</div>
             <p className="detail">{detailsMovie}</p>
             <div className="controll__btn">
-              <ButtonLink variant="primary" href={`/films/${id}`}>
+              <ButtonLink
+                variant="primary"
+                href={
+                  isTvMovie === undefined ? `/films/${id}` : `/films/tv/${id}`
+                }
+              >
                 <BsInfoCircleFill />
               </ButtonLink>
-              <Button variant="danger">
+              <Button variant="danger" onClick={eventDeleteMovie}>
                 <MdDelete />
               </Button>
             </div>

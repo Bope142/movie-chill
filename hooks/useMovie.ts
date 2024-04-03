@@ -154,3 +154,23 @@ export const useGetDetailMovieTv = (id: number) => {
     queryFn: () => getDetailMovieTv(id),
   });
 };
+
+const getFavoritesMovies = async (max: number, skip: number) => {
+  try {
+    const { data } = await axios.get(
+      `/api/users/movies/favorite?max=${max}&skip=${skip}`
+    );
+    return data.favoriteMovies;
+  } catch (error) {
+    console.error("Error while fetching popular movies", error);
+    throw error;
+  }
+};
+
+export const useGetFavoritesMovie = (max: number, skip: number) => {
+  return useQuery({
+    queryKey: ["favorites-movies", max],
+
+    queryFn: () => getFavoritesMovies(max, skip),
+  });
+};
