@@ -34,16 +34,17 @@ type propsBanner = {
   isLoading: boolean;
   setOpenModal: (value: boolean) => void;
   existUrlVideo: boolean;
+  isFavoriteMovie: boolean;
 };
 const Banner = ({
   movie,
   isLoading,
   setOpenModal,
   existUrlVideo,
+  isFavoriteMovie,
 }: propsBanner) => {
   const [loadingBtnLike, setLoadingBtnLike] = useState<boolean>(false);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const [loadingInfos, setLoadingInfos] = useState<boolean>(true);
+  const [isFavorite, setIsFavorite] = useState<boolean>(isFavoriteMovie);
   const { mutate: addMovieAsFavorite, isLoading: loaded } = useMutation(
     (movie: UserFavoriteMovie) =>
       axios.post(`/api/users/movies/favorite/`, movie),
@@ -77,28 +78,10 @@ const Banner = ({
         },
       }
     );
-  const { mutate: isMovieFavorited, isLoading: loadingCheckIsFavorite } =
-    useMutation(
-      (movieId: number) => axios.get(`/api/users/movies/favorite/${movieId}`),
-      {
-        onSuccess: async (response) => {
-          setIsFavorite(response.data.isFavorite);
-          setLoadingInfos(false);
-        },
-        onError: async (error) => {
-          console.log(error);
-          setLoadingInfos(false);
-        },
-      }
-    );
 
   useEffect(() => {
-    if (!isLoading && movie !== undefined) {
-      console.log(movie);
-      const idMovie = movie.id as number;
-      isMovieFavorited(idMovie);
-    }
-  }, [isLoading, movie]);
+    setIsFavorite(isFavoriteMovie);
+  }, [isFavoriteMovie]);
 
   const handlerClickFavoriteMovie = () => {
     if (movie) {
@@ -112,6 +95,7 @@ const Banner = ({
           poster: movie.poster_path,
           release_date: movie.release_date,
           rating_count: movie.vote_average,
+          isTvMovie: false,
         };
         addMovieAsFavorite(movieData);
       }
@@ -125,7 +109,7 @@ const Banner = ({
     return containerRating;
   };
 
-  const displayContainer = loadingInfos ? (
+  const displayContainer = isLoading ? (
     <section className="banner-loading section__page loading__container container__padding">
       <div className="skeleton-loading"></div>
     </section>
@@ -274,6 +258,7 @@ export const ContainerPage = ({ idMovie }: propsContainer) => {
               existUrlVideo={
                 isLoading ? false : data.videoLink === null ? false : true
               }
+              isFavoriteMovie={isLoading ? false : data.isFavorite}
             />
             <ContainerMovieSimilar
               isLoading={isLoading}

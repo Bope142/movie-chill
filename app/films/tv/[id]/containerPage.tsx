@@ -64,7 +64,6 @@ const Banner = ({
       },
     }
   );
-  console.log(isFavorite);
   const { mutate: removeMovieFromFavorites, isLoading: loadingDelete } =
     useMutation(
       (movieId: number) =>
