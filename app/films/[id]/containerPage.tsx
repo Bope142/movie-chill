@@ -41,7 +41,6 @@ const Banner = ({
   setOpenModal,
   existUrlVideo,
 }: propsBanner) => {
-  const queryClient = useQueryClient();
   const [loadingBtnLike, setLoadingBtnLike] = useState<boolean>(false);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [loadingInfos, setLoadingInfos] = useState<boolean>(true);

@@ -6,12 +6,14 @@ import { TypeMovieOverview, UserFavoriteMovie } from "@/types/movie";
 import { Button } from "@/components/button/button";
 import { PageContent } from "@/components/container/container";
 import LoaderPage from "@/components/loader/loader";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { CardMovieFavorite } from "@/components/card/card";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useGetFavoritesMovie } from "@/hooks/useMovie";
 import Image from "next/image";
+import { useMutation } from "react-query";
+import axios from "axios";
 
 const containerIllustration = (
   <div className="container-illustration">
@@ -503,12 +505,66 @@ const Banner = () => {
 };
 
 const ContainerFavoriteMovie = () => {
-  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
-  const { data: favoriteMovie, isLoading } = useGetFavoritesMovie(10, 0);
+  type MovieTypeFavoris = UserFavoriteMovie[];
+  const [page, setPage] = useState<number>(2);
+  const [loadingFirstPage, setLoadingFirstPage] = useState<boolean>(true);
+  const [loadingData, setLoadingData] = useState<boolean>(false);
+  const [movieList, setMovieList] = useState<MovieTypeFavoris>([]);
+  const [allMovieAreFecthed, setAllMovieAreFecthed] = useState<boolean>(false);
+
+  const { mutate: getFavoriteMovie, isLoading: loaded } = useMutation(
+    (pageNumber: number) =>
+      axios.get(`/api/users/movies/favorite?max=${2}&skip=${pageNumber}`),
+    {
+      onSuccess: async (response) => {
+        console.log(response.data);
+        if (response.data.favoriteMovies.length === 0) {
+          setAllMovieAreFecthed(true);
+        } else {
+          setAllMovieAreFecthed(false);
+          const newData = response.data.favoriteMovies.filter(
+            (newItem: UserFavoriteMovie) => {
+              // Check if item ID is already present in current state
+              return !movieList.some(
+                (item: UserFavoriteMovie) => item.id === newItem.id
+              );
+            }
+          );
+          setMovieList((prevData) => [...prevData, ...newData]);
+          if (loadingFirstPage) {
+            setLoadingFirstPage(false);
+          } else {
+            setLoadingData(false);
+          }
+        }
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+  const { data: favoriteMovie, isLoading } = useGetFavoritesMovie(2, 0);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setMovieList(favoriteMovie);
+      setLoadingFirstPage(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
+  const handlerLoadMoreMovie = () => {
+    if (!allMovieAreFecthed) {
+      setLoadingData(true);
+      setPage((prevPage) => prevPage + 2); // Increment page number
+      getFavoriteMovie(page);
+    }
+  };
+
   const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
     <CardMovieFavorite key={index} isLoading={true} />
   ));
-  console.log(favoriteMovie);
+
   const containerNoFavoriteMovie = (
     <div className="container__no_movie">
       {/* <Image
@@ -530,13 +586,13 @@ const ContainerFavoriteMovie = () => {
       className="section__page container__padding"
       id="content__favorite__movie"
     >
-      {isLoading ? (
+      {loadingFirstPage ? (
         <main className="content-list">{loadingCardMovies}</main>
-      ) : favoriteMovie.length === 0 ? (
+      ) : movieList.length === 0 ? (
         containerNoFavoriteMovie
       ) : (
         <main className="content-list">
-          {favoriteMovie.map(
+          {movieList.map(
             (movie: UserFavoriteMovie) =>
               movie.poster !== null && (
                 <CardMovieFavorite
@@ -552,11 +608,17 @@ const ContainerFavoriteMovie = () => {
         </main>
       )}
 
-      {isLoading
-        ? loadingCardMovies
-        : favoriteMovie.length > 0 && (
-            <Button variant="primary">Voir plus</Button>
-          )}
+      {!loadingFirstPage &&
+        movieList.length > 0 &&
+        allMovieAreFecthed === false && (
+          <Button
+            variant="primary"
+            isLoading={loadingData}
+            onClick={handlerLoadMoreMovie}
+          >
+            Voir plus
+          </Button>
+        )}
     </section>
   );
 };
