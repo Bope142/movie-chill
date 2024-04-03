@@ -334,7 +334,6 @@ export async function getFavoritesMovieUser(
   max: number
 ) {
   try {
-    console.log(max, skip);
     const favoriteMovies = await prisma.user_favorite_movies.findMany({
       where: {
         user_id: userId,

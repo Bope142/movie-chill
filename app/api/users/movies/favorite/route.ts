@@ -46,7 +46,7 @@ export const GET = async (req: NextRequest) => {
     );
 
     return NextResponse.json(
-      { message: "profil updated with success", favoriteMovies },
+      { message: "success", favoriteMovies },
       {
         status: 200,
       }
@@ -78,7 +78,6 @@ export const POST = async (req: NextRequest) => {
       );
 
     const data = await req.json();
-    console.log(data);
     if (!data)
       return NextResponse.json(
         { message: " data is required" },

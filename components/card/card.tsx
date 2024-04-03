@@ -135,6 +135,11 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
     }
     return containerRating;
   };
+  const eventDeleteMovie = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
   return (
     <div className={`card_movie_favorite ${skeletonLoadingClass}`}>
       {isLoading ? (
@@ -160,7 +165,7 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
               <ButtonLink variant="primary" href={`/films/${id}`}>
                 <BsInfoCircleFill />
               </ButtonLink>
-              <Button variant="danger">
+              <Button variant="danger" onClick={eventDeleteMovie}>
                 <MdDelete />
               </Button>
             </div>

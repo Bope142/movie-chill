@@ -392,6 +392,9 @@
       display: flex;
       margin-top: 10px;
       gap: 15px;
+      & .btn {
+        padding: 10px !important;
+      }
     }
   }
 }

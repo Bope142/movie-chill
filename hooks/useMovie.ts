@@ -160,7 +160,6 @@ const getFavoritesMovies = async (max: number, skip: number) => {
     const { data } = await axios.get(
       `/api/users/movies/favorite?max=${max}&skip=${skip}`
     );
-    console.log(data);
     return data.favoriteMovies;
   } catch (error) {
     console.error("Error while fetching popular movies", error);

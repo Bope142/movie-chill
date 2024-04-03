@@ -506,18 +506,18 @@ const Banner = () => {
 
 const ContainerFavoriteMovie = () => {
   type MovieTypeFavoris = UserFavoriteMovie[];
-  const [page, setPage] = useState<number>(2);
+  let idMovieDeleted: number = 0;
+  const [page, setPage] = useState<number>(10);
   const [loadingFirstPage, setLoadingFirstPage] = useState<boolean>(true);
   const [loadingData, setLoadingData] = useState<boolean>(false);
   const [movieList, setMovieList] = useState<MovieTypeFavoris>([]);
   const [allMovieAreFecthed, setAllMovieAreFecthed] = useState<boolean>(false);
-
+  const [loadingDeleteMovie, setLoadingDeleteMovie] = useState<boolean>(true);
   const { mutate: getFavoriteMovie, isLoading: loaded } = useMutation(
     (pageNumber: number) =>
-      axios.get(`/api/users/movies/favorite?max=${2}&skip=${pageNumber}`),
+      axios.get(`/api/users/movies/favorite?max=${10}&skip=${pageNumber}`),
     {
       onSuccess: async (response) => {
-        console.log(response.data);
         if (response.data.favoriteMovies.length === 0) {
           setAllMovieAreFecthed(true);
         } else {
@@ -543,6 +543,25 @@ const ContainerFavoriteMovie = () => {
       },
     }
   );
+
+  const { mutate: removeMovieFromFavorites, isLoading: loadingDelete } =
+    useMutation(
+      (movieId: number) =>
+        axios.delete(`/api/users/movies/favorite?id=${movieId}`),
+      {
+        onSuccess: async (response, movieId) => {
+          setLoadingDeleteMovie(false);
+          setMovieList((prevMovieList) =>
+            prevMovieList.filter((movie) => movie.idMovieDb !== movieId)
+          );
+        },
+        onError: async (error) => {
+          console.log(error);
+          setLoadingDeleteMovie(false);
+        },
+      }
+    );
+
   const { data: favoriteMovie, isLoading } = useGetFavoritesMovie(2, 0);
 
   useEffect(() => {
@@ -556,8 +575,17 @@ const ContainerFavoriteMovie = () => {
   const handlerLoadMoreMovie = () => {
     if (!allMovieAreFecthed) {
       setLoadingData(true);
-      setPage((prevPage) => prevPage + 2); // Increment page number
+      setPage((prevPage) => prevPage + 10); // Increment page number
       getFavoriteMovie(page);
+    }
+  };
+
+  const handlerDeleteMovie = (id: number) => {
+    if (id) {
+      idMovieDeleted = id;
+      setLoadingDeleteMovie(true);
+
+      removeMovieFromFavorites(id);
     }
   };
 
@@ -602,6 +630,9 @@ const ContainerFavoriteMovie = () => {
                   id={movie.idMovieDb}
                   rating={movie.rating_count}
                   detailsMovie={movie.release_date}
+                  onClick={() => {
+                    handlerDeleteMovie(movie.idMovieDb);
+                  }}
                 />
               )
           )}
