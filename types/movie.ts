@@ -201,4 +201,5 @@ export interface UserFavoriteMovie {
   release_date: string;
   rating_count: number;
   user_id?: number | null;
+  isTvMovie?: boolean;
 }

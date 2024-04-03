@@ -197,7 +197,7 @@ export async function createSessionUser(userId: number): Promise<any> {
     //     user_id: userId,
     //   },
     // });
-    const expirationTime = createDate(new TimeSpan(45, "m"));
+    const expirationTime = createDate(new TimeSpan(60, "m"));
     const sessionUser = await prisma.user_sessions.create({
       data: {
         user_id: userId,

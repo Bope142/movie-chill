@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PageContent } from "@/components/container/container";
 import { ContainerScroll } from "@/components/container/container";
 import "./style.scss";
@@ -11,6 +11,7 @@ import {
   DetailTvMovie,
   TVShow,
   TypeMovieDetails,
+  UserFavoriteMovie,
 } from "@/types/movie";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { TitleSection } from "@/components/titleSection/titleSection";
@@ -27,20 +28,83 @@ import { useGetDetailMovieTv } from "@/hooks/useMovie";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import ModalVideo from "@/components/modal/modal";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { FaRegHeart } from "react-icons/fa6";
 
 type propsBanner = {
   movie?: DetailTvMovie;
   isLoading: boolean;
   setOpenModal: (value: boolean) => void;
   existUrlVideo: boolean;
+  isFavoriteMovie: boolean;
 };
 const Banner = ({
   movie,
   isLoading,
   setOpenModal,
   existUrlVideo,
+  isFavoriteMovie,
 }: propsBanner) => {
-  console.log(movie);
+  const [loadingBtnLike, setLoadingBtnLike] = useState<boolean>(false);
+  const [isFavorite, setIsFavorite] = useState<boolean>(isFavoriteMovie);
+  const { mutate: addMovieAsFavorite, isLoading: loaded } = useMutation(
+    (movie: UserFavoriteMovie) =>
+      axios.post(`/api/users/movies/favorite/`, movie),
+    {
+      onSuccess: async (response) => {
+        console.log(response);
+        setLoadingBtnLike(false);
+        setIsFavorite(true);
+      },
+      onError: async (error) => {
+        console.log(error);
+        setLoadingBtnLike(false);
+        setIsFavorite(false);
+      },
+    }
+  );
+  console.log(isFavorite);
+  const { mutate: removeMovieFromFavorites, isLoading: loadingDelete } =
+    useMutation(
+      (movieId: number) =>
+        axios.delete(`/api/users/movies/favorite?id=${movieId}`),
+      {
+        onSuccess: async (response) => {
+          console.log(response);
+          setLoadingBtnLike(false);
+          setIsFavorite(false);
+        },
+        onError: async (error) => {
+          console.log(error);
+          setLoadingBtnLike(false);
+          setIsFavorite(false);
+        },
+      }
+    );
+  useEffect(() => {
+    setIsFavorite(isFavoriteMovie);
+  }, [isFavoriteMovie]);
+
+  const handlerClickFavoriteMovie = () => {
+    if (movie) {
+      setLoadingBtnLike(true);
+      if (isFavorite) {
+        removeMovieFromFavorites(movie.id);
+      } else {
+        const movieData: UserFavoriteMovie = {
+          idMovieDb: movie.id,
+          title: movie.original_name,
+          poster: movie.poster_path,
+          release_date: movie.first_air_date,
+          rating_count: movie.vote_average,
+          isTvMovie: true,
+        };
+        addMovieAsFavorite(movieData);
+      }
+    }
+  };
+
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
@@ -98,8 +162,12 @@ const Banner = ({
               Voir le trailer
             </Button>
           )}
-          <Button variant="primary">
-            <FaHeart />
+          <Button
+            variant="primary"
+            isLoading={loadingBtnLike}
+            onClick={handlerClickFavoriteMovie}
+          >
+            {isFavorite ? <FaHeart /> : <FaRegHeart />}
           </Button>
           <div className="btn-share">
             <div className="front">
@@ -138,7 +206,7 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
   const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
     <CardMovie variant="primary" key={index} isLoading={true} />
   ));
-  console.log(movie);
+
   return (
     <section className="section__page sections__movies">
       <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
@@ -172,6 +240,7 @@ export const ContainerPage = ({ idMovie }: propsContainer) => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
   const { data, isLoading } = useGetDetailMovieTv(idMovie);
+  console.log(data);
   const [openModalVideo, setOpenModalVideo] = useState<boolean>(false);
   if (status === "loading") {
     return (
@@ -191,6 +260,7 @@ export const ContainerPage = ({ idMovie }: propsContainer) => {
               existUrlVideo={
                 isLoading ? false : data.videoLink === null ? false : true
               }
+              isFavoriteMovie={isLoading ? false : data.isFavorite}
             />
             <ContainerMovieSimilar
               isLoading={isLoading}

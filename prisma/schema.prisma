@@ -26,14 +26,15 @@ model user_favorite_categories {
 }
 
 model user_favorite_movies {
-  id           Int    @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   idMovieDb    Int
-  title        String @db.VarChar(255)
-  poster       String @db.VarChar(255)
-  release_date String @db.VarChar(255)
+  title        String   @db.VarChar(255)
+  poster       String   @db.VarChar(255)
+  release_date String   @db.VarChar(255)
   rating_count Int
   user_id      Int?
-  users        users? @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "user_favorite_movies_ibfk_1")
+  isTvMovie    Boolean? @default(false)
+  users        users?   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "user_favorite_movies_ibfk_1")
 
   @@index([user_id], map: "user_id")
 }

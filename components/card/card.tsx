@@ -48,6 +48,7 @@ interface CardFavoriteMovieProps {
   detailsMovie?: string;
   isLoading?: boolean;
   onClick?: () => void;
+  isTvMovie?: boolean;
 }
 
 export const CardFAQ: React.FC<CardFaq> = ({
@@ -126,6 +127,7 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
   detailsMovie,
   isLoading,
   onClick,
+  isTvMovie,
 }) => {
   const skeletonLoadingClass = isLoading ? "card-movie-skeleton-loading" : "";
   const ratingCountIcons = (rating: number): React.ReactNode => {
@@ -162,7 +164,12 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
             <div className="rating__count">{ratingCountIcons(rating || 0)}</div>
             <p className="detail">{detailsMovie}</p>
             <div className="controll__btn">
-              <ButtonLink variant="primary" href={`/films/${id}`}>
+              <ButtonLink
+                variant="primary"
+                href={
+                  isTvMovie === undefined ? `/films/${id}` : `/films/tv/${id}`
+                }
+              >
                 <BsInfoCircleFill />
               </ButtonLink>
               <Button variant="danger" onClick={eventDeleteMovie}>

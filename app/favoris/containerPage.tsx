@@ -562,7 +562,7 @@ const ContainerFavoriteMovie = () => {
       }
     );
 
-  const { data: favoriteMovie, isLoading } = useGetFavoritesMovie(2, 0);
+  const { data: favoriteMovie, isLoading } = useGetFavoritesMovie(10, 0);
 
   useEffect(() => {
     if (!isLoading) {
@@ -622,7 +622,21 @@ const ContainerFavoriteMovie = () => {
         <main className="content-list">
           {movieList.map(
             (movie: UserFavoriteMovie) =>
-              movie.poster !== null && (
+              movie.poster !== null &&
+              (movie.isTvMovie ? (
+                <CardMovieFavorite
+                  key={movie.id}
+                  poster={movie.poster}
+                  title={movie.title}
+                  id={movie.idMovieDb}
+                  rating={movie.rating_count}
+                  detailsMovie={movie.release_date}
+                  onClick={() => {
+                    handlerDeleteMovie(movie.idMovieDb);
+                  }}
+                  isTvMovie={true}
+                />
+              ) : (
                 <CardMovieFavorite
                   key={movie.id}
                   poster={movie.poster}
@@ -634,7 +648,7 @@ const ContainerFavoriteMovie = () => {
                     handlerDeleteMovie(movie.idMovieDb);
                   }}
                 />
-              )
+              ))
           )}
         </main>
       )}
