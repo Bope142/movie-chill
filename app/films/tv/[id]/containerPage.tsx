@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { PageContent } from "@/components/container/container";
 import { ContainerScroll } from "@/components/container/container";
 import "./style.scss";
@@ -26,12 +26,21 @@ import { IoLogoWhatsapp } from "react-icons/io";
 import { useGetDetailMovieTv } from "@/hooks/useMovie";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
+import ModalVideo from "@/components/modal/modal";
 
 type propsBanner = {
   movie?: DetailTvMovie;
   isLoading: boolean;
+  setOpenModal: (value: boolean) => void;
+  existUrlVideo: boolean;
 };
-const Banner = ({ movie, isLoading }: propsBanner) => {
+const Banner = ({
+  movie,
+  isLoading,
+  setOpenModal,
+  existUrlVideo,
+}: propsBanner) => {
+  console.log(movie);
   const ratingCountIcons = (rating: number): React.ReactNode => {
     let containerRating: React.ReactNode[] = [];
     for (let index = 0; index < rating; index++) {
@@ -84,7 +93,11 @@ const Banner = ({ movie, isLoading }: propsBanner) => {
           </div>
         </div>
         <div className="right">
-          <Button variant="secondary">Voir le trailer</Button>
+          {existUrlVideo && (
+            <Button variant="secondary" onClick={() => setOpenModal(true)}>
+              Voir le trailer
+            </Button>
+          )}
           <Button variant="primary">
             <FaHeart />
           </Button>
@@ -159,7 +172,7 @@ export const ContainerPage = ({ idMovie }: propsContainer) => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
   const { data, isLoading } = useGetDetailMovieTv(idMovie);
-
+  const [openModalVideo, setOpenModalVideo] = useState<boolean>(false);
   if (status === "loading") {
     return (
       <main className="page__content">
@@ -171,11 +184,27 @@ export const ContainerPage = ({ idMovie }: propsContainer) => {
       <main className="container__page">
         <Suspense fallback={<LoaderPage />}>
           <PageContent name={session.user?.name} image={session.user?.image}>
-            <Banner isLoading={isLoading} movie={!isLoading && data.movie} />
+            <Banner
+              isLoading={isLoading}
+              movie={!isLoading && data.movie}
+              setOpenModal={setOpenModalVideo}
+              existUrlVideo={
+                isLoading ? false : data.videoLink === null ? false : true
+              }
+            />
             <ContainerMovieSimilar
               isLoading={isLoading}
               movie={!isLoading && data.similar}
             />
+            {!isLoading && data.videoLink !== null && (
+              <ModalVideo
+                isOpen={openModalVideo}
+                videoLink={
+                  !isLoading && data.videoLink !== null && data.videoLink
+                }
+                onClose={() => setOpenModalVideo(false)}
+              ></ModalVideo>
+            )}
           </PageContent>
         </Suspense>
       </main>
