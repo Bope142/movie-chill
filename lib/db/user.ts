@@ -414,3 +414,72 @@ export async function isMovieFavorited(
     await prisma.$disconnect();
   }
 }
+
+export async function getFavoritesGenreMovieUser(userId: number) {
+  try {
+    const favoriteGenreMovies = await prisma.user_favorite_categories.findMany({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    return favoriteGenreMovies !== null ? favoriteGenreMovies : [];
+  } catch (error) {
+    throw new Error("error get favorite genre movie user");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function addFavoriteGenreMovieUser(
+  userId: number,
+  favoriteCategory: SelectedCategory[]
+) {
+  try {
+    if (favoriteCategory.length !== 0) {
+      await prisma.user_favorite_categories.deleteMany({
+        where: { user_id: userId },
+      });
+
+      const adaptedCategories = adaptFavoriteCategories(
+        favoriteCategory,
+        userId
+      );
+      const userFavorisCategorie =
+        await prisma.user_favorite_categories.createMany({
+          data: adaptedCategories,
+        });
+      return {
+        moviesGenres: userFavorisCategorie,
+      };
+    }
+
+    return null;
+  } catch (error) {
+    throw new Error("Erreur lors de la mise à jour du profil utilisateur");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updatePictureUser(
+  userId: number,
+  email: string,
+  profilUrl: string
+) {
+  try {
+    // Changement de la photo de profil
+    const user = await prisma.users.update({
+      where: { user_id: userId, email: email },
+      data: {
+        profile_picture: profilUrl,
+      },
+    });
+
+    return user.profile_picture;
+  } catch (error) {
+    throw new Error("Erreur lors de la mise à jour du profil utilisateur");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
