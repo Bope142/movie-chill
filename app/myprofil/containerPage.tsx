@@ -1,7 +1,7 @@
 "use client";
 import "./style.scss";
 import LoaderPage from "@/components/loader/loader";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { PageContent } from "@/components/container/container";
@@ -16,6 +16,13 @@ import { useMutation } from "react-query";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { storage } from "@/lib/firebaseConfig";
 
 type propsCardProfil = {
   image: string | null;
@@ -25,13 +32,134 @@ interface SelectedCategory {
   id: number;
   title: string;
 }
+
+interface DataProfilUser {
+  urlProfil: string;
+}
+
+const isFirebaseStorageURL = (url: string) => {
+  const firebaseStorageRegex = /^https:\/\/firebasestorage\.googleapis\.com\//;
+  return firebaseStorageRegex.test(url);
+};
+
+const deleteOlderProfil = async (fileUrl: string) => {
+  try {
+    if (isFirebaseStorageURL(fileUrl)) {
+      const fileRef = ref(storage, fileUrl);
+      await deleteObject(fileRef);
+      return true;
+    } else {
+      return true;
+    }
+  } catch (error) {
+    console.error("Error deleting file: ", error);
+    return false;
+  }
+};
 const CardProfilUser = ({ image, name }: propsCardProfil) => {
+  const odlderPicture: string | null = image !== null ? image : null;
+  const fileInputRef = useRef(null);
+  const [awaitBtnSave, setAwaitBtnSave] = useState<boolean>(false);
+  const [disabledBtnSave, setDisabledBtnSave] = useState<boolean>(true);
+  const [disabledBtnChangeProfil, setDisabledBtnChangeProfil] =
+    useState<boolean>(false);
+  const [profilPic, setProfilPic] = useState<string>(
+    image !== null ? image : "/images/icons/female_profile.svg"
+  );
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const { mutate: updateProfil } = useMutation<void, unknown, DataProfilUser>(
+    (newProfil) => axios.put("/api/users/profil", newProfil),
+    {
+      onSuccess: async (response) => {
+        setAwaitBtnSave(false);
+        setDisabledBtnSave(true);
+        setDisabledBtnChangeProfil(false);
+        toast.success("Votre photo de profil a été mis à jour avec succès !");
+        if (odlderPicture !== null) {
+          deleteOlderProfil(odlderPicture);
+        }
+      },
+      onError: async (error) => {
+        setAwaitBtnSave(false);
+        setDisabledBtnSave(true);
+        setDisabledBtnChangeProfil(false);
+        console.error(error);
+        toast.error(
+          "Oups 🫡 une erreur s'est produite. Veuillez réessayer ultérieurement."
+        );
+      },
+    }
+  );
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size <= 1048576) {
+        // Check if file is less than or equal to 1MB
+        setSelectedImage(file);
+        const imageUrl = URL.createObjectURL(file);
+        setProfilPic(imageUrl);
+        setDisabledBtnSave(false);
+      } else {
+        setDisabledBtnSave(true);
+        toast.error("La taille du fichier est supérieure à 1MB !");
+      }
+    } else {
+      setDisabledBtnSave(true);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    try {
+      const storageRef = ref(storage, `profil/${file.name}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log(downloadURL);
+      return downloadURL;
+    } catch (error: any) {
+      console.error("Error uploading file: ", error);
+      setAwaitBtnSave(false);
+      throw error;
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      if (selectedImage) {
+        setAwaitBtnSave(true);
+        setDisabledBtnSave(true);
+        setDisabledBtnChangeProfil(true);
+        const imageUrl = await uploadImage(selectedImage);
+        updateProfil({
+          urlProfil: imageUrl,
+        });
+      } else {
+        setAwaitBtnSave(false);
+        setDisabledBtnSave(false);
+        setDisabledBtnChangeProfil(false);
+        toast.warn("No photo selected!");
+      }
+    } catch (error: any) {
+      setAwaitBtnSave(false);
+      setDisabledBtnSave(false);
+      setDisabledBtnChangeProfil(false);
+      console.error("Error uploading image: ", error);
+    }
+  };
   return (
     <div className="card__profil__user">
+      <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/jpeg, image/png"
+        onChange={handleImageChange}
+        style={{ display: "none" }}
+      />
       <div className="content__image__profil">
         {image !== null && (
           <Image
-            src={image}
+            src={profilPic}
             width={100}
             height={100}
             alt=""
@@ -41,10 +169,26 @@ const CardProfilUser = ({ image, name }: propsCardProfil) => {
         )}
 
         <div className="container__action__pic">
-          <Button variant="primary" isDisabled={true}>
+          <Button
+            variant="primary"
+            isDisabled={disabledBtnSave}
+            isLoading={awaitBtnSave}
+            onClick={handleSave}
+          >
             <FaCheck />
           </Button>
-          <Button variant="secondary">
+          <Button
+            variant="secondary"
+            isDisabled={disabledBtnChangeProfil}
+            onClick={() => {
+              if (
+                fileInputRef.current !== null &&
+                fileInputRef.current !== undefined
+              ) {
+                (fileInputRef.current as HTMLInputElement).click();
+              }
+            }}
+          >
             <MdModeEdit />
           </Button>
         </div>
