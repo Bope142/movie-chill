@@ -37,3 +37,21 @@ export const useGetOneCaregorie = (id: number) => {
     queryFn: () => getOneCategorie(id),
   });
 };
+
+const getGenreMovieUser = async () => {
+  try {
+    const { data } = await axios.get(`/api/users/profil/`);
+    return data;
+  } catch (error) {
+    console.error("Error while fetching categorie movies", error);
+    throw error;
+  }
+};
+
+export const useGetAllGenreMovieUser = () => {
+  return useQuery({
+    queryKey: ["user genre movie"],
+
+    queryFn: getGenreMovieUser,
+  });
+};

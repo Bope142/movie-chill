@@ -27,6 +27,7 @@ interface CardCategoryMovie {
   id?: number;
   title?: string;
   onClick?: () => void;
+  isSelected?: boolean;
 }
 interface CardProps {
   variant: "primary" | "popular" | "simple" | "default";
@@ -85,8 +86,9 @@ export const CardCategorie: React.FC<CardCategoryMovie> = ({
   id,
   title,
   onClick,
+  isSelected,
 }) => {
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(isSelected);
   const handleClick = () => {
     setIsActive(!isActive);
     if (onClick) {

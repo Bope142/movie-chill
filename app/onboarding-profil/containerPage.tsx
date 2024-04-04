@@ -28,12 +28,6 @@ interface SelectedCategory {
   title: string;
 }
 
-const isFirebaseStorageURL = (url: string) => {
-  const firebaseStorageRegex =
-    /^https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/blogospher\.appspot\.com\/.+/;
-  return firebaseStorageRegex.test(url);
-};
-
 interface OnboardingInfo {
   urlProfil: string;
   categoriesMovie: SelectedCategory[];
@@ -89,9 +83,14 @@ const ContainerSlide = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedImage(file);
-      const imageUrl = URL.createObjectURL(file);
-      setProfilPic(imageUrl);
+      if (file.size <= 1048576) {
+        // Check if file is less than or equal to 1MB
+        setSelectedImage(file);
+        const imageUrl = URL.createObjectURL(file);
+        setProfilPic(imageUrl);
+      } else {
+        toast.error("La taille du fichier est supérieure à 1MB !");
+      }
     }
   };
 
