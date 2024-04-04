@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Button, ButtonLink } from "../button/button";
 import { IoIosLogOut } from "react-icons/io";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 type propsProfil = {
   connected: boolean;
   profilCover?: string | null;
@@ -20,7 +21,7 @@ export const ProfilSession: React.FC<propsProfil> = ({
   if (connected) {
     return (
       <div className="profil__session">
-        <div className="profil">
+        <Link href={"/myprofil"} className="profil">
           {profilCover ? (
             <Image
               src={profilCover}
@@ -32,7 +33,7 @@ export const ProfilSession: React.FC<propsProfil> = ({
           ) : (
             <p>{nameUser && nameUser.substring(0, 2).toUpperCase()}</p>
           )}
-        </div>
+        </Link>
         <Button
           variant="danger"
           onClick={() => {

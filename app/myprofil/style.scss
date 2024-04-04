@@ -1,0 +1,79 @@
+@import "../../public/style/main.scss";
+
+.page__profil {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 55px;
+  padding-top: 180px !important;
+  padding-bottom: 50px !important;
+}
+
+.card__profil__user {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  align-self: flex-start;
+  position: relative;
+  row-gap: 15px;
+  padding-bottom: 30px !important;
+  h2 {
+    font-family: $fontBold;
+    font-size: 1.5rem;
+  }
+  .content__image__profil {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 0.8rem;
+    min-width: 200px;
+    height: 200px;
+    img {
+      border-radius: 0.8rem;
+    }
+    .container__action__pic {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      left: 0;
+      top: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: flex-end;
+      gap: 5px;
+      & .btn {
+        padding: 8px !important;
+        margin: 0 5px 5px 0;
+      }
+    }
+  }
+}
+
+.card__favorites__genre {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  align-self: flex-start;
+  position: relative;
+  row-gap: 15px;
+  padding-bottom: 30px !important;
+  h3 {
+    font-family: $fontBold;
+    font-size: 1rem;
+  }
+  .content__favorite__genre {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  & .btn {
+    align-self: center;
+  }
+}
