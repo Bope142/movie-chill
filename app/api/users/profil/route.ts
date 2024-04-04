@@ -45,14 +45,12 @@ export const GET = async (req: NextRequest) => {
 
     const favoriteMovie = await getFavoritesGenreMovieUser(userAccount.user_id);
 
-    // Mapping categories to add isFavorite flag
     const categoriesWithFavoriteFlag = categories.map((category) => {
       const isFavorite = favoriteMovie.some(
         (favorite) => favorite.category_id === category.category_id
       );
       return { ...category, isFavorite };
     });
-    console.log(new Date().getTime());
     return NextResponse.json(
       { categories: categoriesWithFavoriteFlag },
       {
@@ -86,7 +84,6 @@ export const POST = async (req: NextRequest) => {
       );
 
     const { categoriesMovie } = await req.json();
-    console.log(categoriesMovie);
     if (!categoriesMovie)
       return NextResponse.json(
         { message: " categoriesMovie is required" },
@@ -142,7 +139,6 @@ export const PUT = async (req: NextRequest) => {
       );
 
     const { urlProfil } = await req.json();
-    console.log(urlProfil);
     if (!urlProfil)
       return NextResponse.json(
         { message: " urlProfil is required" },

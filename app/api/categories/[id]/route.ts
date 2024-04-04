@@ -1,10 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const GET = async (
-  req: NextRequest,
-  { params }: { params: Record<string, string> }
-) => {
+export const GET = async ({ params }: { params: Record<string, string> }) => {
   try {
     const { id } = params;
     if (!id)

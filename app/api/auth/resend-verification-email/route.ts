@@ -41,7 +41,6 @@ export const GET = async (req: NextRequest) => {
       }
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       {
         error: "Something went wrong !",
