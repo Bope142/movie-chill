@@ -230,7 +230,7 @@ const CardFavoriteGenreMovieUser = () => {
       );
     },
   });
-
+  console.log(selectedCategories);
   useEffect(() => {
     if (data) {
       const initial = data.categories
