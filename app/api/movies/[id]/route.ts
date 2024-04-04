@@ -88,7 +88,7 @@ export const GET = async (
           message: "User is not authenticated",
         },
         {
-          status: 401,
+          status: 403,
         }
       );
 
