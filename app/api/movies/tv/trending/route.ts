@@ -1,3 +1,4 @@
+import { TVShow } from "@/types/movie";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -22,6 +23,13 @@ export const GET = async (req: NextRequest) => {
     );
 
     if (response.status === 200) {
+      const filteredMovies = response.data.results.filter(
+        (movie: TVShow) =>
+          movie.overview !== "" &&
+          movie.poster_path !== null &&
+          movie.original_name !== null &&
+          movie.original_name !== ""
+      );
       return NextResponse.json(response.data.results, {
         status: 200,
       });
