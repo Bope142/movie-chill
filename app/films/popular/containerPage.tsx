@@ -6,13 +6,14 @@ import { TVShow, TypeMovieDetails } from "@/types/movie";
 import { Button } from "@/components/button/button";
 import { PageContent } from "@/components/container/container";
 import LoaderPage from "@/components/loader/loader";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useMutation } from "react-query";
 import axios from "axios";
-import { useGetOneCaregorie } from "@/hooks/useCategory";
 import { useGetPopularMovie } from "@/hooks/useMovie";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Banner = () => {
   return (
@@ -51,6 +52,9 @@ const ContainerMovie = () => {
       },
       onError: async (error) => {
         console.log(error);
+        toast.error(
+          "Oups ! Nous avons rencontré un problème lors du chargement. Veuillez réessayer ultérieurement."
+        );
       },
     }
   );
@@ -77,7 +81,7 @@ const ContainerMovie = () => {
     >
       <main className="content">{loadingCardMovies}</main>
     </section>
-  ) : (
+  ) : !isError ? (
     <section
       className="section__page container__padding"
       id="content__movie_tv"
@@ -104,6 +108,13 @@ const ContainerMovie = () => {
         Voir plus
       </Button>
     </section>
+  ) : (
+    <section
+      className="section__page container__padding"
+      id="content__movie_tv"
+    >
+      <main className="content">{loadingCardMovies}</main>
+    </section>
   );
   return displayedComponent;
 };
@@ -125,6 +136,18 @@ export const ContainerPage = () => {
           <PageContent name={session.user?.name} image={session.user?.image}>
             <Banner />
             <ContainerMovie />
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
           </PageContent>
         </Suspense>
       </main>
