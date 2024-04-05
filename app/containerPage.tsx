@@ -790,30 +790,6 @@ const ContainerTvMoivies = () => {
   );
 };
 
-const ContainerFavoritesMoivies = () => {
-  const data: Array<TypeMovieOverview> = fakeDataPopularMovie;
-  return (
-    <section className="section__page" id="favorites__movies">
-      <TitleSection
-        variant="title-large"
-        title="VOS FAVORIS"
-        linkMore="/movies/recents"
-      />
-      <ContainerScroll>
-        {data.map((movie, index) => (
-          <CardMovie
-            key={index}
-            variant="primary"
-            poster={movie.poster}
-            title={movie.title}
-            id={movie.id}
-          />
-        ))}
-      </ContainerScroll>
-    </section>
-  );
-};
-
 export const ContainerPage = () => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
