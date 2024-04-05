@@ -36,9 +36,9 @@ const ButtonMenuMobile: React.FC<ButtonMenuMobileProps> = ({
 
 const HeaderLogo = () => {
   return (
-    <div className="logo-header">
+    <Link href={"/"} className="logo-header">
       Movie <span>Chill</span>
-    </div>
+    </Link>
   );
 };
 const HeaderNav = () => {
