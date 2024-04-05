@@ -763,7 +763,7 @@ const ContainerTvMoivies = () => {
       <TitleSection
         variant="title-large"
         title="EN TENDANCE TV"
-        linkMore="/films/tv/trending"
+        linkMore="/tv/"
       />
       <ContainerScroll>
         {isLoading
