@@ -82,6 +82,7 @@ export const GET = async (
         }
       );
     const { user } = await validateRequestApi(req);
+    console.log(user);
     if (user === null)
       return NextResponse.json(
         {
