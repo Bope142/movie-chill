@@ -3,7 +3,8 @@
 import { PrismaClient } from "@prisma/client";
 import { isWithinExpirationDate, TimeSpan, createDate } from "oslo";
 import { sendMail } from "../email/sendEmail";
-import { renderVerificationCodeEmail } from "../email/emailVerification";
+import { renderVerificationCodeEmail } from "../email/template/emailVerification";
+import db from "./db";
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
@@ -500,5 +501,30 @@ export async function updatePictureUser(
     throw new Error("Erreur lors de la mise à jour du profil utilisateur");
   } finally {
     await prisma.$disconnect();
+  }
+}
+
+export async function saveResetPasswordTokenUser(
+  userId: number,
+  token: string
+) {
+  try {
+    await db.password_reset_tokens.deleteMany({
+      where: {
+        user_id: userId,
+      },
+    });
+    const expirationTime = createDate(new TimeSpan(2, "m"));
+    const newTokenPassword = await db.password_reset_tokens.create({
+      data: {
+        user_id: userId,
+        token,
+        expires_at: expirationTime,
+      },
+    });
+
+    return newTokenPassword;
+  } catch (error) {
+    throw new Error("Erreur lors de la création du token");
   }
 }

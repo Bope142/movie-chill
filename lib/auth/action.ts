@@ -8,11 +8,14 @@ import {
   existingUser,
   getUser,
   saveEmailVerification,
+  saveResetPasswordTokenUser,
 } from "../db/user";
 import { sendMail } from "../email/sendEmail";
-import { renderVerificationCodeEmail } from "../email/emailVerification";
+import { renderVerificationCodeEmail } from "../email/template/emailVerification";
 import { redirects } from "../constants";
 import { TimeSpan, createDate } from "oslo";
+import db from "../db/db";
+import { renderResetPasswordEmail } from "../email/template/resetPassword";
 
 export async function signup(
   formData: FormData
@@ -78,17 +81,21 @@ export async function signup(
   }
 }
 
-async function generatePasswordResetToken(userId: string): Promise<string> {
-  // await db
-  //   .delete(passwordResetTokens)
-  //   .where(eq(passwordResetTokens.userId, userId));
-  // const tokenId = generateId(40);
-  // await db.insert(passwordResetTokens).values({
-  //   id: tokenId,
-  //   userId,
-  //   expiresAt: createDate(new TimeSpan(2, "h")),
-  // });
-  // return tokenId;
+function generateResetPasswordToken(length: number): string {
+  const characters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const charactersLength = characters.length;
+  let token = "";
+  for (let i = 0; i < length; i++) {
+    token += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return token;
+}
+
+async function generatePasswordResetToken(userId: number): Promise<string> {
+  const token = generateResetPasswordToken(15);
+  const saveToken = await saveResetPasswordTokenUser(userId, token);
+  return saveToken !== null ? token : "";
 }
 
 export async function sendPasswordResetLink(
@@ -96,18 +103,46 @@ export async function sendPasswordResetLink(
 ): Promise<{ error?: string; success?: boolean }> {
   const email = formData.get("emailUser") as string;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   if (!emailRegex.test(email)) {
-    return { error: "Adresse e-mail invalide." };
+    return { error: "L'adresse e-mail est invalide." };
   }
+
   try {
     const user = await getUser(email);
-    if (!user || !user.email_verification[0].is_verified)
-      return { error: "Provided email is invalid." };
-    //const verificationToken = await generatePasswordResetToken(user.id);
-    return { error: "Adresse e-mail invalide." };
+
+    if (!user || !user.email_verification[0].is_verified) {
+      return { error: "L'adresse e-mail fournie est invalide." };
+    }
+    const resetToken = await generatePasswordResetToken(user.user_id);
+    if (resetToken.length === 0) {
+      return {
+        error:
+          "Oups ! Une erreur s'est produite lors de l'envoi du lien de réinitialisation.",
+      };
+    }
+    if (user && user.email) {
+      const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password/${resetToken}`;
+      await sendMail({
+        to: user.email,
+        subject: "Réinitialisez votre mot de passe",
+        body: renderResetPasswordEmail({ link: resetLink }),
+      });
+      return { success: true };
+    } else {
+      return {
+        error:
+          "Oups ! Une erreur s'est produite lors de l'envoi du lien de réinitialisation.",
+      };
+    }
   } catch (error) {
+    console.error(
+      "Une erreur s'est produite lors de l'envoi du lien de réinitialisation :",
+      error
+    );
     return {
-      error: "Oups ! Une erreur s'est produite lors de l'envoi du lien !",
+      error:
+        "Oups ! Une erreur s'est produite lors de l'envoi du lien de réinitialisation.",
     };
   }
 }
