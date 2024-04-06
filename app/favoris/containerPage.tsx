@@ -611,6 +611,9 @@ const ContainerFavoriteMovie = () => {
         Il semble que votre liste de <span>films favoris</span> soit encore vide
         pour le <span>moment</span>.
       </p>
+      <Button variant="primary" onClick={() => window.location.reload()}>
+        Actualiser la page
+      </Button>
     </div>
   );
   return (

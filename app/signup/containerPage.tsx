@@ -46,8 +46,15 @@ const FormSignup = () => {
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isFormValid) {
-      setLoadingBtnSignup(true);
       const formData = new FormData(e.currentTarget);
+      const password = formData.get("passwordUser") as string;
+      const confirmPassword = formData.get("confirmPassword") as string;
+
+      if (password !== confirmPassword) {
+        toast.error("Les mots de passe ne correspondent pas");
+        return;
+      }
+      setLoadingBtnSignup(true);
       const response = await signup(formData);
       if (response.redirectTo) {
         const requestSignIn = await signIn("credentials", {

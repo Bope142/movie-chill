@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { validateRequestApi } from "@/lib/auth/vaildateRequest";
+import db from "@/lib/db/db";
 import {
   addFavoriteGenreMovieUser,
   getFavoritesGenreMovieUser,
@@ -31,8 +31,7 @@ export const GET = async (req: NextRequest) => {
         }
       );
 
-    const prisma = new PrismaClient();
-    const categories = await prisma.movie_categories.findMany({});
+    const categories = await db.movie_categories.findMany({});
     if (!categories)
       return NextResponse.json(
         {
