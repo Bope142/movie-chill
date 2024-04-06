@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import db from "@/lib/db/db";
+import { NextResponse } from "next/server";
 
 export const GET = async () => {
   try {
-    const prisma = new PrismaClient();
-    const categories = await prisma.movie_categories.findMany({});
+    const categories = await db.movie_categories.findMany({});
 
     if (categories !== null) {
       return NextResponse.json(categories, {

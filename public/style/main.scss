@@ -1,6 +1,7 @@
 @import "./variable.scss";
 @import "./reset.scss";
 @import "./mixin.scss";
+@import "nprogress/nprogress.css";
 html {
   scroll-behavior: smooth;
   user-select: none;
@@ -147,65 +148,20 @@ input:-webkit-autofill:active {
   border-radius: $raduisBtn;
   transition: all 0.3s linear;
   background: $colorPrimaryBase;
-  width: 180px;
-  padding: 5px;
+  padding: 10px 25px;
   overflow: hidden;
-  & * {
-    transition: all 0.3s linear;
-    font-size: 1.5rem !important;
+  align-self: flex-start;
+  & p {
+    align-self: center;
+    text-align: center;
+    font-size: 1.2rem !important;
+    color: #000000;
   }
-  &:hover {
-    background: $colorPrimary100;
-    .front {
-      width: 40px;
-      & p {
-        opacity: 0;
-      }
-      & svg {
-        margin-left: 10px;
-      }
-    }
-    .content-icons {
-      opacity: 1;
-    }
-  }
-  .content-icons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    margin-right: 8px;
-    opacity: 0;
-    & a svg {
-      color: #222222;
-      height: 1.5rem;
-      width: 1.5rem;
-      flex: none;
-    }
-  }
-  .front {
+  & svg {
+    height: 1.3rem;
+    width: 1.3rem;
     flex: none;
-    display: flex;
-    align-items: center;
-    column-gap: 20px;
-    border-radius: $raduisBtn;
-    background: $colorPrimaryBase;
-    padding: 5px;
-    color: #222222;
-    overflow: hidden;
-    width: 100%;
-
-    & p {
-      align-self: center;
-      text-align: center;
-      font-size: 1.2rem !important;
-      transform: translateX(10px) !important;
-    }
-    & svg {
-      height: 1.3rem;
-      width: 1.3rem;
-      flex: none;
-    }
+    color: #000000;
   }
 }
 .form {
@@ -250,6 +206,26 @@ input:-webkit-autofill:active {
 }
 .banner-loading {
   margin-top: 150px !important;
+}
+
+#notFoundPage {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 20px;
+  height: 100vh !important;
+  h1 {
+    font-family: $fontBold;
+    font-size: 3rem;
+    color: $colorPrimaryBase;
+  }
+  p {
+    color: rgba(white, 0.7);
+  }
+  a {
+    color: $colorPrimaryBase;
+  }
 }
 @media only screen and (max-width: 1070px) {
   $paddingSection: 20px;

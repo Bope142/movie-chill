@@ -15,9 +15,17 @@ import useAuthRedirect from "@/hooks/useAuthRedirect";
 
 type propsBanner = {
   titleCategory: string;
+  isLoading: boolean;
 };
-const Banner = ({ titleCategory }: propsBanner) => {
-  return (
+const Banner = ({ titleCategory, isLoading }: propsBanner) => {
+  return isLoading ? (
+    <section
+      className="banner-loading section__page loading__container"
+      id="content__movie_popular"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : (
     <section className="section__page banner__page" id="banner">
       <p>
         <span>Explorez</span> un monde vaste de <span>divertissement</span>,
@@ -36,7 +44,11 @@ const ContainerMovie = ({ idCategorie }: propsContainer) => {
   const [loadingFirstPage, setLoadingFirstPage] = useState<boolean>(true);
   const [loadingData, setLoadingData] = useState<boolean>(true);
   const [movieList, setMovieList] = useState<MovieType>([]);
-  const { mutate: getMovies, isLoading: loaded } = useMutation(
+  const {
+    mutate: getMovies,
+    isLoading: loaded,
+    isError,
+  } = useMutation(
     (pageNumber: number) =>
       axios.get(`/api/movies/genre/${idCategorie}?page=${pageNumber}`),
     {
@@ -118,10 +130,29 @@ const ContainerMovie = ({ idCategorie }: propsContainer) => {
 type propsContainerPage = {
   idCategorie: number;
 };
+const Container = ({ idCategorie }: propsContainerPage) => {
+  const {
+    data: categoriesMovie,
+    isLoading,
+    isError,
+  } = useGetOneCaregorie(idCategorie);
+  return (
+    <>
+      <Banner
+        titleCategory={categoriesMovie ? categoriesMovie.category_name : ""}
+        isLoading={isError === false ? isLoading : true}
+      />
+      <ContainerMovie
+        idCategorie={
+          categoriesMovie && isError === false ? categoriesMovie.idMovieDb : 0
+        }
+      />
+    </>
+  );
+};
 export const ContainerPage = ({ idCategorie }: propsContainerPage) => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
-  const { data: categoriesMovie, isLoading } = useGetOneCaregorie(idCategorie);
 
   if (status === "loading") {
     return (
@@ -134,14 +165,7 @@ export const ContainerPage = ({ idCategorie }: propsContainerPage) => {
       <main className="container__page">
         <Suspense fallback={<LoaderPage />}>
           <PageContent name={session.user?.name} image={session.user?.image}>
-            <Banner
-              titleCategory={
-                categoriesMovie ? categoriesMovie.category_name : "d"
-              }
-            />
-            <ContainerMovie
-              idCategorie={categoriesMovie ? categoriesMovie.idMovieDb : 0}
-            />
+            <Container idCategorie={idCategorie} />
           </PageContent>
         </Suspense>
       </main>

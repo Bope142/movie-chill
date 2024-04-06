@@ -133,41 +133,6 @@ export const GET = async (
         }
       );
     }
-    // if (response.status === 200) {
-    //   const getSimilarMovie = await axios.get(
-    //     `${process.env.BASE_URL_API}tv/${id}/similar?api_key=${process.env.API_KEY}&language=fr&page=1`
-    //   );
-    //   if (getSimilarMovie.status === 200) {
-    //     return NextResponse.json(
-    //       {
-    //         movie: response.data,
-    //         similar: getSimilarMovie.data.results,
-    //       },
-    //       {
-    //         status: 200,
-    //       }
-    //     );
-    //   } else {
-    //     return NextResponse.json(
-    //       {
-    //         movie: response.data,
-    //         similar: [],
-    //       },
-    //       {
-    //         status: 200,
-    //       }
-    //     );
-    //   }
-    // } else {
-    //   return NextResponse.json(
-    //     {
-    //       error: "Failed to fetch data from the API",
-    //     },
-    //     {
-    //       status: response.status,
-    //     }
-    //   );
-    // }
   } catch (error) {
     console.log(error);
     return NextResponse.json(

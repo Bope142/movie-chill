@@ -36,7 +36,7 @@ const ButtonMenuMobile: React.FC<ButtonMenuMobileProps> = ({
 
 const HeaderLogo = () => {
   return (
-    <div className="logo-header">
+    <div onClick={() => window.location.assign("/")} className="logo-header">
       Movie <span>Chill</span>
     </div>
   );
@@ -50,18 +50,23 @@ const HeaderNav = () => {
     { title: "mes favoris", path: "/favoris" },
     { title: "À propos", path: "/about" },
   ];
+  const isActive = (path: string) => {
+    const pathRegex = new RegExp(`^${path}(\/|$)`);
+    return pathRegex.test(pathname);
+  };
+
   return (
     <nav className="header__nav">
       {navLinks.map((link) => (
         <Link
           key={link.path}
           href={link.path}
-          passHref
           className={
-            pathname === link.path
+            isActive(link.path)
               ? "active_item_nav nav__item__header"
               : " nav__item__header"
           }
+          replace
         >
           {link.title}
         </Link>

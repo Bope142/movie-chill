@@ -8,3 +8,5 @@ export const redirects = {
   toVerify: "/verify-email",
   afterVerify: "/dashboard",
 } as const;
+
+export const APP_TITLE = "MOVIE CHILL";

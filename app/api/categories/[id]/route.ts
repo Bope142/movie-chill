@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import db from "@/lib/db/db";
+import { NextResponse, NextRequest } from "next/server";
 
 export const GET = async (
   req: NextRequest,
@@ -16,8 +16,8 @@ export const GET = async (
           status: 403,
         }
       );
-    const prisma = new PrismaClient();
-    const oneCategorie = await prisma.movie_categories.findUnique({
+
+    const oneCategorie = await db.movie_categories.findUnique({
       where: {
         category_id: parseInt(id),
       },

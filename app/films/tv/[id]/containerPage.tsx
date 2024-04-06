@@ -6,13 +6,7 @@ import { ContainerScroll } from "@/components/container/container";
 import "./style.scss";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense } from "react";
-import {
-  DetailMovie,
-  DetailTvMovie,
-  TVShow,
-  TypeMovieDetails,
-  UserFavoriteMovie,
-} from "@/types/movie";
+import { DetailTvMovie, TVShow, UserFavoriteMovie } from "@/types/movie";
 import { CardCategorie, CardMovie } from "@/components/card/card";
 import { TitleSection } from "@/components/titleSection/titleSection";
 import { MdStarRate } from "react-icons/md";
@@ -22,15 +16,15 @@ import { FaShareAlt } from "react-icons/fa";
 import { IoLogoLinkedin } from "react-icons/io";
 import { AiFillInstagram } from "react-icons/ai";
 import { FaFacebookSquare } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { useGetDetailMovieTv } from "@/hooks/useMovie";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 import ModalVideo from "@/components/modal/modal";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import axios from "axios";
 import { FaRegHeart } from "react-icons/fa6";
+import shareOnSocialMedia from "@/utils/shareLink";
 
 type propsBanner = {
   movie?: DetailTvMovie;
@@ -128,7 +122,7 @@ const Banner = ({
     >
       <div className="container__details__movies">
         <div className="left">
-          <h2>{movie && movie.original_name}</h2>
+          <h2>{movie && movie.name}</h2>
           <div className="category__movie__container">
             {movie &&
               movie.genres.map((genre) => (
@@ -168,24 +162,18 @@ const Banner = ({
           >
             {isFavorite ? <FaHeart /> : <FaRegHeart />}
           </Button>
-          <div className="btn-share">
-            <div className="front">
-              <FaShareAlt /> <p>Partager</p>
-            </div>
-            <div className="content-icons">
-              <a href="">
-                <IoLogoLinkedin />
-              </a>
-              <a href="">
-                <AiFillInstagram />
-              </a>
-              <a href="">
-                <FaFacebookSquare />
-              </a>
-              <a href="">
-                <IoLogoWhatsapp />
-              </a>
-            </div>
+          <div
+            className="btn-share"
+            onClick={() => {
+              if (movie) {
+                shareOnSocialMedia(
+                  `http://localhost:3000/tv/${movie.id}`,
+                  `Vous allez adorer "${movie.name}" sur Movie Chill! 🍿 Cliquez sur le lien pour regarder maintenant!`
+                );
+              }
+            }}
+          >
+            <FaShareAlt /> <p>Partager</p>
           </div>
         </div>
       </div>
@@ -205,28 +193,38 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
   const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
     <CardMovie variant="primary" key={index} isLoading={true} />
   ));
-
   return (
     <section className="section__page sections__movies">
-      <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
-      <ContainerScroll>
-        {isLoading
-          ? loadingCardMovies
-          : movie &&
-            movie
-              .filter((movie: TVShow) => movie.poster_path !== null)
-              .slice(0, 20)
-              .map((movie: TVShow) => (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.original_name}
-                  id={movie.id}
-                  forTv={true}
-                />
-              ))}
-      </ContainerScroll>
+      {isLoading ? (
+        <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
+        )
+      )}
+      {isLoading ? (
+        <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <ContainerScroll>
+            {movie.map(
+              (movie: TVShow) =>
+                movie.poster_path !== null && (
+                  <CardMovie
+                    key={movie.id}
+                    variant="primary"
+                    poster={movie.poster_path}
+                    title={movie.name}
+                    id={movie.id}
+                    forTv={true}
+                  />
+                )
+            )}
+          </ContainerScroll>
+        )
+      )}
     </section>
   );
 };
@@ -235,12 +233,42 @@ type propsContainer = {
   idMovie: number;
 };
 
+const Container = ({ idMovie }: propsContainer) => {
+  const { data, isLoading, isError } = useGetDetailMovieTv(idMovie);
+  const [openModalVideo, setOpenModalVideo] = useState<boolean>(false);
+  return (
+    <>
+      <Banner
+        isLoading={isError === false ? isLoading : true}
+        movie={!isLoading && isError === false && data.movie}
+        setOpenModal={setOpenModalVideo}
+        existUrlVideo={
+          isLoading
+            ? false
+            : isError === false && data.videoLink === null
+            ? false
+            : true
+        }
+        isFavoriteMovie={isLoading ? false : !isError && data.isFavorite}
+      />
+      <ContainerMovieSimilar
+        isLoading={isError === false ? isLoading : true}
+        movie={!isLoading && !isError && data.similar}
+      />
+      {!isLoading && isError === false && data.videoLink !== null && (
+        <ModalVideo
+          isOpen={openModalVideo}
+          videoLink={!isLoading && data.videoLink !== null && data.videoLink}
+          onClose={() => setOpenModalVideo(false)}
+        ></ModalVideo>
+      )}
+    </>
+  );
+};
 export const ContainerPage = ({ idMovie }: propsContainer) => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
-  const { data, isLoading } = useGetDetailMovieTv(idMovie);
-  console.log(data);
-  const [openModalVideo, setOpenModalVideo] = useState<boolean>(false);
+
   if (status === "loading") {
     return (
       <main className="page__content">
@@ -252,28 +280,7 @@ export const ContainerPage = ({ idMovie }: propsContainer) => {
       <main className="container__page">
         <Suspense fallback={<LoaderPage />}>
           <PageContent name={session.user?.name} image={session.user?.image}>
-            <Banner
-              isLoading={isLoading}
-              movie={!isLoading && data.movie}
-              setOpenModal={setOpenModalVideo}
-              existUrlVideo={
-                isLoading ? false : data.videoLink === null ? false : true
-              }
-              isFavoriteMovie={isLoading ? false : data.isFavorite}
-            />
-            <ContainerMovieSimilar
-              isLoading={isLoading}
-              movie={!isLoading && data.similar}
-            />
-            {!isLoading && data.videoLink !== null && (
-              <ModalVideo
-                isOpen={openModalVideo}
-                videoLink={
-                  !isLoading && data.videoLink !== null && data.videoLink
-                }
-                onClose={() => setOpenModalVideo(false)}
-              ></ModalVideo>
-            )}
+            <Container idMovie={idMovie} />
           </PageContent>
         </Suspense>
       </main>

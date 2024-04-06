@@ -562,10 +562,14 @@ const ContainerFavoriteMovie = () => {
       }
     );
 
-  const { data: favoriteMovie, isLoading } = useGetFavoritesMovie(10, 0);
+  const {
+    data: favoriteMovie,
+    isLoading,
+    isError,
+  } = useGetFavoritesMovie(10, 0);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !isError) {
       setMovieList(favoriteMovie);
       setLoadingFirstPage(false);
     }
@@ -607,6 +611,9 @@ const ContainerFavoriteMovie = () => {
         Il semble que votre liste de <span>films favoris</span> soit encore vide
         pour le <span>moment</span>.
       </p>
+      <Button variant="primary" onClick={() => window.location.reload()}>
+        Actualiser la page
+      </Button>
     </div>
   );
   return (

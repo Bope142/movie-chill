@@ -13,14 +13,16 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
+import { ModalMessage } from "@/components/modal/modal";
 
 type propsForm = {
   emailUser: any;
+  setOpenModal: (value: boolean) => void;
 };
 type TypeInputValidity = {
   verificationCode: boolean;
 };
-const FormVerifyEmail = ({ emailUser }: propsForm) => {
+const FormVerifyEmail = ({ emailUser, setOpenModal }: propsForm) => {
   const router = useRouter();
   const [loadingBtnSignup, setLoadingBtnSignup] = useState<boolean>(false);
   const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
@@ -48,7 +50,8 @@ const FormVerifyEmail = ({ emailUser }: propsForm) => {
         if (response.data.code === 200) {
           toast.success("Votre adresse e-mail a été vérifiée avec succès !");
           setLoadingBtnSignup(false);
-          router.push("/onboarding-profil");
+          setOpenModal(true);
+          router.prefetch("/onboarding-profil");
         } else {
           toast.error(response.data.message);
           setLoadingBtnSignup(false);
@@ -156,7 +159,17 @@ export const ContainerPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   useAuthRedirect(session, status);
+  console.log(session);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const skipOnBoardingProfil = () => {
+    setOpenModal(false);
+    window.location.assign("/");
+  };
 
+  const goTOOnBoardingProfil = () => {
+    setOpenModal(false);
+    window.location.assign("/onboarding-profil");
+  };
   if (status === "loading") {
     return (
       <main className="page__content">
@@ -168,10 +181,32 @@ export const ContainerPage = () => {
       <main className="container__page" id="verify_email__page">
         <Suspense fallback={<LoaderPage />}>
           {session.user && (
-            <FormVerifyEmail emailUser={session.user && session.user.email} />
+            <FormVerifyEmail
+              emailUser={session.user && session.user.email}
+              setOpenModal={setOpenModal}
+            />
           )}
 
           <RightContainer />
+          <ModalMessage isOpen={openModal}>
+            <p className="msg-modal">
+              <span>Félicitations</span> 🤩 Votre inscription à{" "}
+              <span> Movie Chill</span> a été un succès 🥰😍!
+            </p>
+            <p className="detail-msg-modal">
+              Souhaitez-vous configurer votre compte maintenant ? Vous pouvez
+              appuyer sur le bouton <span>Passer</span> pour ignorer cette étape
+              ou continuer pour personnaliser votre compte immédiatement.
+            </p>
+            <div className="modal-action">
+              <Button variant="secondary" onClick={skipOnBoardingProfil}>
+                Passer
+              </Button>
+              <Button variant="primary" onClick={goTOOnBoardingProfil}>
+                Continuer
+              </Button>
+            </div>
+          </ModalMessage>
           <ToastContainer
             position="bottom-right"
             autoClose={5000}

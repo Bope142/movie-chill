@@ -1,9 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
 import { validateRequestApi } from "@/lib/auth/vaildateRequest";
 import { getUser, resendVerificationEmail } from "@/lib/db/user";
-import { NextApiRequest } from "next";
 
-export const GET = async (req: NextApiRequest) => {
+export const GET = async (req: NextRequest) => {
   try {
     const session = await validateRequestApi(req);
     if (session.user !== null) {
@@ -42,7 +41,6 @@ export const GET = async (req: NextApiRequest) => {
       }
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       {
         error: "Something went wrong !",
