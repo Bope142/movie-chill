@@ -125,7 +125,7 @@ const Banner = ({
     >
       <div className="container__details__movies">
         <div className="left">
-          <h2>{movie && movie.original_title}</h2>
+          <h2>{movie && movie.title}</h2>
           <div className="category__movie__container">
             {movie &&
               movie.genres.map((genre) => (

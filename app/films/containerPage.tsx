@@ -33,11 +33,11 @@ const BannerPage = () => {
     return containerRating;
   };
   useEffect(() => {
-    if (!isLoading && data !== null) {
+    if (!isLoading && data !== null && !isError) {
       const randomIndex: number = Math.floor(Math.random() * data.length - 1);
       setRandomMovie(data[randomIndex]);
     }
-  }, [isLoading, data]);
+  }, [isLoading, data, isError]);
   const displayContainer = isLoading ? (
     <section
       className="banner-loading section__page loading__container"
@@ -45,7 +45,7 @@ const BannerPage = () => {
     >
       <div className="skeleton-loading"></div>
     </section>
-  ) : (
+  ) : !isError ? (
     <section
       className="section__page"
       id="banner__movie"
@@ -76,6 +76,13 @@ const BannerPage = () => {
         </ButtonLink>
       </div>
     </section>
+  ) : (
+    <section
+      className="banner-loading section__page loading__container"
+      id="banner__movie"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
   );
   return displayContainer;
 };
@@ -88,7 +95,11 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
   const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
   const [Movies, setMovies] = useState<MovieType>([]);
 
-  const { mutate: getMovies, isLoading: loaded } = useMutation(
+  const {
+    mutate: getMovies,
+    isLoading: loaded,
+    isError,
+  } = useMutation(
     (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
     {
       onSuccess: async (response) => {
@@ -104,303 +115,11 @@ const ContainerRandomMovieOne: React.FC<PropsMovieRandom> = ({
     <CardMovie variant="primary" key={index} isLoading={true} />
   ));
   useEffect(() => {
-    if (!isLoading && categorieMovie) {
+    if (!isLoading && categorieMovie && !isError) {
       getMovies(categorieMovie?.idMovieDb);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, categorieMovie]);
-
-  const displayContainer = isLoading ? (
-    <section
-      className="section__page loading__container container__padding"
-      id="random_one"
-    >
-      <div className="skeleton-loading"></div>
-    </section>
-  ) : loadingMovie ? (
-    <section className="section__page" id="random_one">
-      <TitleSection
-        variant="title-large"
-        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore={`/films/genre/${categorieMovie?.category_id}`}
-      />
-      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
-    </section>
-  ) : (
-    <section className="section__page" id="random_one">
-      <TitleSection
-        variant="title-large"
-        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore={`/films/genre/${categorieMovie?.category_id}`}
-      />
-      <ContainerScroll>
-        {Movies &&
-          Movies.map(
-            (movie) =>
-              movie.poster_path !== null && (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.title}
-                  id={movie.id}
-                />
-              )
-          )}
-      </ContainerScroll>
-    </section>
-  );
-  return displayContainer;
-};
-
-const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
-  categorieMovie,
-  isLoading,
-}) => {
-  type MovieType = TypeMovieDetails[];
-  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
-  const [Movies, setMovies] = useState<MovieType>([]);
-
-  const { mutate: getMovies, isLoading: loaded } = useMutation(
-    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
-    {
-      onSuccess: async (response) => {
-        setMovies(response.data);
-        setLoadingMovie(false);
-      },
-      onError: async (error) => {
-        console.log(error);
-      },
-    }
-  );
-  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
-    <CardMovie variant="primary" key={index} isLoading={true} />
-  ));
-  useEffect(() => {
-    if (!isLoading && categorieMovie) {
-      getMovies(categorieMovie?.idMovieDb);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, categorieMovie]);
-
-  const displayContainer = isLoading ? (
-    <section
-      className="section__page loading__container container__padding"
-      id="random_one"
-    >
-      <div className="skeleton-loading"></div>
-    </section>
-  ) : loadingMovie ? (
-    <section className="section__page" id="random_one">
-      <TitleSection
-        variant="title-large"
-        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore={`/films/genre/${categorieMovie?.category_id}`}
-      />
-      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
-    </section>
-  ) : (
-    <section className="section__page" id="random_one">
-      <TitleSection
-        variant="title-large"
-        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore={`/films/genre/${categorieMovie?.category_id}`}
-      />
-      <ContainerScroll>
-        {Movies &&
-          Movies.map(
-            (movie) =>
-              movie.poster_path !== null && (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.title}
-                  id={movie.id}
-                />
-              )
-          )}
-      </ContainerScroll>
-    </section>
-  );
-  return displayContainer;
-};
-
-const ContainerRandomMovieThree: React.FC<PropsMovieRandom> = ({
-  categorieMovie,
-  isLoading,
-}) => {
-  type MovieType = TypeMovieDetails[];
-  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
-  const [Movies, setMovies] = useState<MovieType>([]);
-
-  const { mutate: getMovies, isLoading: loaded } = useMutation(
-    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
-    {
-      onSuccess: async (response) => {
-        setMovies(response.data);
-        setLoadingMovie(false);
-      },
-      onError: async (error) => {
-        console.log(error);
-      },
-    }
-  );
-  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
-    <CardMovie variant="primary" key={index} isLoading={true} />
-  ));
-  useEffect(() => {
-    if (!isLoading && categorieMovie) {
-      getMovies(categorieMovie?.idMovieDb);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, categorieMovie]);
-
-  const displayContainer = isLoading ? (
-    <section
-      className="section__page loading__container container__padding"
-      id="random_one"
-    >
-      <div className="skeleton-loading"></div>
-    </section>
-  ) : loadingMovie ? (
-    <section className="section__page" id="random_one">
-      <TitleSection
-        variant="title-large"
-        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore={`/films/genre/${categorieMovie?.category_id}`}
-      />
-      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
-    </section>
-  ) : (
-    <section className="section__page" id="random_one">
-      <TitleSection
-        variant="title-large"
-        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore={`/films/genre/${categorieMovie?.category_id}`}
-      />
-      <ContainerScroll>
-        {Movies &&
-          Movies.map(
-            (movie) =>
-              movie.poster_path !== null && (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.title}
-                  id={movie.id}
-                />
-              )
-          )}
-      </ContainerScroll>
-    </section>
-  );
-  return displayContainer;
-};
-
-const ContainerRandomMovieFour: React.FC<PropsMovieRandom> = ({
-  categorieMovie,
-  isLoading,
-}) => {
-  type MovieType = TypeMovieDetails[];
-  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
-  const [Movies, setMovies] = useState<MovieType>([]);
-
-  const { mutate: getMovies, isLoading: loaded } = useMutation(
-    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
-    {
-      onSuccess: async (response) => {
-        setMovies(response.data);
-        setLoadingMovie(false);
-      },
-      onError: async (error) => {
-        console.log(error);
-      },
-    }
-  );
-  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
-    <CardMovie variant="primary" key={index} isLoading={true} />
-  ));
-  useEffect(() => {
-    if (!isLoading && categorieMovie) {
-      getMovies(categorieMovie?.idMovieDb);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, categorieMovie]);
-
-  const displayContainer = isLoading ? (
-    <section
-      className="section__page loading__container container__padding"
-      id="random_one"
-    >
-      <div className="skeleton-loading"></div>
-    </section>
-  ) : loadingMovie ? (
-    <section className="section__page" id="random_one">
-      <TitleSection
-        variant="title-large"
-        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore={`/films/genre/${categorieMovie?.category_id}`}
-      />
-      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
-    </section>
-  ) : (
-    <section className="section__page" id="random_one">
-      <TitleSection
-        variant="title-large"
-        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
-        linkMore={`/films/genre/${categorieMovie?.category_id}`}
-      />
-      <ContainerScroll>
-        {Movies &&
-          Movies.map(
-            (movie) =>
-              movie.poster_path !== null && (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.title}
-                  id={movie.id}
-                />
-              )
-          )}
-      </ContainerScroll>
-    </section>
-  );
-  return displayContainer;
-};
-
-const ContainerRandomMovieFive: React.FC<PropsMovieRandom> = ({
-  categorieMovie,
-  isLoading,
-}) => {
-  type MovieType = TypeMovieDetails[];
-  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
-  const [Movies, setMovies] = useState<MovieType>([]);
-
-  const { mutate: getMovies, isLoading: loaded } = useMutation(
-    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
-    {
-      onSuccess: async (response) => {
-        setMovies(response.data);
-        setLoadingMovie(false);
-      },
-      onError: async (error) => {
-        console.log(error);
-      },
-    }
-  );
-  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
-    <CardMovie variant="primary" key={index} isLoading={true} />
-  ));
-  useEffect(() => {
-    if (!isLoading && categorieMovie) {
-      getMovies(categorieMovie?.idMovieDb);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, categorieMovie]);
+  }, [isLoading, categorieMovie, isError]);
 
   const displayContainer = isLoading ? (
     <section
@@ -418,7 +137,7 @@ const ContainerRandomMovieFive: React.FC<PropsMovieRandom> = ({
       />
       <ContainerScroll>{loadingCardMovies}</ContainerScroll>
     </section>
-  ) : (
+  ) : !isError ? (
     <section className="section__page" id="random_one">
       <TitleSection
         variant="title-large"
@@ -441,6 +160,349 @@ const ContainerRandomMovieFive: React.FC<PropsMovieRandom> = ({
           )}
       </ContainerScroll>
     </section>
+  ) : (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  );
+  return displayContainer;
+};
+
+const ContainerRandomMovieTwo: React.FC<PropsMovieRandom> = ({
+  categorieMovie,
+  isLoading,
+}) => {
+  type MovieType = TypeMovieDetails[];
+  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
+  const [Movies, setMovies] = useState<MovieType>([]);
+
+  const {
+    mutate: getMovies,
+    isLoading: loaded,
+    isError,
+  } = useMutation(
+    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
+    {
+      onSuccess: async (response) => {
+        setMovies(response.data);
+        setLoadingMovie(false);
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="primary" key={index} isLoading={true} />
+  ));
+  useEffect(() => {
+    if (!isLoading && categorieMovie && !isError) {
+      getMovies(categorieMovie?.idMovieDb);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, categorieMovie, isError]);
+
+  const displayContainer = isLoading ? (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : loadingMovie ? (
+    <section className="section__page " id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
+      />
+      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+    </section>
+  ) : !isError ? (
+    <section className="section__page" id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
+      />
+      <ContainerScroll>
+        {Movies &&
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
+      </ContainerScroll>
+    </section>
+  ) : (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  );
+  return displayContainer;
+};
+
+const ContainerRandomMovieThree: React.FC<PropsMovieRandom> = ({
+  categorieMovie,
+  isLoading,
+}) => {
+  type MovieType = TypeMovieDetails[];
+  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
+  const [Movies, setMovies] = useState<MovieType>([]);
+
+  const {
+    mutate: getMovies,
+    isLoading: loaded,
+    isError,
+  } = useMutation(
+    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
+    {
+      onSuccess: async (response) => {
+        setMovies(response.data);
+        setLoadingMovie(false);
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="primary" key={index} isLoading={true} />
+  ));
+  useEffect(() => {
+    if (!isLoading && categorieMovie && !isError) {
+      getMovies(categorieMovie?.idMovieDb);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, categorieMovie, isError]);
+
+  const displayContainer = isLoading ? (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : loadingMovie ? (
+    <section className="section__page " id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
+      />
+      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+    </section>
+  ) : !isError ? (
+    <section className="section__page" id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
+      />
+      <ContainerScroll>
+        {Movies &&
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
+      </ContainerScroll>
+    </section>
+  ) : (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  );
+  return displayContainer;
+};
+
+const ContainerRandomMovieFour: React.FC<PropsMovieRandom> = ({
+  categorieMovie,
+  isLoading,
+}) => {
+  type MovieType = TypeMovieDetails[];
+  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
+  const [Movies, setMovies] = useState<MovieType>([]);
+
+  const {
+    mutate: getMovies,
+    isLoading: loaded,
+    isError,
+  } = useMutation(
+    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
+    {
+      onSuccess: async (response) => {
+        setMovies(response.data);
+        setLoadingMovie(false);
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="primary" key={index} isLoading={true} />
+  ));
+  useEffect(() => {
+    if (!isLoading && categorieMovie && !isError) {
+      getMovies(categorieMovie?.idMovieDb);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, categorieMovie, isError]);
+
+  const displayContainer = isLoading ? (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : loadingMovie ? (
+    <section className="section__page " id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
+      />
+      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+    </section>
+  ) : !isError ? (
+    <section className="section__page" id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
+      />
+      <ContainerScroll>
+        {Movies &&
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
+      </ContainerScroll>
+    </section>
+  ) : (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  );
+  return displayContainer;
+};
+
+const ContainerRandomMovieFive: React.FC<PropsMovieRandom> = ({
+  categorieMovie,
+  isLoading,
+}) => {
+  type MovieType = TypeMovieDetails[];
+  const [loadingMovie, setLoadingMovie] = useState<boolean>(true);
+  const [Movies, setMovies] = useState<MovieType>([]);
+
+  const {
+    mutate: getMovies,
+    isLoading: loaded,
+    isError,
+  } = useMutation(
+    (id: number) => axios.get(`/api/movies/genre/${id}?page=${1}`),
+    {
+      onSuccess: async (response) => {
+        setMovies(response.data);
+        setLoadingMovie(false);
+      },
+      onError: async (error) => {
+        console.log(error);
+      },
+    }
+  );
+  const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
+    <CardMovie variant="primary" key={index} isLoading={true} />
+  ));
+  useEffect(() => {
+    if (!isLoading && categorieMovie && !isError) {
+      getMovies(categorieMovie?.idMovieDb);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, categorieMovie, isError]);
+
+  const displayContainer = isLoading ? (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
+  ) : loadingMovie ? (
+    <section className="section__page " id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
+      />
+      <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+    </section>
+  ) : !isError ? (
+    <section className="section__page" id="random_one">
+      <TitleSection
+        variant="title-large"
+        title={`FILMS ${categorieMovie?.category_name.toUpperCase()}`}
+        linkMore={`/films/genre/${categorieMovie?.category_id}`}
+      />
+      <ContainerScroll>
+        {Movies &&
+          Movies.map(
+            (movie) =>
+              movie.poster_path !== null && (
+                <CardMovie
+                  key={movie.id}
+                  variant="primary"
+                  poster={movie.poster_path}
+                  title={movie.title}
+                  id={movie.id}
+                />
+              )
+          )}
+      </ContainerScroll>
+    </section>
+  ) : (
+    <section
+      className="section__page loading__container container__padding"
+      id="random_one"
+    >
+      <div className="skeleton-loading"></div>
+    </section>
   );
   return displayContainer;
 };
@@ -449,17 +511,17 @@ const ContainerMoviesRandom = () => {
   const [randomCategorie, setRandomCategorie] = useState<categoriesMovieType>(
     []
   );
-  const { data: categoriesMovie, isLoading } = useGettAllCategories();
+  const { data: categoriesMovie, isLoading, isError } = useGettAllCategories();
   function getRandomCategories(data: TypeMovieCategory[]): TypeMovieCategory[] {
     const shuffledCategories = data.sort(() => Math.random() - 0.5);
     return shuffledCategories.slice(0, 5);
   }
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !isError) {
       setRandomCategorie(getRandomCategories(categoriesMovie));
     }
-  }, [isLoading, categoriesMovie]);
+  }, [isLoading, categoriesMovie, isError]);
 
   const displayContainer = isLoading ? (
     <>
@@ -469,31 +531,37 @@ const ContainerMoviesRandom = () => {
       <ContainerRandomMovieFour isLoading={true} />
       <ContainerRandomMovieFive isLoading={true} />
     </>
+  ) : randomCategorie.length !== 0 && isError === false ? (
+    <>
+      <ContainerRandomMovieOne
+        isLoading={false}
+        categorieMovie={randomCategorie[0]}
+      />
+      <ContainerRandomMovieTwo
+        isLoading={false}
+        categorieMovie={randomCategorie[1]}
+      />
+      <ContainerRandomMovieThree
+        isLoading={false}
+        categorieMovie={randomCategorie[2]}
+      />
+      <ContainerRandomMovieFour
+        isLoading={false}
+        categorieMovie={randomCategorie[3]}
+      />
+      <ContainerRandomMovieFive
+        isLoading={false}
+        categorieMovie={randomCategorie[4]}
+      />
+    </>
   ) : (
-    randomCategorie.length !== 0 && (
-      <>
-        <ContainerRandomMovieOne
-          isLoading={false}
-          categorieMovie={randomCategorie[0]}
-        />
-        <ContainerRandomMovieTwo
-          isLoading={false}
-          categorieMovie={randomCategorie[1]}
-        />
-        <ContainerRandomMovieThree
-          isLoading={false}
-          categorieMovie={randomCategorie[2]}
-        />
-        <ContainerRandomMovieFour
-          isLoading={false}
-          categorieMovie={randomCategorie[3]}
-        />
-        <ContainerRandomMovieFive
-          isLoading={false}
-          categorieMovie={randomCategorie[4]}
-        />
-      </>
-    )
+    <>
+      <ContainerRandomMovieOne isLoading={true} />
+      <ContainerRandomMovieTwo isLoading={true} />
+      <ContainerRandomMovieThree isLoading={true} />
+      <ContainerRandomMovieFour isLoading={true} />
+      <ContainerRandomMovieFive isLoading={true} />
+    </>
   );
   return displayContainer;
 };

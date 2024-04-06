@@ -92,7 +92,7 @@ const ContainerMovie = () => {
                 key={movie.id}
                 variant="default"
                 poster={movie.poster_path}
-                title={movie.original_title}
+                title={movie.title}
                 id={movie.id}
               />
             )

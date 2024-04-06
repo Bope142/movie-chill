@@ -121,7 +121,7 @@ const Banner = ({
     >
       <div className="container__details__movies">
         <div className="left">
-          <h2>{movie && movie.original_name}</h2>
+          <h2>{movie && movie.name}</h2>
           <div className="category__movie__container">
             {movie &&
               movie.genres.map((genre) => (
@@ -214,7 +214,7 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
                   key={movie.id}
                   variant="primary"
                   poster={movie.poster_path}
-                  title={movie.original_name}
+                  title={movie.name}
                   id={movie.id}
                   forTv={true}
                 />
