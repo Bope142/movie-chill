@@ -287,7 +287,7 @@ function adaptFavoriteCategories(
   userId: number
 ): UserFavoriteCategory[] {
   return favoriteCategories.map((category) => ({
-    id: 0, // Vous pouvez spécifier un ID ou le laisser par défaut pour être auto-incrémenté
+    id: 0,
     category_id: category.id,
     user_id: userId,
   }));
