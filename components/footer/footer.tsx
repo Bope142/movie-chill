@@ -10,23 +10,26 @@ function Footer() {
   return (
     <footer className="footer__page">
       <div className="text-footer">
-        © 2024{" "}
+        © {new Date().getFullYear()}
         <div className="logo">
           Movie <span>Chill</span>
         </div>
-        . Designed with ❤️ for you by <a href="">Norbert Yemuang</a>
+        . Designed with ❤️ for you by{" "}
+        <a href="https://www.linkedin.com/in/norbert-yemuang-bope-69662318a">
+          Norbert Yemuang
+        </a>
       </div>
       <div className="social__media">
-        <a href="">
+        <a href="https://www.linkedin.com/in/norbert-yemuang-bope-69662318a">
           <IoLogoLinkedin />
         </a>
-        <a href="">
+        <a href="https://www.instagram.com/norbert_yemuang_bope_officiel/">
           <AiFillInstagram />
         </a>
-        <a href="">
+        <a href="https://web.facebook.com/profile.php?id=100063692963866">
           <FaFacebookSquare />
         </a>
-        <a href="">
+        <a href="https://github.com/Bope142/movie-chill.git">
           <FaGithub />
         </a>
       </div>

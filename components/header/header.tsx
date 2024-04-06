@@ -50,12 +50,11 @@ const HeaderNav = () => {
     { title: "mes favoris", path: "/favoris" },
     { title: "À propos", path: "/about" },
   ];
-
   const isActive = (path: string) => {
-    if (path === "/") return pathname === path;
-    const modifiedPath = path.substring(1);
-    return pathname.includes(modifiedPath);
+    const pathRegex = new RegExp(`^${path}(\/|$)`);
+    return pathRegex.test(pathname);
   };
+
   return (
     <nav className="header__nav">
       {navLinks.map((link) => (
