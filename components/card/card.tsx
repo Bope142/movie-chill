@@ -158,6 +158,10 @@ export const CardMovieFavorite: React.FC<CardFavoriteMovieProps> = ({
                 className="img-fluid poster-movie"
                 width={100}
                 height={100}
+                onError={(e) => {
+                  e.currentTarget.src = "/images/error-img.png";
+                  e.currentTarget.onerror = null;
+                }}
               />
             )}
           </div>
@@ -215,6 +219,10 @@ export const CardMovie: React.FC<CardProps> = ({
                   className="img-fluid poster-movie"
                   width={100}
                   height={100}
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/error-img.png";
+                    e.currentTarget.onerror = null;
+                  }}
                 />
               )}
 
@@ -248,6 +256,10 @@ export const CardMovie: React.FC<CardProps> = ({
                   className="img-fluid poster-movie"
                   width={100}
                   height={100}
+                  onError={(e) => {
+                    e.currentTarget.src = "/images/error-img.png";
+                    e.currentTarget.onerror = null;
+                  }}
                 />
               )}
 
@@ -285,6 +297,10 @@ export const CardMovie: React.FC<CardProps> = ({
                 className="img-fluid poster-movie"
                 width={100}
                 height={100}
+                onError={(e) => {
+                  e.currentTarget.src = "/images/error-img.png";
+                  e.currentTarget.onerror = null;
+                }}
               />
             )
           )}
@@ -309,6 +325,10 @@ export const CardMovie: React.FC<CardProps> = ({
                 className="img-fluid poster-movie"
                 width={100}
                 height={100}
+                onError={(e) => {
+                  e.currentTarget.src = "/images/error-img.png";
+                  e.currentTarget.onerror = null;
+                }}
               />
             )
           )}
