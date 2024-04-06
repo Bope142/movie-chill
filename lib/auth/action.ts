@@ -30,7 +30,7 @@ export async function signup(
   if (!usernameRegex.test(username)) {
     return {
       formError:
-        "Nom d'utilisateur invalide. Utilisez uniquement des lettres, chiffres et underscores, de 3 à 20 caractères.",
+        "Nom d'utilisateur invalide.Utilisez uniquement des lettres, chiffres et underscores, de 3 à 20 caractères.",
     };
   }
 
