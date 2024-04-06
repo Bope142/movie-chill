@@ -44,7 +44,7 @@ export const GET = async (req: NextRequest) => {
       parseInt(skip!),
       parseInt(max!)
     );
-
+    console.log(favoriteMovies);
     return NextResponse.json(
       { message: "success", favoriteMovies },
       {

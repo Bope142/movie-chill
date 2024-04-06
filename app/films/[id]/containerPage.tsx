@@ -29,6 +29,7 @@ import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import { FaRegHeart } from "react-icons/fa6";
+import shareOnSocialMedia from "@/utils/shareLink";
 type propsBanner = {
   movie?: DetailMovie;
   isLoading: boolean;
@@ -50,7 +51,6 @@ const Banner = ({
       axios.post(`/api/users/movies/favorite/`, movie),
     {
       onSuccess: async (response) => {
-        console.log(response);
         setLoadingBtnLike(false);
         setIsFavorite(true);
       },
@@ -67,7 +67,6 @@ const Banner = ({
         axios.delete(`/api/users/movies/favorite?id=${movieId}`),
       {
         onSuccess: async (response) => {
-          console.log(response);
           setLoadingBtnLike(false);
           setIsFavorite(false);
         },
@@ -165,24 +164,18 @@ const Banner = ({
           >
             {isFavorite ? <FaHeart /> : <FaRegHeart />}
           </Button>
-          <div className="btn-share">
-            <div className="front">
-              <FaShareAlt /> <p>Partager</p>
-            </div>
-            <div className="content-icons">
-              <a href="">
-                <IoLogoLinkedin />
-              </a>
-              <a href="">
-                <AiFillInstagram />
-              </a>
-              <a href="">
-                <FaFacebookSquare />
-              </a>
-              <a href="">
-                <IoLogoWhatsapp />
-              </a>
-            </div>
+          <div
+            className="btn-share"
+            onClick={() => {
+              if (movie) {
+                shareOnSocialMedia(
+                  `http://localhost:3000/film/${movie.imdb_id}`,
+                  `Vous allez adorer "${movie.title}" sur Movie Chill! 🍿 Cliquez sur le lien pour regarder maintenant!`
+                );
+              }
+            }}
+          >
+            <FaShareAlt /> <p>Partager</p>
           </div>
         </div>
       </div>
@@ -205,27 +198,36 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
 
   return (
     <section className="section__page sections__movies">
-      <TitleSection variant="title-large" title="FILMS SIMILAIR" />
-      <ContainerScroll>
-        {isLoading
-          ? loadingCardMovies
-          : movie &&
-            movie
-              .slice(0, 20)
-              .map(
-                (movie: TypeMovieDetails) =>
-                  movie.poster_path !== null && (
-                    <CardMovie
-                      key={movie.id}
-                      variant="primary"
-                      poster={movie.poster_path}
-                      title={movie.title}
-                      id={movie.id}
-                      cover={movie.backdrop_path}
-                    />
-                  )
-              )}
-      </ContainerScroll>
+      {isLoading ? (
+        <TitleSection variant="title-large" title="FILMS SIMILAIR" />
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <TitleSection variant="title-large" title="FILMS SIMILAIR" />
+        )
+      )}
+      {isLoading ? (
+        <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <ContainerScroll>
+            {movie.map(
+              (movie: TypeMovieDetails) =>
+                movie.poster_path !== null && (
+                  <CardMovie
+                    key={movie.id}
+                    variant="primary"
+                    poster={movie.poster_path}
+                    title={movie.title}
+                    id={movie.id}
+                    cover={movie.backdrop_path}
+                  />
+                )
+            )}
+          </ContainerScroll>
+        )
+      )}
     </section>
   );
 };

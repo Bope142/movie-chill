@@ -18,6 +18,7 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { useSession } from "next-auth/react";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
+import shareOnSocialMedia from "@/utils/shareLink";
 
 const Banner = () => {
   return (
@@ -135,24 +136,16 @@ const SectionSharePage = () => {
           Ensemble, vivons des moments de
           <span> divertissement inoubliables !</span>
         </p>
-        <div className="btn-share">
-          <div className="front">
-            <FaShareAlt /> <p>Partager</p>
-          </div>
-          <div className="content-icons">
-            <a href="">
-              <IoLogoLinkedin />
-            </a>
-            <a href="">
-              <AiFillInstagram />
-            </a>
-            <a href="">
-              <FaFacebookSquare />
-            </a>
-            <a href="">
-              <IoLogoWhatsapp />
-            </a>
-          </div>
+        <div
+          className="btn-share"
+          onClick={() => {
+            shareOnSocialMedia(
+              "http://localhost:3000/",
+              "Rejoignez-nous sur Movie Chill pour découvrir une expérience de divertissement exceptionnelle!"
+            );
+          }}
+        >
+          <FaShareAlt /> <p>Partager</p>
         </div>
       </div>
     </section>

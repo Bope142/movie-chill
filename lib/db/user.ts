@@ -1,23 +1,19 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
 import { isWithinExpirationDate, TimeSpan, createDate } from "oslo";
 import { sendMail } from "../email/sendEmail";
 import { renderVerificationCodeEmail } from "../email/template/emailVerification";
 import db from "./db";
 const bcrypt = require("bcrypt");
-const prisma = new PrismaClient();
 
 export async function existingUser(email: string): Promise<boolean> {
   try {
-    const user = await prisma.users.findUnique({
+    const user = await db.users.findUnique({
       where: { email: email },
     });
     return user ? true : false;
   } catch (error) {
     throw new Error("error verifying user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -28,7 +24,7 @@ export async function createUser(
 ) {
   try {
     const password_hash = await bcrypt.hash(password, 10);
-    const user = await prisma.users.create({
+    const user = await db.users.create({
       data: {
         username,
         email,
@@ -38,8 +34,6 @@ export async function createUser(
     return user !== null ? user : null;
   } catch (error) {
     throw new Error("error creating user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -59,14 +53,14 @@ export async function saveEmailVerification(
   email: string
 ): Promise<string> {
   try {
-    await prisma.email_verification.deleteMany({
+    await db.email_verification.deleteMany({
       where: {
         email: email,
         user_id: userId,
       },
     });
     const verificationCode = generateVerificationCode(8);
-    const newVerificationCode = await prisma.email_verification.create({
+    const newVerificationCode = await db.email_verification.create({
       data: {
         user_id: userId,
         email: email,
@@ -80,14 +74,12 @@ export async function saveEmailVerification(
   } catch (error) {
     console.error("Error saving email verification code:", error);
     throw new Error("Failed to save email verification code.");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 export async function getUser(email: string) {
   try {
-    const user = await prisma.users.findUnique({
+    const user = await db.users.findUnique({
       where: { email: email },
       include: {
         email_verification: true,
@@ -96,8 +88,6 @@ export async function getUser(email: string) {
     return user;
   } catch (error) {
     throw new Error("error get user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -117,7 +107,7 @@ export async function resendVerificationEmail(
   success?: boolean;
 }> {
   try {
-    const lastSent = await prisma.email_verification.findMany({
+    const lastSent = await db.email_verification.findMany({
       where: { email: email, user_id: userId },
     });
     if (lastSent.length > 0) {
@@ -144,14 +134,12 @@ export async function resendVerificationEmail(
   } catch (error) {
     console.error("Error resend verification code:", error);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 export async function verifyUser(userId: number, email: string) {
   try {
-    const user = await prisma.email_verification.updateMany({
+    const user = await db.email_verification.updateMany({
       where: { email: email, user_id: userId },
       data: {
         is_verified: true,
@@ -160,27 +148,23 @@ export async function verifyUser(userId: number, email: string) {
     return user;
   } catch (error) {
     throw new Error("error get user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 export async function isVerifyUser(email?: string | null) {
   try {
     if (email !== undefined) {
-      const user = await prisma.users.findFirst({
+      const user = await db.users.findFirst({
         where: { email: email },
       });
       if (!user) return false;
-      const verifying = await prisma.email_verification.findFirst({
+      const verifying = await db.email_verification.findFirst({
         where: { user_id: user.user_id },
       });
       return verifying ? true : false;
     } else return false;
   } catch (error) {
     throw new Error("error get user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -192,7 +176,7 @@ export async function verifyEmail(
   error?: string;
   success?: boolean;
 }> {
-  const dbCode = await prisma.email_verification.findMany({
+  const dbCode = await db.email_verification.findMany({
     where: { email: email, user_id: userId, verification_code: code },
   });
   if (dbCode.length > 0) {
@@ -212,7 +196,7 @@ export async function verifyEmail(
 
 export async function deleteAllSessionUser(userId: number): Promise<any> {
   try {
-    const deleteSession = await prisma.user_sessions.deleteMany({
+    const deleteSession = await db.user_sessions.deleteMany({
       where: {
         user_id: userId,
       },
@@ -221,15 +205,13 @@ export async function deleteAllSessionUser(userId: number): Promise<any> {
   } catch (error) {
     console.error("Error deleting session:", error);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 export async function createSessionUser(userId: number): Promise<any> {
   try {
     const expirationTime = createDate(new TimeSpan(1, "d"));
-    const sessionUser = await prisma.user_sessions.create({
+    const sessionUser = await db.user_sessions.create({
       data: {
         user_id: userId,
         expires_at: expirationTime,
@@ -239,14 +221,12 @@ export async function createSessionUser(userId: number): Promise<any> {
   } catch (error) {
     console.error("Error creating session:", error);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 export async function isSessionValid(userId: number): Promise<boolean> {
   try {
-    const userSession = await prisma.user_sessions.findFirst({
+    const userSession = await db.user_sessions.findFirst({
       where: {
         user_id: userId,
       },
@@ -270,8 +250,6 @@ export async function isSessionValid(userId: number): Promise<boolean> {
   } catch (error) {
     console.error("Error checking session validity:", error);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -281,7 +259,7 @@ export async function updateProfilUser(
   profilUrl: string
 ) {
   try {
-    const user = await prisma.users.update({
+    const user = await db.users.update({
       where: { user_id: userId, email: email },
       data: {
         profile_picture: profilUrl,
@@ -290,8 +268,6 @@ export async function updateProfilUser(
     return user;
   } catch (error) {
     throw new Error("error get user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -325,7 +301,7 @@ export async function onboardingProfil(
 ) {
   try {
     // Changement de la photo de profil
-    const user = await prisma.users.update({
+    const user = await db.users.update({
       where: { user_id: userId, email: email },
       data: {
         profile_picture: profilUrl,
@@ -333,7 +309,7 @@ export async function onboardingProfil(
     });
 
     if (user !== null && favoriteCategory.length !== 0) {
-      await prisma.user_favorite_categories.deleteMany({
+      await db.user_favorite_categories.deleteMany({
         where: { user_id: userId },
       });
 
@@ -341,10 +317,11 @@ export async function onboardingProfil(
         favoriteCategory,
         userId
       );
-      const userFavorisCategorie =
-        await prisma.user_favorite_categories.createMany({
+      const userFavorisCategorie = await db.user_favorite_categories.createMany(
+        {
           data: adaptedCategories,
-        });
+        }
+      );
       return {
         url: user.profile_picture,
         moviesGenres: userFavorisCategorie,
@@ -354,8 +331,6 @@ export async function onboardingProfil(
     return null;
   } catch (error) {
     throw new Error("Erreur lors de la mise à jour du profil utilisateur");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -365,7 +340,7 @@ export async function getFavoritesMovieUser(
   max: number
 ) {
   try {
-    const favoriteMovies = await prisma.user_favorite_movies.findMany({
+    const favoriteMovies = await db.user_favorite_movies.findMany({
       where: {
         user_id: userId,
       },
@@ -376,8 +351,6 @@ export async function getFavoritesMovieUser(
     return favoriteMovies !== null ? favoriteMovies : [];
   } catch (error) {
     throw new Error("error get favorite movie user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -395,15 +368,13 @@ export async function addMovieAsFavorite(
   movie: UserFavoriteMovie
 ): Promise<UserFavoriteMovie> {
   try {
-    const newFavoriteMovie = await prisma.user_favorite_movies.create({
+    const newFavoriteMovie = await db.user_favorite_movies.create({
       data: movie,
     });
 
     return newFavoriteMovie;
   } catch (error) {
     throw new Error("Error adding movie as favorite");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -412,7 +383,7 @@ export async function removeMovieFromFavorites(
   userId: number
 ) {
   try {
-    const deletedMovies = await prisma.user_favorite_movies.deleteMany({
+    const deletedMovies = await db.user_favorite_movies.deleteMany({
       where: {
         idMovieDb: movieId,
         user_id: userId,
@@ -421,8 +392,6 @@ export async function removeMovieFromFavorites(
     return deletedMovies;
   } catch (error) {
     throw new Error("Error removing movie from favorites");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -431,7 +400,7 @@ export async function isMovieFavorited(
   userId: number
 ): Promise<boolean> {
   try {
-    const favorite = await prisma.user_favorite_movies.findFirst({
+    const favorite = await db.user_favorite_movies.findFirst({
       where: {
         idMovieDb: movieId,
         user_id: userId,
@@ -441,14 +410,12 @@ export async function isMovieFavorited(
   } catch (error) {
     console.error("Error checking if movie is favorited", error);
     throw new Error("Error checking if movie is favorited");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
 export async function getFavoritesGenreMovieUser(userId: number) {
   try {
-    const favoriteGenreMovies = await prisma.user_favorite_categories.findMany({
+    const favoriteGenreMovies = await db.user_favorite_categories.findMany({
       where: {
         user_id: userId,
       },
@@ -457,8 +424,6 @@ export async function getFavoritesGenreMovieUser(userId: number) {
     return favoriteGenreMovies !== null ? favoriteGenreMovies : [];
   } catch (error) {
     throw new Error("error get favorite genre movie user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -468,7 +433,7 @@ export async function addFavoriteGenreMovieUser(
 ) {
   try {
     if (favoriteCategory.length !== 0) {
-      await prisma.user_favorite_categories.deleteMany({
+      await db.user_favorite_categories.deleteMany({
         where: { user_id: userId },
       });
 
@@ -476,10 +441,11 @@ export async function addFavoriteGenreMovieUser(
         favoriteCategory,
         userId
       );
-      const userFavorisCategorie =
-        await prisma.user_favorite_categories.createMany({
+      const userFavorisCategorie = await db.user_favorite_categories.createMany(
+        {
           data: adaptedCategories,
-        });
+        }
+      );
       return {
         moviesGenres: userFavorisCategorie,
       };
@@ -488,8 +454,6 @@ export async function addFavoriteGenreMovieUser(
     return null;
   } catch (error) {
     throw new Error("Erreur lors de la mise à jour du profil utilisateur");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -500,7 +464,7 @@ export async function updatePictureUser(
 ) {
   try {
     // Changement de la photo de profil
-    const user = await prisma.users.update({
+    const user = await db.users.update({
       where: { user_id: userId, email: email },
       data: {
         profile_picture: profilUrl,
@@ -510,8 +474,6 @@ export async function updatePictureUser(
     return user.profile_picture;
   } catch (error) {
     throw new Error("Erreur lors de la mise à jour du profil utilisateur");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -627,8 +589,6 @@ export async function updatePasswordUser(
     return user !== null ? true : false;
   } catch (error) {
     throw new Error("error updating password user");
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -636,7 +596,7 @@ export async function checkSessionUserClient(email: string): Promise<boolean> {
   try {
     const user = await getUser(email);
     if (user !== null) {
-      const userSession = await prisma.user_sessions.findFirst({
+      const userSession = await db.user_sessions.findFirst({
         where: {
           user_id: user.user_id,
         },
@@ -663,7 +623,5 @@ export async function checkSessionUserClient(email: string): Promise<boolean> {
   } catch (error) {
     console.error("Error checking session validity:", error);
     throw error;
-  } finally {
-    await prisma.$disconnect();
   }
 }

@@ -24,6 +24,7 @@ import ModalVideo from "@/components/modal/modal";
 import { useMutation } from "react-query";
 import axios from "axios";
 import { FaRegHeart } from "react-icons/fa6";
+import shareOnSocialMedia from "@/utils/shareLink";
 
 type propsBanner = {
   movie?: DetailTvMovie;
@@ -161,24 +162,18 @@ const Banner = ({
           >
             {isFavorite ? <FaHeart /> : <FaRegHeart />}
           </Button>
-          <div className="btn-share">
-            <div className="front">
-              <FaShareAlt /> <p>Partager</p>
-            </div>
-            <div className="content-icons">
-              <a href="">
-                <IoLogoLinkedin />
-              </a>
-              <a href="">
-                <AiFillInstagram />
-              </a>
-              <a href="">
-                <FaFacebookSquare />
-              </a>
-              <a href="">
-                <IoLogoWhatsapp />
-              </a>
-            </div>
+          <div
+            className="btn-share"
+            onClick={() => {
+              if (movie) {
+                shareOnSocialMedia(
+                  `http://localhost:3000/tv/${movie.id}`,
+                  `Vous allez adorer "${movie.name}" sur Movie Chill! 🍿 Cliquez sur le lien pour regarder maintenant!`
+                );
+              }
+            }}
+          >
+            <FaShareAlt /> <p>Partager</p>
           </div>
         </div>
       </div>
@@ -198,28 +193,38 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
   const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
     <CardMovie variant="primary" key={index} isLoading={true} />
   ));
-
   return (
     <section className="section__page sections__movies">
-      <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
-      <ContainerScroll>
-        {isLoading
-          ? loadingCardMovies
-          : movie &&
-            movie
-              .filter((movie: TVShow) => movie.poster_path !== null)
-              .slice(0, 20)
-              .map((movie: TVShow) => (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.name}
-                  id={movie.id}
-                  forTv={true}
-                />
-              ))}
-      </ContainerScroll>
+      {isLoading ? (
+        <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
+        )
+      )}
+      {isLoading ? (
+        <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <ContainerScroll>
+            {movie.map(
+              (movie: TVShow) =>
+                movie.poster_path !== null && (
+                  <CardMovie
+                    key={movie.id}
+                    variant="primary"
+                    poster={movie.poster_path}
+                    title={movie.name}
+                    id={movie.id}
+                    forTv={true}
+                  />
+                )
+            )}
+          </ContainerScroll>
+        )
+      )}
     </section>
   );
 };

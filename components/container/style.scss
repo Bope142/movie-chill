@@ -10,6 +10,26 @@
   align-self: stretch;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+
+  & .btn-scroll {
+    position: sticky;
+    z-index: 50;
+    align-self: center;
+    opacity: 0.5;
+    padding: 10px !important;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .btn-left {
+    left: 0;
+  }
+  .btn-right {
+    right: 0;
+  }
+  .hidden {
+    opacity: 0 !important;
+  }
 }
 
 .container__scroll::-webkit-scrollbar {
