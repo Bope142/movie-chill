@@ -12,6 +12,7 @@ import {
 import { sendMail } from "../email/sendEmail";
 import { renderVerificationCodeEmail } from "../email/emailVerification";
 import { redirects } from "../constants";
+import { TimeSpan, createDate } from "oslo";
 
 export async function signup(
   formData: FormData
@@ -75,6 +76,19 @@ export async function signup(
       formError: "Une erreur s'est produite lors de votre inscription.",
     };
   }
+}
+
+async function generatePasswordResetToken(userId: string): Promise<string> {
+  // await db
+  //   .delete(passwordResetTokens)
+  //   .where(eq(passwordResetTokens.userId, userId));
+  // const tokenId = generateId(40);
+  // await db.insert(passwordResetTokens).values({
+  //   id: tokenId,
+  //   userId,
+  //   expiresAt: createDate(new TimeSpan(2, "h")),
+  // });
+  // return tokenId;
 }
 
 export async function sendPasswordResetLink(
