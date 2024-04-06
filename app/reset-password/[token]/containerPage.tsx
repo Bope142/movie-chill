@@ -8,7 +8,7 @@ import LoaderPage from "@/components/loader/loader";
 import { Suspense, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { sendPasswordResetLink } from "@/lib/auth/action";
+import { resetPassword } from "@/lib/auth/action";
 
 type TypeInputValidity = {
   passwordUser: boolean;
@@ -21,7 +21,8 @@ const FormForgotPassword = ({ token }: propsContainer) => {
   const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
     passwordUser: false,
   });
-  const [loadingBtnSendLink, setLoadingBtnSendLink] = useState<boolean>(false);
+  const [loadingBtnResetPswd, setLoadingBtnResetPswd] =
+    useState<boolean>(false);
   const isFormValid = Object.values(inputValidity).every((valid) => valid);
   const handleValidityChange = (
     inputName: keyof TypeInputValidity,
@@ -36,18 +37,17 @@ const FormForgotPassword = ({ token }: propsContainer) => {
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isFormValid) {
-      setLoadingBtnSendLink(true);
+      setLoadingBtnResetPswd(true);
       const formData = new FormData(e.currentTarget);
-      const response = await sendPasswordResetLink(formData);
+      const response = await resetPassword(formData);
       if (response.success) {
-        toast.success(
-          "Un lien de réinitialisation de mot de passe a été envoyé à votre adresse e-mail."
-        );
-        setLoadingBtnSendLink(false);
+        toast.success("Votre mot de passe a été réinitialisé avec succès !");
+        setLoadingBtnResetPswd(false);
+        window.location.assign("/login");
       } else if (response.error) {
         console.error(response.error);
         toast.error(response.error);
-        setLoadingBtnSendLink(false);
+        setLoadingBtnResetPswd(false);
       }
     }
   };
@@ -80,7 +80,7 @@ const FormForgotPassword = ({ token }: propsContainer) => {
         <Button
           variant="primary"
           isDisabled={!isFormValid}
-          isLoading={loadingBtnSendLink}
+          isLoading={loadingBtnResetPswd}
         >
           Rénitialiser le mot de passe
         </Button>

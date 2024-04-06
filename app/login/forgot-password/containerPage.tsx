@@ -104,7 +104,7 @@ const RightContainer = () => {
 
 export const ContainerPage = () => {
   return (
-    <main className="container__page" id="signup__page">
+    <main className="container__page" id="forgotpassword__page">
       <Suspense fallback={<LoaderPage />}>
         <FormForgotPassword />
         <RightContainer />

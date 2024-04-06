@@ -32,7 +32,7 @@ export const ResetPasswordEmail = ({ link }: Props) => {
               nouveau mot de passe ici :
             </Text>
             <Button style={button} href={link}>
-              Réinitialiser le mot de passe
+              Cliquez ici pour réinitialiser votre mot de passe
             </Button>
             <Text style={text}>
               Si vous ne souhaitez pas changer votre mot de passe ou si vous
@@ -93,9 +93,6 @@ const button = {
   textAlign: "center" as const,
   display: "block",
   width: "210px",
-  padding: "14px 7px",
+  padding: "14px 25px",
+  fontStyle: "italic",
 };
-
-// const anchor = {
-//   textDecoration: "underline",
-// };

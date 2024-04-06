@@ -168,8 +168,7 @@ export async function resetPassword(
   const checkToken = await checkTokenResetLink(token);
   if (checkToken.error) {
     return {
-      error:
-        "Une erreur s'est produite lors de la vérification du lien de réinitialisation de mot de passe.",
+      error: checkToken.error,
     };
   }
 
