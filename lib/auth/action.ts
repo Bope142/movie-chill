@@ -1,9 +1,7 @@
 "use server";
+import { ActionResponseSignup } from "@/types/actionResponse";
 import {
-  ActionResponseSignup,
-  ResendVerificationCodeResponse,
-} from "@/types/actionResponse";
-import {
+  checkIfResetLinkValid,
   createUser,
   existingUser,
   getUser,
@@ -114,6 +112,11 @@ export async function sendPasswordResetLink(
     if (!user || !user.email_verification[0].is_verified) {
       return { error: "L'adresse e-mail fournie est invalide." };
     }
+    const check = await checkIfResetLinkValid(user.user_id);
+    if (check.error)
+      return {
+        error: check.error,
+      };
     const resetToken = await generatePasswordResetToken(user.user_id);
     if (resetToken.length === 0) {
       return {

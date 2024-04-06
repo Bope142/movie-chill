@@ -528,3 +528,41 @@ export async function saveResetPasswordTokenUser(
     throw new Error("Erreur lors de la création du token");
   }
 }
+
+export const checkIfResetLinkValid = async (
+  userId: number
+): Promise<{ error?: string; success?: boolean }> => {
+  try {
+    const existResetLinkUser = await db.password_reset_tokens.findFirst({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    if (!existResetLinkUser) {
+      return {
+        success: true,
+      };
+    }
+
+    if (isWithinExpirationDate(existResetLinkUser.expires_at)) {
+      const remainingTime = timeFromNow(existResetLinkUser.expires_at);
+      return {
+        error: `Désolé, veuillez patienter ${remainingTime} avant de renvoyer le lien de  vérification.`,
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error(
+      "Une erreur s'est produite lors de la vérification de la validité du lien de réinitialisation :",
+      error
+    );
+    return {
+      error:
+        "Oups ! Une erreur s'est produite lors de la vérification de la validité du lien de réinitialisation.",
+    };
+  }
+};
