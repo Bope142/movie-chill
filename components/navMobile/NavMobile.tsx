@@ -18,9 +18,8 @@ function NavMobile({ name, image }: profilUser) {
     { title: "À propos", path: "/about" },
   ];
   const isActive = (path: string) => {
-    if (path === "/") return pathname === path;
-    const modifiedPath = path.substring(1);
-    return pathname.includes(modifiedPath);
+    const pathRegex = new RegExp(`^${path}(\/|$)`);
+    return pathRegex.test(pathname);
   };
   return (
     <div className="nav__mobile">
@@ -29,12 +28,13 @@ function NavMobile({ name, image }: profilUser) {
           <Link
             key={link.path}
             href={link.path}
-            passHref
             className={
               isActive(link.path)
                 ? "active-item nav__item__mobile"
                 : " nav__item__mobile"
             }
+            replace
+            prefetch={true}
           >
             {link.title}
           </Link>

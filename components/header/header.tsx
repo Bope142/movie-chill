@@ -61,12 +61,12 @@ const HeaderNav = () => {
         <Link
           key={link.path}
           href={link.path}
-          passHref
           className={
             isActive(link.path)
               ? "active_item_nav nav__item__header"
               : " nav__item__header"
           }
+          replace
         >
           {link.title}
         </Link>

@@ -68,7 +68,6 @@ const Banner = ({
         axios.delete(`/api/users/movies/favorite?id=${movieId}`),
       {
         onSuccess: async (response) => {
-          console.log(response);
           setLoadingBtnLike(false);
           setIsFavorite(false);
         },
