@@ -17,6 +17,11 @@ function NavMobile({ name, image }: profilUser) {
     { title: "mes favoris", path: "/favoris" },
     { title: "À propos", path: "/about" },
   ];
+  const isActive = (path: string) => {
+    if (path === "/") return pathname === path;
+    const modifiedPath = path.substring(1);
+    return pathname.includes(modifiedPath);
+  };
   return (
     <div className="nav__mobile">
       <div className="link__nav">
@@ -26,7 +31,7 @@ function NavMobile({ name, image }: profilUser) {
             href={link.path}
             passHref
             className={
-              pathname === link.path
+              isActive(link.path)
                 ? "active-item nav__item__mobile"
                 : " nav__item__mobile"
             }

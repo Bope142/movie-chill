@@ -135,7 +135,7 @@
   transition: all 0.3s linear;
 
   transform: scale(0);
-  width: 90%;
+  width: 50%;
 
   height: 60%;
   padding-bottom: 20px !important;
@@ -167,5 +167,17 @@
   transition: all 0.3s linear;
   & * {
     transition: all 0.3s linear;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .container-modal-video {
+    width: 80%;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .container-modal-video {
+    width: 90%;
   }
 }

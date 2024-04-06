@@ -73,7 +73,6 @@ export async function saveEmailVerification(
         verification_code: verificationCode,
       },
     });
-    console.log("Email verification code saved successfully.");
     return newVerificationCode !== null
       ? newVerificationCode.verification_code
       : "";
@@ -162,6 +161,25 @@ export async function verifyUser(userId: number, email: string) {
   }
 }
 
+export async function isVerifyUser(email?: string | null) {
+  try {
+    if (email !== undefined) {
+      const user = await prisma.users.findFirst({
+        where: { email: email },
+      });
+      if (!user) return false;
+      const verifying = await prisma.email_verification.findFirst({
+        where: { user_id: user.user_id },
+      });
+      return verifying ? true : false;
+    } else return false;
+  } catch (error) {
+    throw new Error("error get user");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function verifyEmail(
   userId: number,
   email: string,
@@ -170,11 +188,9 @@ export async function verifyEmail(
   error?: string;
   success?: boolean;
 }> {
-  console.log("object", userId, email, code);
   const dbCode = await prisma.email_verification.findMany({
     where: { email: email, user_id: userId, verification_code: code },
   });
-  console.log(dbCode);
   if (dbCode.length > 0) {
     if (!isWithinExpirationDate(dbCode[0].expires_at)) {
       return { error: "Le code de vérification a expiré." };
@@ -197,7 +213,7 @@ export async function createSessionUser(userId: number): Promise<any> {
     //     user_id: userId,
     //   },
     // });
-    const expirationTime = createDate(new TimeSpan(60, "m"));
+    const expirationTime = createDate(new TimeSpan(1, "d"));
     const sessionUser = await prisma.user_sessions.create({
       data: {
         user_id: userId,

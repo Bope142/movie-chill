@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import type { NextApiRequest, NextApiResponse } from "next";
 import { validateRequestApi } from "@/lib/auth/vaildateRequest";
-import { getUser, onboardingProfil, updateProfilUser } from "@/lib/db/user";
+import { getUser, onboardingProfil } from "@/lib/db/user";
 import { NextRequest, NextResponse } from "next/server";
 
 export const PUT = async (req: NextRequest) => {
@@ -18,7 +16,6 @@ export const PUT = async (req: NextRequest) => {
       );
 
     const { urlProfil, categoriesMovie } = await req.json();
-    console.log(urlProfil, categoriesMovie);
     if (!urlProfil || !categoriesMovie)
       return NextResponse.json(
         { message: " urlProfil and categoriesMovie is required" },
@@ -36,7 +33,7 @@ export const PUT = async (req: NextRequest) => {
           status: 200,
         }
       );
-    const newInfos = await onboardingProfil(
+    await onboardingProfil(
       userAccount.user_id,
       email,
       urlProfil,

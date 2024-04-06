@@ -6,6 +6,6 @@ export const metadata = {
     "Découvrez une vaste sélection de films sur Movie Chill. Explorez des genres variés, des classiques intemporels aux dernières sorties. Trouvez facilement vos films préférés et plongez dans une expérience de divertissement inégalée, où le plaisir n'a pas de limites!",
 };
 
-export default function FilmPage() {
+export default async function FilmPage() {
   return <ContainerPage />;
 }

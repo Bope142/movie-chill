@@ -1,3 +1,4 @@
+import { TypeMovieDetails } from "@/types/movie";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -6,8 +7,7 @@ export const GET = async (
   { params }: { params: Record<string, string> }
 ) => {
   try {
-    const { id } = params;
-    if (!id)
+    if (params === undefined)
       return NextResponse.json(
         {
           error: "parameters not specified for GET request ",
@@ -16,6 +16,7 @@ export const GET = async (
           status: 403,
         }
       );
+    const { id } = params;
     const url = new URL(req.url);
     const page = url.searchParams.get("page");
 
@@ -24,7 +25,14 @@ export const GET = async (
     );
 
     if (response.status === 200) {
-      return NextResponse.json(response.data.results, {
+      const filteredMovies = response.data.results.filter(
+        (movie: TypeMovieDetails) =>
+          movie.overview !== "" &&
+          movie.poster_path !== null &&
+          movie.title !== null &&
+          movie.title !== ""
+      );
+      return NextResponse.json(filteredMovies, {
         status: 200,
       });
     } else {

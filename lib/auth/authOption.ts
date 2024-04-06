@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Session } from "next-auth";
+import { Session, getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createSessionUser, isSessionValid } from "../db/user";
 const bcrypt = require("bcrypt");

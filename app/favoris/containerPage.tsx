@@ -562,10 +562,14 @@ const ContainerFavoriteMovie = () => {
       }
     );
 
-  const { data: favoriteMovie, isLoading } = useGetFavoritesMovie(10, 0);
+  const {
+    data: favoriteMovie,
+    isLoading,
+    isError,
+  } = useGetFavoritesMovie(10, 0);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !isError) {
       setMovieList(favoriteMovie);
       setLoadingFirstPage(false);
     }

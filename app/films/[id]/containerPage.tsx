@@ -125,7 +125,7 @@ const Banner = ({
     >
       <div className="container__details__movies">
         <div className="left">
-          <h2>{movie && movie.original_title}</h2>
+          <h2>{movie && movie.title}</h2>
           <div className="category__movie__container">
             {movie &&
               movie.genres.map((genre) => (
@@ -234,11 +234,41 @@ type propsContainer = {
   idMovie: number;
 };
 
+const Container = ({ idMovie }: propsContainer) => {
+  const { data, isLoading, isError } = useGetDetailMovie(idMovie);
+  const [openModalVideo, setOpenModalVideo] = useState<boolean>(false);
+  return (
+    <>
+      <Banner
+        isLoading={isError === false ? isLoading : true}
+        movie={!isLoading && !isError && data.movie}
+        setOpenModal={setOpenModalVideo}
+        existUrlVideo={
+          isLoading
+            ? false
+            : isError === false && data.videoLink === null
+            ? false
+            : true
+        }
+        isFavoriteMovie={isLoading ? false : !isError && data.isFavorite}
+      />
+      <ContainerMovieSimilar
+        isLoading={isError === false ? isLoading : true}
+        movie={!isLoading && !isError && data.similar}
+      />
+      {!isLoading && isError === false && data.videoLink !== null && (
+        <ModalVideo
+          isOpen={openModalVideo}
+          videoLink={!isLoading && data.videoLink !== null && data.videoLink}
+          onClose={() => setOpenModalVideo(false)}
+        ></ModalVideo>
+      )}
+    </>
+  );
+};
 export const ContainerPage = ({ idMovie }: propsContainer) => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
-  const { data, isLoading } = useGetDetailMovie(idMovie);
-  const [openModalVideo, setOpenModalVideo] = useState<boolean>(false);
 
   if (status === "loading") {
     return (
@@ -251,28 +281,7 @@ export const ContainerPage = ({ idMovie }: propsContainer) => {
       <main className="container__page">
         <Suspense fallback={<LoaderPage />}>
           <PageContent name={session.user?.name} image={session.user?.image}>
-            <Banner
-              isLoading={isLoading}
-              movie={!isLoading && data.movie}
-              setOpenModal={setOpenModalVideo}
-              existUrlVideo={
-                isLoading ? false : data.videoLink === null ? false : true
-              }
-              isFavoriteMovie={isLoading ? false : data.isFavorite}
-            />
-            <ContainerMovieSimilar
-              isLoading={isLoading}
-              movie={!isLoading && data.similar}
-            />
-            {!isLoading && data.videoLink !== null && (
-              <ModalVideo
-                isOpen={openModalVideo}
-                videoLink={
-                  !isLoading && data.videoLink !== null && data.videoLink
-                }
-                onClose={() => setOpenModalVideo(false)}
-              ></ModalVideo>
-            )}
+            <Container idMovie={idMovie} />
           </PageContent>
         </Suspense>
       </main>

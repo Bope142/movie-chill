@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { validateRequestApi } from "@/lib/auth/vaildateRequest";
-import { getUser, resendVerificationEmail, verifyEmail } from "@/lib/db/user";
-import { NextApiRequest } from "next";
+import { getUser, verifyEmail } from "@/lib/db/user";
 
-export const GET = async (req: NextApiRequest, { params }: any) => {
+export const GET = async (req: NextRequest, { params }: any) => {
   try {
     const session = await validateRequestApi(req);
     if (session.user !== null) {
