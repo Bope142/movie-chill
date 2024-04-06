@@ -88,6 +88,9 @@ export async function getUser(email: string) {
   try {
     const user = await prisma.users.findUnique({
       where: { email: email },
+      include: {
+        email_verification: true,
+      },
     });
     return user;
   } catch (error) {

@@ -3,7 +3,12 @@ import {
   ActionResponseSignup,
   ResendVerificationCodeResponse,
 } from "@/types/actionResponse";
-import { createUser, existingUser, saveEmailVerification } from "../db/user";
+import {
+  createUser,
+  existingUser,
+  getUser,
+  saveEmailVerification,
+} from "../db/user";
 import { sendMail } from "../email/sendEmail";
 import { renderVerificationCodeEmail } from "../email/emailVerification";
 import { redirects } from "../constants";
@@ -68,6 +73,27 @@ export async function signup(
 
     return {
       formError: "Une erreur s'est produite lors de votre inscription.",
+    };
+  }
+}
+
+export async function sendPasswordResetLink(
+  formData: FormData
+): Promise<{ error?: string; success?: boolean }> {
+  const email = formData.get("emailUser") as string;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { error: "Adresse e-mail invalide." };
+  }
+  try {
+    const user = await getUser(email);
+    if (!user || !user.email_verification[0].is_verified)
+      return { error: "Provided email is invalid." };
+    //const verificationToken = await generatePasswordResetToken(user.id);
+    return { error: "Adresse e-mail invalide." };
+  } catch (error) {
+    return {
+      error: "Oups ! Une erreur s'est produite lors de l'envoi du lien !",
     };
   }
 }
