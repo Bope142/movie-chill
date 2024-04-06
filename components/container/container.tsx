@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.scss";
 import { Button } from "../button/button";
 import { FaCircleChevronLeft } from "react-icons/fa6";
@@ -17,7 +17,95 @@ type typePropsContainer = {
 };
 
 export const ContainerScroll: React.FC<typeProps> = ({ children }) => {
-  return <main className="container__scroll">{children}</main>;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isScrollable, setIsScrollable] = useState<boolean>(false);
+  const [reachedLeftLimit, setReachedLeftLimit] = useState<boolean>(true);
+  const [reachedRightLimit, setReachedRightLimit] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current) {
+        const container = containerRef.current;
+        setIsScrollable(container.scrollWidth > container.clientWidth);
+        setReachedLeftLimit(container.scrollLeft === 0);
+        setReachedRightLimit(
+          container.scrollLeft >= container.scrollWidth - container.clientWidth
+        );
+      }
+    };
+
+    if (containerRef.current) {
+      const container = containerRef.current;
+      setIsScrollable(container.scrollWidth > container.clientWidth);
+      container.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        const container = containerRef.current;
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
+  const handleScrollLeft = () => {
+    if (!isScrollable || !containerRef.current) return;
+
+    const container = containerRef.current;
+    if (container.scrollLeft > 0) {
+      container.scrollLeft -= 100;
+    }
+  };
+
+  const handleScrollRight = () => {
+    if (!isScrollable || !containerRef.current) return;
+
+    const container = containerRef.current;
+    if (container.scrollLeft < container.scrollWidth - container.clientWidth) {
+      container.scrollLeft += 100;
+    }
+  };
+
+  return (
+    <main className="container__scroll" ref={containerRef}>
+      {!isMobile && (
+        <button
+          className={`btn btn-scroll btn-secondary btn-left ${
+            reachedLeftLimit ? "hidden" : ""
+          }`}
+          onClick={handleScrollLeft}
+        >
+          <FaCircleChevronLeft />
+        </button>
+      )}
+      {children}
+      {!isMobile && (
+        <button
+          className={`btn btn-scroll btn-secondary btn-right ${
+            reachedRightLimit ? "hidden" : ""
+          }`}
+          onClick={handleScrollRight}
+        >
+          <FaCircleChevronRight />
+        </button>
+      )}
+    </main>
+  );
 };
 
 export const PageContent: React.FC<typePropsContainer> = ({
