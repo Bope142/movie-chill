@@ -115,7 +115,6 @@ const CardProfilUser = ({ image, name }: propsCardProfil) => {
       const storageRef = ref(storage, `profil/${file.name}`);
       const snapshot = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      console.log(downloadURL);
       return downloadURL;
     } catch (error: any) {
       console.error("Error uploading file: ", error);
@@ -138,7 +137,7 @@ const CardProfilUser = ({ image, name }: propsCardProfil) => {
         setAwaitBtnSave(false);
         setDisabledBtnSave(false);
         setDisabledBtnChangeProfil(false);
-        toast.warn("No photo selected!");
+        toast.warn("Aucune photo!");
       }
     } catch (error: any) {
       setAwaitBtnSave(false);

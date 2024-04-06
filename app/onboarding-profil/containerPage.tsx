@@ -49,7 +49,6 @@ const ContainerSlide = () => {
       axios.put("/api/users/profil/onboarding", onboardingInfo),
     {
       onSuccess: async (response) => {
-        console.log(response);
         setAwaitBtnSave(false);
         toast.success("Le processus d'onboarding s'est terminé avec succès !");
         window.location.assign("/");
@@ -95,7 +94,6 @@ const ContainerSlide = () => {
   const handleFinishButtonClick = async () => {
     try {
       if (selectedImage) {
-        console.log("Catégories sélectionnées :", selectedCategories);
         setAwaitBtnSave(true);
         const imageUrl = await uploadImage(selectedImage);
         newInfosUser({
@@ -104,7 +102,7 @@ const ContainerSlide = () => {
         });
       } else {
         setAwaitBtnSave(false);
-        toast.warn("No photo selected!");
+        toast.warn("Aucune photo séléctionnée!");
       }
     } catch (error: any) {
       setAwaitBtnSave(false);
@@ -117,9 +115,6 @@ const ContainerSlide = () => {
       const storageRef = ref(storage, `profil/${file.name}`);
       const snapshot = await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(snapshot.ref);
-      // If you need to use `storageRef` later in your component, you can store it in state
-      //setRefFileUpload(storageRef);
-      console.log(downloadURL);
       return downloadURL;
     } catch (error: any) {
       console.error("Error uploading file: ", error);

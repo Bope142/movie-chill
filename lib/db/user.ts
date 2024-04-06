@@ -73,7 +73,6 @@ export async function saveEmailVerification(
         verification_code: verificationCode,
       },
     });
-    console.log("Email verification code saved successfully.");
     return newVerificationCode !== null
       ? newVerificationCode.verification_code
       : "";
@@ -189,11 +188,9 @@ export async function verifyEmail(
   error?: string;
   success?: boolean;
 }> {
-  console.log("object", userId, email, code);
   const dbCode = await prisma.email_verification.findMany({
     where: { email: email, user_id: userId, verification_code: code },
   });
-  console.log(dbCode);
   if (dbCode.length > 0) {
     if (!isWithinExpirationDate(dbCode[0].expires_at)) {
       return { error: "Le code de vérification a expiré." };

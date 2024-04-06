@@ -46,12 +46,10 @@ export async function signup(
   } else {
     const newUser = await createUser(username, email, password);
     if (newUser !== null) {
-      console.log(newUser);
       const verificationCode = await saveEmailVerification(
         newUser.user_id,
         email
       );
-      console.log(verificationCode);
       if (verificationCode.length === 8) {
         await sendMail({
           to: email,

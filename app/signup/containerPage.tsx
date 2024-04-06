@@ -3,7 +3,7 @@
 import { InputBoxForm } from "@/components/form/form";
 import "./style.scss";
 import Link from "next/link";
-import { Button, ButtonLink } from "@/components/button/button";
+import { Button } from "@/components/button/button";
 import LoaderPage from "@/components/loader/loader";
 import { Suspense, useState } from "react";
 import { ModalMessage } from "@/components/modal/modal";
@@ -56,9 +56,7 @@ const FormSignup = () => {
           password: formData.get("passwordUser"),
           callbackUrl: "/",
         });
-        console.log(requestSignIn);
         if (requestSignIn?.ok) {
-          console.log(response);
           toast.success(
             "Votre inscription sur MOVIE CHILL a été effectuée avec succès ! Veuillez vérifier votre boîte de réception pour activer votre compte."
           );
