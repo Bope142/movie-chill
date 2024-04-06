@@ -127,20 +127,18 @@ const BannerHomePage = () => {
           <ContainerScroll>
             {loaded
               ? loadingCardMovies
-              : similarMovie
-                  .slice(0, 10)
-                  .map(
-                    (movie) =>
-                      movie.poster_path !== null && (
-                        <CardMovie
-                          key={movie.id}
-                          variant="primary"
-                          poster={movie.poster_path}
-                          title={movie.title}
-                          id={movie.id}
-                        />
-                      )
-                  )}
+              : similarMovie.map(
+                  (movie) =>
+                    movie.poster_path !== null && (
+                      <CardMovie
+                        key={movie.id}
+                        variant="primary"
+                        poster={movie.poster_path}
+                        title={movie.title}
+                        id={movie.id}
+                      />
+                    )
+                )}
             {}
           </ContainerScroll>
         </div>

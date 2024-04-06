@@ -193,28 +193,38 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
   const loadingCardMovies = Array.from({ length: 10 }).map((_, index) => (
     <CardMovie variant="primary" key={index} isLoading={true} />
   ));
-
   return (
     <section className="section__page sections__movies">
-      <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
-      <ContainerScroll>
-        {isLoading
-          ? loadingCardMovies
-          : movie &&
-            movie
-              .filter((movie: TVShow) => movie.poster_path !== null)
-              .slice(0, 20)
-              .map((movie: TVShow) => (
-                <CardMovie
-                  key={movie.id}
-                  variant="primary"
-                  poster={movie.poster_path}
-                  title={movie.name}
-                  id={movie.id}
-                  forTv={true}
-                />
-              ))}
-      </ContainerScroll>
+      {isLoading ? (
+        <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <TitleSection variant="title-large" title="SERIE SIMILAIRES" />
+        )
+      )}
+      {isLoading ? (
+        <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <ContainerScroll>
+            {movie.map(
+              (movie: TVShow) =>
+                movie.poster_path !== null && (
+                  <CardMovie
+                    key={movie.id}
+                    variant="primary"
+                    poster={movie.poster_path}
+                    title={movie.name}
+                    id={movie.id}
+                    forTv={true}
+                  />
+                )
+            )}
+          </ContainerScroll>
+        )
+      )}
     </section>
   );
 };

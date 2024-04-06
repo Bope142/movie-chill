@@ -80,13 +80,13 @@ const ContainerSlide = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size <= 1048576) {
-        // Check if file is less than or equal to 1MB
+      if (file.size <= 1572864) {
+        // Check if file is less than or equal to 1.5MB
         setSelectedImage(file);
         const imageUrl = URL.createObjectURL(file);
         setProfilPic(imageUrl);
       } else {
-        toast.error("La taille du fichier est supérieure à 1MB !");
+        toast.error("La taille du fichier est supérieure à 1.5MB !");
       }
     }
   };

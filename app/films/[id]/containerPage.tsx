@@ -51,7 +51,6 @@ const Banner = ({
       axios.post(`/api/users/movies/favorite/`, movie),
     {
       onSuccess: async (response) => {
-        console.log(response);
         setLoadingBtnLike(false);
         setIsFavorite(true);
       },
@@ -199,27 +198,36 @@ const ContainerMovieSimilar = ({ movie, isLoading }: propsSimilarMovie) => {
 
   return (
     <section className="section__page sections__movies">
-      <TitleSection variant="title-large" title="FILMS SIMILAIR" />
-      <ContainerScroll>
-        {isLoading
-          ? loadingCardMovies
-          : movie &&
-            movie
-              .slice(0, 20)
-              .map(
-                (movie: TypeMovieDetails) =>
-                  movie.poster_path !== null && (
-                    <CardMovie
-                      key={movie.id}
-                      variant="primary"
-                      poster={movie.poster_path}
-                      title={movie.title}
-                      id={movie.id}
-                      cover={movie.backdrop_path}
-                    />
-                  )
-              )}
-      </ContainerScroll>
+      {isLoading ? (
+        <TitleSection variant="title-large" title="FILMS SIMILAIR" />
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <TitleSection variant="title-large" title="FILMS SIMILAIR" />
+        )
+      )}
+      {isLoading ? (
+        <ContainerScroll>{loadingCardMovies}</ContainerScroll>
+      ) : (
+        movie &&
+        movie.length > 0 && (
+          <ContainerScroll>
+            {movie.map(
+              (movie: TypeMovieDetails) =>
+                movie.poster_path !== null && (
+                  <CardMovie
+                    key={movie.id}
+                    variant="primary"
+                    poster={movie.poster_path}
+                    title={movie.title}
+                    id={movie.id}
+                    cover={movie.backdrop_path}
+                  />
+                )
+            )}
+          </ContainerScroll>
+        )
+      )}
     </section>
   );
 };
