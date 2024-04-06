@@ -13,8 +13,6 @@ import {
 import { sendMail } from "../email/sendEmail";
 import { renderVerificationCodeEmail } from "../email/template/emailVerification";
 import { redirects } from "../constants";
-import { TimeSpan, createDate } from "oslo";
-import db from "../db/db";
 import { renderResetPasswordEmail } from "../email/template/resetPassword";
 
 export async function signup(

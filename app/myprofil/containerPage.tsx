@@ -77,8 +77,10 @@ const CardProfilUser = ({ image, name }: propsCardProfil) => {
         setDisabledBtnChangeProfil(false);
         toast.success("Votre photo de profil a été mis à jour avec succès !");
         if (odlderPicture !== null) {
-          deleteOlderProfil(odlderPicture);
+          await deleteOlderProfil(odlderPicture);
+          //window.location.reload();
         }
+        //window.location.reload();
       },
       onError: async (error) => {
         setAwaitBtnSave(false);

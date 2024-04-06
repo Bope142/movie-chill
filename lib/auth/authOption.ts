@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-import { Session, getServerSession, type NextAuthOptions } from "next-auth";
+import { Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { createSessionUser, isSessionValid } from "../db/user";
+import db from "../db/db";
 const bcrypt = require("bcrypt");
-const prisma = new PrismaClient();
 
 type NextAuthSessionCallback = {
   session: Session;
@@ -26,7 +25,7 @@ export const authOption = {
         if (!credentials) throw new Error("No provid credentials");
         const { email, password } = credentials;
 
-        const user = await prisma.users.findUnique({
+        const user = await db.users.findUnique({
           where: {
             email: email,
           },
@@ -56,7 +55,7 @@ export const authOption = {
   callbacks: {
     async session({ session, token }: NextAuthSessionCallback) {
       if (session !== undefined && token.email !== undefined) {
-        const user = await prisma.users.findUnique({
+        const user = await db.users.findUnique({
           where: {
             email: token.email,
           },

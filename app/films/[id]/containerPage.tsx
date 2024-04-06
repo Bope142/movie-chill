@@ -29,6 +29,7 @@ import useAuthRedirect from "@/hooks/useAuthRedirect";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import { FaRegHeart } from "react-icons/fa6";
+import shareOnSocialMedia from "@/utils/shareLink";
 type propsBanner = {
   movie?: DetailMovie;
   isLoading: boolean;
@@ -165,24 +166,18 @@ const Banner = ({
           >
             {isFavorite ? <FaHeart /> : <FaRegHeart />}
           </Button>
-          <div className="btn-share">
-            <div className="front">
-              <FaShareAlt /> <p>Partager</p>
-            </div>
-            <div className="content-icons">
-              <a href="">
-                <IoLogoLinkedin />
-              </a>
-              <a href="">
-                <AiFillInstagram />
-              </a>
-              <a href="">
-                <FaFacebookSquare />
-              </a>
-              <a href="">
-                <IoLogoWhatsapp />
-              </a>
-            </div>
+          <div
+            className="btn-share"
+            onClick={() => {
+              if (movie) {
+                shareOnSocialMedia(
+                  `http://localhost:3000/film/${movie.imdb_id}`,
+                  `Vous allez adorer "${movie.title}" sur Movie Chill! 🍿 Cliquez sur le lien pour regarder maintenant!`
+                );
+              }
+            }}
+          >
+            <FaShareAlt /> <p>Partager</p>
           </div>
         </div>
       </div>
