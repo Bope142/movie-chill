@@ -157,16 +157,14 @@ const CardProfilUser = ({ image, name }: propsCardProfil) => {
         style={{ display: "none" }}
       />
       <div className="content__image__profil">
-        {image !== null && (
-          <Image
-            src={profilPic}
-            width={100}
-            height={100}
-            alt=""
-            className="img-fluid"
-            priority={true}
-          />
-        )}
+        <Image
+          src={profilPic}
+          width={100}
+          height={100}
+          alt=""
+          className="img-fluid"
+          priority={true}
+        />
 
         <div className="container__action__pic">
           <Button

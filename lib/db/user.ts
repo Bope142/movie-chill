@@ -162,6 +162,25 @@ export async function verifyUser(userId: number, email: string) {
   }
 }
 
+export async function isVerifyUser(email?: string | null) {
+  try {
+    if (email !== undefined) {
+      const user = await prisma.users.findFirst({
+        where: { email: email },
+      });
+      if (!user) return false;
+      const verifying = await prisma.email_verification.findFirst({
+        where: { user_id: user.user_id },
+      });
+      return verifying ? true : false;
+    } else return false;
+  } catch (error) {
+    throw new Error("error get user");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function verifyEmail(
   userId: number,
   email: string,

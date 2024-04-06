@@ -20,7 +20,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useMutation } from "react-query";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 type Swiper = any;
 interface SelectedCategory {
@@ -34,7 +33,6 @@ interface OnboardingInfo {
 }
 
 const ContainerSlide = () => {
-  const router = useRouter();
   const { data: categoriesMovie, isLoading } = useGettAllCategories();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [awaitBtnSave, setAwaitBtnSave] = useState<boolean>(false);
@@ -54,7 +52,7 @@ const ContainerSlide = () => {
         console.log(response);
         setAwaitBtnSave(false);
         toast.success("Le processus d'onboarding s'est terminé avec succès !");
-        router.push("/");
+        window.location.assign("/");
       },
       onError: async (error) => {
         setAwaitBtnSave(false);
@@ -237,6 +235,7 @@ export const ContainerPage = () => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
 
+  console.log(session);
   if (status === "loading") {
     return (
       <main className="page__content">

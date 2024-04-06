@@ -14,10 +14,6 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import useAuthRedirect from "@/hooks/useAuthRedirect";
 
-type FormSignupProps = {
-  setOpenModal: (value: boolean) => void;
-};
-
 type TypeInputValidity = {
   nameUser: boolean;
   emailUser: boolean;
@@ -25,7 +21,7 @@ type TypeInputValidity = {
   confirmPassword: boolean;
 };
 
-const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
+const FormSignup = () => {
   const router = useRouter();
   const [loadingBtnSignup, setLoadingBtnSignup] = useState<boolean>(false);
   const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
@@ -54,8 +50,6 @@ const FormSignup: React.FC<FormSignupProps> = ({ setOpenModal }) => {
       const formData = new FormData(e.currentTarget);
       const response = await signup(formData);
       if (response.redirectTo) {
-        //setOpenModal(true);
-
         const requestSignIn = await signIn("credentials", {
           redirect: false,
           email: formData.get("emailUser"),
@@ -167,11 +161,6 @@ export const ContainerPage = () => {
   const { data: session, status } = useSession();
   useAuthRedirect(session, status);
 
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const skipOnBoardingProfil = () => {
-    setOpenModal(false);
-  };
-
   if (status === "loading") {
     return (
       <main className="page__content">
@@ -182,27 +171,9 @@ export const ContainerPage = () => {
     return (
       <main className="container__page" id="signup__page">
         <Suspense fallback={<LoaderPage />}>
-          <FormSignup setOpenModal={setOpenModal} />
+          <FormSignup />
           <RightContainer />
-          <ModalMessage isOpen={openModal}>
-            <p className="msg-modal">
-              <span>Félicitations</span> 🤩 Votre inscription à{" "}
-              <span> Movie Chill</span> a été un succès 🥰😍!
-            </p>
-            <p className="detail-msg-modal">
-              Souhaitez-vous configurer votre compte maintenant ? Vous pouvez
-              appuyer sur le bouton <span>Passer</span> pour ignorer cette étape
-              ou continuer pour personnaliser votre compte immédiatement.
-            </p>
-            <div className="modal-action">
-              <Button variant="secondary" onClick={skipOnBoardingProfil}>
-                Passer
-              </Button>
-              <ButtonLink variant="primary" href="/">
-                Continuer
-              </ButtonLink>
-            </div>
-          </ModalMessage>
+
           <ToastContainer
             position="bottom-right"
             autoClose={5000}
