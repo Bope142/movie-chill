@@ -2,11 +2,13 @@
 import { ActionResponseSignup } from "@/types/actionResponse";
 import {
   checkIfResetLinkValid,
+  checkTokenResetLink,
   createUser,
   existingUser,
   getUser,
   saveEmailVerification,
   saveResetPasswordTokenUser,
+  updatePasswordUser,
 } from "../db/user";
 import { sendMail } from "../email/sendEmail";
 import { renderVerificationCodeEmail } from "../email/template/emailVerification";
@@ -148,4 +150,41 @@ export async function sendPasswordResetLink(
         "Oups ! Une erreur s'est produite lors de l'envoi du lien de réinitialisation.",
     };
   }
+}
+
+export async function resetPassword(
+  formData: FormData
+): Promise<{ error?: string; success?: boolean }> {
+  const token = formData.get("token") as string;
+  const password = formData.get("passwordUser") as string;
+
+  if (password.length < 8) {
+    return {
+      error:
+        "Le mot de passe est invalide. Il doit contenir au moins 8 caractères.",
+    };
+  }
+
+  const checkToken = await checkTokenResetLink(token);
+  if (checkToken.error) {
+    return {
+      error:
+        "Une erreur s'est produite lors de la vérification du lien de réinitialisation de mot de passe.",
+    };
+  }
+
+  if (checkToken.userId) {
+    const changePswd = await updatePasswordUser(checkToken.userId, password);
+    return changePswd
+      ? { success: true }
+      : {
+          error:
+            "Une erreur s'est produite lors de la réinitialisation du mot de passe.",
+        };
+  }
+
+  return {
+    error:
+      "Le lien de réinitialisation de mot de passe est invalide ou a expiré.",
+  };
 }

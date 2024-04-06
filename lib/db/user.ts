@@ -210,13 +210,19 @@ export async function verifyEmail(
   };
 }
 
-export async function createSessionUser(userId: number): Promise<any> {
+export async function createSessionUser(
+  userId: number,
+  deletePrevSession?: boolean
+): Promise<any> {
   try {
-    // await prisma.user_sessions.deleteMany({
-    //   where: {
-    //     user_id: userId,
-    //   },
-    // });
+    if (deletePrevSession !== undefined && deletePrevSession) {
+      await prisma.user_sessions.deleteMany({
+        where: {
+          user_id: userId,
+        },
+      });
+    }
+
     const expirationTime = createDate(new TimeSpan(1, "d"));
     const sessionUser = await prisma.user_sessions.create({
       data: {
@@ -541,7 +547,7 @@ export const checkIfResetLinkValid = async (
 
     if (!existResetLinkUser) {
       return {
-        success: true,
+        success: false,
       };
     }
 
@@ -566,3 +572,55 @@ export const checkIfResetLinkValid = async (
     };
   }
 };
+
+export const checkTokenResetLink = async (
+  token: string
+): Promise<{ userId?: number; error?: string }> => {
+  try {
+    const checkToken = await db.password_reset_tokens.findFirst({
+      where: {
+        token,
+      },
+    });
+
+    if (!checkToken) {
+      return {
+        error: "Le lien de réinitialisation de mot de passe est invalide.",
+      };
+    }
+
+    if (!isWithinExpirationDate(checkToken.expires_at)) {
+      return { error: "Le lien de réinitialisation de mot de passe a expiré." };
+    }
+
+    return { userId: checkToken.user_id };
+  } catch (error) {
+    return {
+      error:
+        "Une erreur s'est produite lors de la vérification de la validité du lien de réinitialisation de mot de passe.",
+    };
+  }
+};
+
+export async function updatePasswordUser(
+  userId: number,
+  password: string
+): Promise<boolean> {
+  try {
+    const password_hash = await bcrypt.hash(password, 10);
+    const user = await db.users.update({
+      where: {
+        user_id: userId,
+      },
+      data: {
+        password: password_hash,
+      },
+    });
+    await createSessionUser(user.user_id, true);
+    return user !== null ? true : false;
+  } catch (error) {
+    throw new Error("error creating user");
+  } finally {
+    await prisma.$disconnect();
+  }
+}

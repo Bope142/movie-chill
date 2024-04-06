@@ -11,11 +11,15 @@ import "react-toastify/dist/ReactToastify.css";
 import { sendPasswordResetLink } from "@/lib/auth/action";
 
 type TypeInputValidity = {
-  emailUser: boolean;
+  passwordUser: boolean;
 };
-const FormForgotPassword = () => {
+type propsContainer = {
+  token: string;
+};
+
+const FormForgotPassword = ({ token }: propsContainer) => {
   const [inputValidity, setInputValidity] = useState<TypeInputValidity>({
-    emailUser: false,
+    passwordUser: false,
   });
   const [loadingBtnSendLink, setLoadingBtnSendLink] = useState<boolean>(false);
   const isFormValid = Object.values(inputValidity).every((valid) => valid);
@@ -50,25 +54,27 @@ const FormForgotPassword = () => {
   return (
     <main className="container__form container__padding">
       <h1>
-        Mot de passe <span>Oublié</span> ?🤔
+        Nouveau <span>Mot</span> de <span>Passe</span>🔐
       </h1>
       <p className="text-form">
-        Si vous avez oublié votre mot de passe, ne vous inquiétez pas. Vous
-        pouvez facilement le réinitialiser en suivant les étapes ci-dessous.
+        Sur cette page, vous pouvez changer votre mot de passe en suivant
+        quelques étapes simples. Assurez-vous de choisir un mot de passe
+        sécurisé et de le conserver en lieu sûr.
       </p>
       <form
         action=""
         className="form__reset__password form"
         onSubmit={handleSubmitForm}
       >
+        <input type="hidden" name="token" value={token} />
         <InputBoxForm
-          label="Email"
-          placeholder="Votre adresse email ici"
-          typeInput="email"
-          nameInput="emailUser"
+          label="Mot de passe"
+          placeholder="Votre nouveau mot de passe ici"
+          typeInput="password"
+          nameInput="passwordUser"
           required={true}
           onValidityChange={(isValid) =>
-            handleValidityChange("emailUser", isValid)
+            handleValidityChange("passwordUser", isValid)
           }
         />
         <Button
@@ -76,7 +82,7 @@ const FormForgotPassword = () => {
           isDisabled={!isFormValid}
           isLoading={loadingBtnSendLink}
         >
-          Envoyer le lien
+          Rénitialiser le mot de passe
         </Button>
       </form>
       <p className="bottom-text">
@@ -92,21 +98,20 @@ const RightContainer = () => {
     <main className="container__right container__padding">
       <div className="box">
         <p>
-          Une fois que vous aurez reçu le lien de <span>réinitialisation</span>{" "}
-          par e-mail, suivez les instructions pour choisir un nouveau{" "}
-          <span>mot de passe</span> et accéder à votre <span>compte</span> en un
-          rien de temps.
+          Assurez-vous de <span>conserver</span> votre nouveau{" "}
+          <span>mot de passe</span> en lieu sûr et de ne le{" "}
+          <span>partager</span> avec <span>personne</span>.
         </p>
       </div>
     </main>
   );
 };
 
-export const ContainerPage = () => {
+export const ContainerPage = ({ token }: propsContainer) => {
   return (
-    <main className="container__page" id="signup__page">
+    <main className="container__page" id="forgotpassword__page">
       <Suspense fallback={<LoaderPage />}>
-        <FormForgotPassword />
+        <FormForgotPassword token={token} />
         <RightContainer />
 
         <ToastContainer
