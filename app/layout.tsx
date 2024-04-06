@@ -1,5 +1,5 @@
 "use client";
-import type { Metadata } from "next";
+
 import "@/public/style/main.scss";
 import QueryProvider from "@/providers/queryProviders";
 import NProgress from "nprogress";
