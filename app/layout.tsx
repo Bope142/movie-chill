@@ -24,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <AuthProvider>
           <QueryProvider>{children}</QueryProvider>
         </AuthProvider>
