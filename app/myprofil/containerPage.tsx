@@ -57,6 +57,7 @@ const deleteOlderProfil = async (fileUrl: string) => {
   }
 };
 const CardProfilUser = ({ image, name }: propsCardProfil) => {
+  const { update } = useSession();
   const odlderPicture: string | null = image !== null ? image : null;
   const fileInputRef = useRef(null);
   const [awaitBtnSave, setAwaitBtnSave] = useState<boolean>(false);
@@ -78,9 +79,10 @@ const CardProfilUser = ({ image, name }: propsCardProfil) => {
         toast.success("Votre photo de profil a été mis à jour avec succès !");
         if (odlderPicture !== null) {
           await deleteOlderProfil(odlderPicture);
-          //window.location.reload();
+          update();
+        } else {
+          update();
         }
-        //window.location.reload();
       },
       onError: async (error) => {
         setAwaitBtnSave(false);
