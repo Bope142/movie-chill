@@ -140,7 +140,7 @@ const SectionSharePage = () => {
           className="btn-share"
           onClick={() => {
             shareOnSocialMedia(
-              "http://localhost:3000/",
+              "https://movie-chill-nine.vercel.app/",
               "Rejoignez-nous sur Movie Chill pour découvrir une expérience de divertissement exceptionnelle!"
             );
           }}

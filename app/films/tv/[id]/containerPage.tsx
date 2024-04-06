@@ -167,7 +167,7 @@ const Banner = ({
             onClick={() => {
               if (movie) {
                 shareOnSocialMedia(
-                  `http://localhost:3000/tv/${movie.id}`,
+                  `https://movie-chill-nine.vercel.app/films/tv/${movie.id}`,
                   `Vous allez adorer "${movie.name}" sur Movie Chill! 🍿 Cliquez sur le lien pour regarder maintenant!`
                 );
               }
