@@ -3,7 +3,8 @@
 import { PrismaClient } from "@prisma/client";
 import { isWithinExpirationDate, TimeSpan, createDate } from "oslo";
 import { sendMail } from "../email/sendEmail";
-import { renderVerificationCodeEmail } from "../email/emailVerification";
+import { renderVerificationCodeEmail } from "../email/template/emailVerification";
+import db from "./db";
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
@@ -88,6 +89,9 @@ export async function getUser(email: string) {
   try {
     const user = await prisma.users.findUnique({
       where: { email: email },
+      include: {
+        email_verification: true,
+      },
     });
     return user;
   } catch (error) {
@@ -206,13 +210,24 @@ export async function verifyEmail(
   };
 }
 
+export async function deleteAllSessionUser(userId: number): Promise<any> {
+  try {
+    const deleteSession = await prisma.user_sessions.deleteMany({
+      where: {
+        user_id: userId,
+      },
+    });
+    return deleteSession;
+  } catch (error) {
+    console.error("Error deleting session:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function createSessionUser(userId: number): Promise<any> {
   try {
-    // await prisma.user_sessions.deleteMany({
-    //   where: {
-    //     user_id: userId,
-    //   },
-    // });
     const expirationTime = createDate(new TimeSpan(1, "d"));
     const sessionUser = await prisma.user_sessions.create({
       data: {
@@ -495,6 +510,159 @@ export async function updatePictureUser(
     return user.profile_picture;
   } catch (error) {
     throw new Error("Erreur lors de la mise à jour du profil utilisateur");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function saveResetPasswordTokenUser(
+  userId: number,
+  token: string
+) {
+  try {
+    await db.password_reset_tokens.deleteMany({
+      where: {
+        user_id: userId,
+      },
+    });
+    const expirationTime = createDate(new TimeSpan(5, "m"));
+    const newTokenPassword = await db.password_reset_tokens.create({
+      data: {
+        user_id: userId,
+        token,
+        expires_at: expirationTime,
+      },
+    });
+
+    return newTokenPassword;
+  } catch (error) {
+    throw new Error("Erreur lors de la création du token");
+  }
+}
+
+export const checkIfResetLinkValid = async (
+  userId: number
+): Promise<{ error?: string; success?: boolean }> => {
+  try {
+    const existResetLinkUser = await db.password_reset_tokens.findFirst({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    if (!existResetLinkUser) {
+      return {
+        success: false,
+      };
+    }
+
+    if (isWithinExpirationDate(existResetLinkUser.expires_at)) {
+      const remainingTime = timeFromNow(existResetLinkUser.expires_at);
+      return {
+        error: `Désolé, veuillez patienter ${remainingTime} avant de renvoyer le lien de  vérification.`,
+      };
+    }
+
+    return {
+      success: true,
+    };
+  } catch (error) {
+    console.error(
+      "Une erreur s'est produite lors de la vérification de la validité du lien de réinitialisation :",
+      error
+    );
+    return {
+      error:
+        "Oups ! Une erreur s'est produite lors de la vérification de la validité du lien de réinitialisation.",
+    };
+  }
+};
+
+export const checkTokenResetLink = async (
+  token: string
+): Promise<{ userId?: number; error?: string }> => {
+  try {
+    console.log(token);
+    const checkToken = await db.password_reset_tokens.findFirst({
+      where: {
+        token,
+      },
+    });
+    console.log(checkToken);
+    if (!checkToken) {
+      return {
+        error: "Le lien de réinitialisation de mot de passe est invalide.",
+      };
+    }
+
+    if (!isWithinExpirationDate(checkToken.expires_at)) {
+      return { error: "Le lien de réinitialisation de mot de passe a expiré." };
+    }
+
+    return { userId: checkToken.user_id };
+  } catch (error) {
+    console.log(error);
+    return {
+      error:
+        "Une erreur s'est produite lors de la vérification de la validité du lien de réinitialisation de mot de passe.",
+    };
+  }
+};
+
+export async function updatePasswordUser(
+  userId: number,
+  password: string
+): Promise<boolean> {
+  try {
+    const password_hash = await bcrypt.hash(password, 10);
+    const user = await db.users.update({
+      where: {
+        user_id: userId,
+      },
+      data: {
+        password: password_hash,
+      },
+    });
+    await deleteAllSessionUser(user.user_id);
+    return user !== null ? true : false;
+  } catch (error) {
+    throw new Error("error updating password user");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function checkSessionUserClient(email: string): Promise<boolean> {
+  try {
+    const user = await getUser(email);
+    if (user !== null) {
+      const userSession = await prisma.user_sessions.findFirst({
+        where: {
+          user_id: user.user_id,
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      });
+
+      if (!userSession) {
+        console.log("No session found for the user.");
+        return false;
+      }
+      const expiresAt = userSession.expires_at;
+      if (!isWithinExpirationDate(expiresAt)) {
+        console.log("Session has expired.");
+        return false;
+      }
+
+      console.log(`Session is valid.`);
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error checking session validity:", error);
+    throw error;
   } finally {
     await prisma.$disconnect();
   }
